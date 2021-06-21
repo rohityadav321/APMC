@@ -1,0 +1,81 @@
+rojeml ka ledger posting karte hai 
+
+aur TDS Payment entry naya banana hai 
+
+Woh Pranav ko de de ? 
+yes
+
+IDNumber varchar(6) PK  AutoInc
+
+CoID varchar(6) PK       Session    
+WorkYear varchar(10) PK  Session
+
+EntryDate datetime          (SystemDate)
+PayUpto datetime 
+TdsType char(4) 
+CashAcc varchar(6)          (ACMASTER Help)
+Nature char(1) 
+LotNo varchar(6) 
+PurRefNo varchar(7) 
+GrossAmt decimal(18,2) 
+AdvAmt decimal(18,2) 
+BrokAcc varchar(6)          (ACMASTER HELP )
+
+AddAmt decimal(18,2) 
+ACashAcc varchar(6)      (ACMASTER Help)
+LessAmt decimal(18,2) 
+LCashAcc varchar(6)      (ACMASTER Help)
+
+TDSRate decimal(18,3)     Entry
+TDSAmt decimal(18,2) 
+
+EcessRate decimal(18,3) 
+EcessAmt decimal(18,2) 
+SurRate decimal(18,3) 
+SurAmt decimal(18,2) 
+
+TotTDSAmt decimal(18,2) 
+
+Reason char(1) 
+
+CertiNo varchar(20) 
+TDS_Acc varchar(6)          (ACMASTER Help)
+
+CashAmt decimal(18,2) 
+CashCode varchar(6)         (ACMASTER Help)
+CashAmt1 decimal(18,2) 
+Cashcode1 varchar(6)      (ACMASTER Help)
+
+CheqNo varchar(10) 
+UTRNo varchar(30) 
+SlipNo int(11) 
+CheqBank varchar(9) 
+ChallanNo varchar(10) 
+ChallanDate datetime 
+DepoBankcode varchar(9) 
+DepocheqNo varchar(30) 
+
+Form26 varchar(50) 
+
+InvoiceNo varchar(20) 
+InvoiceDate datetime 
+TaxCode varchar(4) 
+SaleType varchar(1) 
+HSNCode varchar(8) 
+
+RCMInd varchar(1) 
+
+GSTTaxableAmt decimal(18,2) 
+
+CGSTAmt decimal(18,2) 
+SGSTAmt decimal(18,2) 
+IGSTAmt decimal(18,2) 
+TotalGSTAmt decimal(18,2) 
+
+
+
+AddedBy varchar(20) 
+AddedOn datetime 
+ModifiedBy varchar(20) 
+ModifiedOn timestamp 
+LockedBy varchar(20)
