@@ -1750,10 +1750,10 @@ echo form_open("SalesController/EditTry2/" . $Loaded_List[0]->BillNo . "/" . $bi
                     });
 
 
-                    $("#BrokerID").keydown(function(event) {
-                      if (event.keyCode == 13)
-                        $("#SalesMan").focus();
-                    });
+                    // $("#BrokerID").keydown(function(event) {
+                    //   if (event.keyCode == 13)
+                    //     $("#SalesMan").focus();
+                    // });
 
                     $("#SalesMan").keydown(function(event) {
                       if (event.keyCode == 13)

@@ -267,8 +267,27 @@ $CoName = $this->session->userdata('CoName');
 
         //DataTable Buttons
         $(document).ready(function() {
+            var fromYear = new Date(document.getElementById("fromYear").value);
+            var fromDate = fromYear.getDate();
+
+            var fromMon = fromYear.getMonth() + 1;
+            var fromYr = fromYear.getFullYear();
+
+            var fromYear = fromDate + '/' + fromMon + '/' + fromYr;
+
+            var toYear = new Date(document.getElementById("toYear").value);
+            var toDate = toYear.getDate();
+
+            var toMon = toYear.getMonth() + 1;
+            var toYr = toYear.getFullYear();
+
+            var toYear = toDate + '/' + toMon + '/' + toYr;
+
+            var CoName = '<?php echo $CoName ?>';
+            CoName = CoName.replace(/%20/g, " ");
             $('#example').DataTable({
                 responsive: true,
+                scrollX:true,
                 dom: 'lBfrtip',
                 aLengthMenu: [
                     [10, 50, 100, 500, -1],
@@ -286,32 +305,153 @@ $CoName = $this->session->userdata('CoName');
                         buttons: [{
                                 extend: 'copyHtml5',
                                 text: '<i class="fa fa-files-o"> Copy</i>',
-                                titleAttr: 'Copy'
+                                titleAttr: 'Copy',
+                                exportOptions: {
+                                        columns: ':visible'
+                                },
+                                title: CoName,
+                                messageTop: 'CollectionDateWise  ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                footer: true
                             },
                             {
                                 extend: 'excelHtml5',
                                 text: '<i class="fa fa-file-excel-o"> Excel </i>',
-                                titleAttr: 'Excel'
+                                titleAttr: 'Excel',
+                                exportOptions: {
+                                        columns: ':visible'
+                                },
+                                title: CoName,
+                                messageTop: 'CollectionDateWise  ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                footer: true
                             },
                             {
                                 extend: 'csvHtml5',
                                 text: '<i class="fa fa-file-text-o"> CSV</i>',
-                                titleAttr: 'CSV'
+                                titleAttr: 'CSV',
+                                exportOptions: {
+                                        columns: ':visible'
+                                },
+                                title: CoName,
+                                messageTop: 'CollectionDateWise  ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                footer: true
                             },
                             {
-                                extend: 'pdfHtml5',
-                                text: '<i class="fa fa-file-pdf-o"> PDF</i>',
-                                titleAttr: 'PDF'
-                            },
+                                    extend: 'pdfHtml5',
+                                    text: '<i class="fa fa-file-pdf-o"> PDF</i>',
+                                    orientation: 'landscape',
+                                    pageSize: 'A4',
+                                    titleAttr: 'PDF',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    },
+                                    title: '',
+                                    footer: true,
+                                    customize: function(doc) {
+                                        var table_head = {};
+
+                                        doc['styles'] = {
+                                            userTable: {
+                                                margin: [0, 5, 0, 5]
+                                            },
+                                            tableHeader: {
+                                                bold: !0,
+                                                fontSize: 8,
+                                                fillColor: '#154360',
+                                                color: 'white'
+                                            },
+                                            tableFooter: {
+                                                bold: !0,
+                                                fontSize: 8,
+                                                fillColor: '#154360',
+                                                color: 'white'
+                                            }
+                                        };
+                                        doc['header'] = (function(page, pages) {
+                                            return {
+                                                columns: [
+                                                    CoName + '\r\n' +
+                                                    'CollectionDateWise  ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                                ],
+                                                margin: [40, 10],
+                                                fontSize: 12
+                                            }
+                                        });
+                                        doc['footer'] = (function(page, pages) {
+                                            return {
+                                                columns: [
+                                                    'www.APMCTraders.com',
+                                                    {
+                                                        // This is the right column
+                                                        alignment: 'right',
+                                                        text: ['Page ', {
+                                                            text: page.toString()
+                                                        }, ' of ', {
+                                                            text: pages.toString()
+                                                        }]
+                                                    }
+                                                ],
+                                                margin: [45, 5]
+                                            }
+                                        });
+                                        doc.defaultStyle.fontSize = 8;
+                                    }
+                                },
                             {
                                 extend: 'print',
                                 text: '<i class="fa fa-print"> Print</i>',
-                                titleAttr: 'Print'
+                                titleAttr: 'Print',
+                                exportOptions: {
+                                        columns: ':visible'
+                                },
+                                title: CoName,
+                                messageTop: 'CollectionDateWise  ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                footer: true
                             }
                         ]
                     }
                 ],
                 colReorder: true,
+                footerCallback: function(row, data, start, end, display) {
+                    var api = this.api();
+                    var pageTotal1 = 0;
+
+                    nb_cols = api.columns().nodes().length;
+
+                    var ar = new Array(13,14,15,16,17,18,19,20,21,22,30,31,32,33,34);
+                    var j = 13;
+                    $(api.column(j - 1).footer()).html('Total');
+                    while (j < nb_cols) {
+                        if (ar.includes(j)) {
+
+                            // var pageTotal = api
+                            //     .column(j, {
+                            //         page: 'current'
+                            //     })
+                            //     .data()
+                            //     .reduce(function(a, b) {
+                            //         return Number(a) + Number(b);
+                            //     }, 0);
+
+                            pageTotal1 = api
+                                .column(j, {
+                                    page: 'all'
+                                })
+                                .data()
+                                .reduce(function(a, b) {
+                                    return Number(a) + Number(b);
+                                }, 0);
+
+                            // Update footer   pageTotal.toFixed(3) + '<hr>' +
+                            $(api.column(j).footer()).html(pageTotal1.toFixed(3));
+                            j++;
+
+                        } else {
+                            $(api.column(j).footer()).html('  ');
+                            j++;
+
+                        }
+                    }
+                }
             });
         });
     </script>

@@ -409,40 +409,66 @@ $CoName = $this->session->userdata('CoName');
                                 footer: true
                             },
                             {
-                                extend: 'pdfHtml5',
-                                orientation: 'landscape',
-                                pageSize: 'A4',
-                                text: '<i class="fa fa-file-pdf-o"> PDF</i>',
-                                titleAttr: 'PDF',
-                                exportOptions: {
-                                    columns: ':visible'
-                                },
-                                customize: function(doc) {
-                                    var table_head = {};
+                                    extend: 'pdfHtml5',
+                                    text: '<i class="fa fa-file-pdf-o"> PDF</i>',
+                                    orientation: 'landscape',
+                                    pageSize: 'A4',
+                                    titleAttr: 'PDF',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    },
+                                    title: '',
+                                    footer: true,
+                                    customize: function(doc) {
+                                        var table_head = {};
 
-                                    doc['styles'] = {
-                                        userTable: {
-                                            margin: [0, 5, 0, 5]
-                                        },
-                                        tableHeader: {
-                                            bold: !0,
-                                            fontSize: 8,
-                                            fillColor: '#154360',
-                                            color: 'white'
-                                        },
-                                        tableFooter: {
-                                            bold: !0,
-                                            fontSize: 8,
-                                            fillColor: '#154360',
-                                            color: 'white'
-                                        }
-                                    };
-                                    doc.defaultStyle.fontSize = 8;
+                                        doc['styles'] = {
+                                            userTable: {
+                                                margin: [0, 5, 0, 5]
+                                            },
+                                            tableHeader: {
+                                                bold: !0,
+                                                fontSize: 8,
+                                                fillColor: '#154360',
+                                                color: 'white'
+                                            },
+                                            tableFooter: {
+                                                bold: !0,
+                                                fontSize: 8,
+                                                fillColor: '#154360',
+                                                color: 'white'
+                                            }
+                                        };
+                                        doc['header'] = (function(page, pages) {
+                                            return {
+                                                columns: [
+                                                    CoName + '\r\n' +
+                                                    'Taxable Purchase Datewise  ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                                ],
+                                                margin: [40, 10],
+                                                fontSize: 12
+                                            }
+                                        });
+                                        doc['footer'] = (function(page, pages) {
+                                            return {
+                                                columns: [
+                                                    'www.APMCTraders.com',
+                                                    {
+                                                        // This is the right column
+                                                        alignment: 'right',
+                                                        text: ['Page ', {
+                                                            text: page.toString()
+                                                        }, ' of ', {
+                                                            text: pages.toString()
+                                                        }]
+                                                    }
+                                                ],
+                                                margin: [45, 5]
+                                            }
+                                        });
+                                        doc.defaultStyle.fontSize = 8;
+                                    }
                                 },
-                                title: CoName,
-                                messageTop: 'Taxable Purchase DateWise: ' + fromYear + '    To : ' + toYear + '\r\n ',
-                                footer: true
-                            },
                             {
                                 extend: 'print',
                                 text: '<i class="fa fa-print"> Print</i>',
@@ -466,7 +492,7 @@ $CoName = $this->session->userdata('CoName');
 
                     nb_cols = api.columns().nodes().length;
 
-                    var ar = new Array(10, 12, 13, 17, 18, 19, 20);
+                    var ar = new Array(10, 12, 17, 18, 19, 20);
                     var j = 10;
                     $(api.column(j - 1).footer()).html('Total');
                     while (j < nb_cols) {

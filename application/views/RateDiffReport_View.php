@@ -10,7 +10,9 @@
         <link rel="stylesheet" type="text/css" href="../../assets/assets/tables/DataTables/datatables.min.css"/>
         <script type="text/javascript" src="../../assets/assets/tables/DataTables/datatables.min.js"></script>
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
-        
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.5/css/buttons.dataTables.min.css">
+
         <style>
             #refresh{ 
                 background-color: #5cb85c;
@@ -43,7 +45,7 @@
 
             
             #brokerWiseLabel,#areaWiseLabel,#partyWiseLabel,#DetailLabel,#SummaryLabel{
-                display: block;
+                /* display: block; */
                 text-align: left;
                 padding-left: 5px;
                 padding-bottom: 2px;
@@ -78,7 +80,13 @@
             tfoot tr {
                 background: white;
             }
+            tr:nth-child(odd) {
+            background: #c1c8b6;
+        }
 
+        tr:nth-child(even) {
+            background: #fff;
+        }
             tfoot td {
                 font-weight:bold;
                 align-content: flex-end;
@@ -94,7 +102,7 @@
     </head>
 
     <body>
-        <div class="container">
+        <div class="">
             <div>
 
                 <?php
@@ -113,8 +121,8 @@
                 <div>
                     <form method='post' action='<?php echo base_url()?>index.php/ReportController/rateDiffReportFilter'>
 
-                        <table>
-                                <tr>
+                        <table >
+                                <tr style="background:transparent;">
                                     <td><label style="position:relative;">Rate Difference &nbsp;</label></td>
                                     <td >
                                         <label>&nbsp; From :  </label>
@@ -138,17 +146,47 @@
                                             style = "margin-right : 10px"
                                             value="<?php echo $toyear;?>">
                                     </td>
+                                    <td rowspan=2 >
+                                        <div>
+                                            <div>
+                                                <input type="radio" id="Detail" name="filter1" value="Detail" checked
+                                                    <?php echo set_value('filter1', $RTYPE1[0]) == "Detail" ? "checked" : ""; ?>>
+                                                    <label for="Detail" id="DetailLabel">Detail</label>
+                                            </div>
+                                            <div>
+                                                <input type="radio" id="Summary" name="filter1" value="Summary"
+                                                    <?php echo set_value('filter1', $RTYPE1[0]) == "Summary" ? "checked" : ""; ?>>
+                                                <label for="Summary" id="SummaryLabel">Summary</label>
+                                            </div>
+                                    </div>
                                     
-                                    <td style="padding-left: 40%;">
+                                    </td>
+                                    <td rowspan=2>
+                                    <div>
+                                    <div>
+                                                <input type="radio" id="Brokerwise" name="filter" value="Brokerwise" checked
+                                                <?php echo set_value('filter', $RTYPE[0]) == "Brokerwise" ? "checked" : ""; ?>>
+                                                <label for="Brokerwise" id="brokerWiseLabel">Brokerwise</label>
+                                            </div>
+                                            <div>
+                                            <input type="radio" id="Areawise" name="filter" value="Areawise"
+                                                <?php echo set_value('filter', $RTYPE[0]) == "Areawise" ? "checked" : ""; ?>>
+                                            <label for="Areawise" id="areaWiseLabel">Areawise</label>
+                                            </div>
+                                    </div>
+                                    
+                                    </td>
+                                    
+                                    <td style="padding-left: 10%;">
                                         <input type='submit' name='submit' class="refresh" id="refresh" value="Refresh">
                                     </td>
                                 </tr>
                         </table>
 
-                        <table id="filterTable">
+                        <!-- <table id="filterTable">
                             <tr>
                                 <td>
-                                    <tr>
+                                    <tr style="background:transparent;">
                                         <td>
                                             <input type="radio" id="Brokerwise" name="filter" value="Brokerwise" checked
                                                 <?php echo set_value('filter', $RTYPE[0]) == "Brokerwise" ? "checked" : ""; ?> 
@@ -159,7 +197,7 @@
                                         </td>
                                     </tr>
                                     
-                                    <tr>
+                                    <tr style="background:transparent;">
                                         <td>
                                             <input type="radio" id="Areawise" name="filter" value="Areawise"
                                                 <?php echo set_value('filter', $RTYPE[0]) == "Areawise" ? "checked" : ""; ?>
@@ -169,7 +207,7 @@
                                             <label for="Areawise" id="areaWiseLabel">Areawise</label>
                                         </td>
                                     </tr>
-<!--                                     
+                                    
                                     <tr>
                                         <td>
                                             <input type="radio" id="Partywise" name="filter" value="Partywise"
@@ -180,15 +218,15 @@
                                             <label for="Partywise" id="partyWiseLabel">Partywise</label>
                                         </td>
                                     </tr>  
-                                     -->
+                                     
                                 </td>
                             </tr>
                         </table>
 
                         <table id="filter1Table">
-                            <tr>
+                            <tr >
                                 <td>
-                                    <tr>
+                                    <tr style="background:transparent;">
                                         <td>
                                             <input type="radio" id="Detail" name="filter1" value="Detail" checked
                                                 <?php echo set_value('filter1', $RTYPE1[0]) == "Detail" ? "checked" : ""; ?>
@@ -199,7 +237,7 @@
                                         </td>
                                     </tr>
                                     
-                                    <tr>
+                                    <tr style="background:transparent;">
                                         <td>
                                             <input type="radio" id="Summary" name="filter1" value="Summary"
                                                 <?php echo set_value('filter1', $RTYPE1[0]) == "Summary" ? "checked" : ""; ?>
@@ -211,7 +249,7 @@
                                     </tr>
                                 </td>
                             </tr>
-                        </table>
+                        </table> -->
                     </form>
                 </div>
             </div>
@@ -458,61 +496,122 @@
                             }
                         },
 
-                        buttons: [
-                            {
-                                extend: 'colvis',
-                                postfixButtons: ['colvisRestore'],
+                        buttons: [{
+                        extend: 'colvis',
+                        postfixButtons: ['colvisRestore'],
+                    },
+                    {
+                        extend: 'collection',
+                        text: 'Export',
+                        buttons: [{
+                                extend: 'copyHtml5',
+                                text: '<i class="fa fa-files-o"> Copy</i>',
+                                titleAttr: 'Copy',
+                                exportOptions: {
+                                    columns: ':visible'
+                                },
+                                title: CoName,
+                                messageTop: 'Rate Diff Report: ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                footer: true
                             },
-                            {        
-                                extend: 'collection',
-                                text: 'Export',
-                                buttons: [
-                                    {
-                                        extend:    'copyHtml5',
-                                        text:      '<i class="fa fa-files-o"> Copy</i>',
-                                        titleAttr: 'Copy',
-                                        title: 'Rate Difference Report',
-                                        messageTop: CoName + '\r\n From : ' + fromYear + '    To : ' + toYear,
-                                        footer : true,
+                            {
+                                extend: 'excelHtml5',
+                                text: '<i class="fa fa-file-excel-o"> Excel </i>',
+                                titleAttr: 'Excel',
+                                exportOptions: {
+                                    columns: ':visible'
+                                },
+                                title: CoName,
+                                messageTop: 'Rate Diff Report: ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                footer: true
+                            },
+                            {
+                                extend: 'csvHtml5',
+                                text: '<i class="fa fa-file-text-o"> CSV</i>',
+                                titleAttr: 'CSV',
+                                exportOptions: {
+                                    columns: ':visible'
+                                },
+                                title: CoName,
+                                messageTop: 'Rate Diff Report: ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                footer: true
+                            },
+                            {
+                                    extend: 'pdfHtml5',
+                                    text: '<i class="fa fa-file-pdf-o"> PDF</i>',
+                                    orientation: 'landscape',
+                                    pageSize: 'A4',
+                                    titleAttr: 'PDF',
+                                    exportOptions: {
+                                        columns: ':visible'
                                     },
-                                    {
-                                        extend:    'excelHtml5',
-                                        text:      '<i class="fa fa-file-excel-o"> Excel </i>',
-                                        titleAttr: 'Excel',
-                                        title: 'Rate Difference Report',
-                                        messageTop: CoName + '\r\n From : ' + fromYear + '    To : ' + toYear,
-                                        footer : true,
-                                    },
-                                    {
-                                        extend:    'csvHtml5',
-                                        text:      '<i class="fa fa-file-text-o"> CSV</i>',
-                                        titleAttr: 'CSV',
-                                        title: 'Rate Difference Report',
-                                        messageTop: CoName + '\r\n From : ' + fromYear + '    To : ' + toYear,
-                                        footer : true,
-                                    },
-                                    {
-                                        extend:    'pdfHtml5',
-                                        orientation : 'landscape',
-                                        pageSize: 'A0',
-                                        text:      '<i class="fa fa-file-pdf-o"> PDF</i>',
-                                        titleAttr: 'PDF',
-                                        title: 'Rate Difference Report',
-                                        messageTop: CoName + '\r\n From : ' + fromYear + '    To : ' + toYear,
-                                        footer : true,
-                                    },
-                                    {
-                                        extend:    'print',
-                                        text:      '<i class="fa fa-print"> Print</i>',
-                                        titleAttr: 'Print',
-                                        title: 'Rate Difference Report',
-                                        messageTop: CoName + '\r\n From : ' + fromYear + '    To : ' + toYear,
-                                        footer : true,
+                                    title: '',
+                                    footer: true,
+                                    customize: function(doc) {
+                                        var table_head = {};
+
+                                        doc['styles'] = {
+                                            userTable: {
+                                                margin: [0, 5, 0, 5]
+                                            },
+                                            tableHeader: {
+                                                bold: !0,
+                                                fontSize: 8,
+                                                fillColor: '#154360',
+                                                color: 'white'
+                                            },
+                                            tableFooter: {
+                                                bold: !0,
+                                                fontSize: 8,
+                                                fillColor: '#154360',
+                                                color: 'white'
+                                            }
+                                        };
+                                        doc['header'] = (function(page, pages) {
+                                            return {
+                                                columns: [
+                                                    CoName + '\r\n' +
+                                                    'Rate Diff Report  ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                                ],
+                                                margin: [40, 10],
+                                                fontSize: 12
+                                            }
+                                        });
+                                        doc['footer'] = (function(page, pages) {
+                                            return {
+                                                columns: [
+                                                    'www.APMCTraders.com',
+                                                    {
+                                                        // This is the right column
+                                                        alignment: 'right',
+                                                        text: ['Page ', {
+                                                            text: page.toString()
+                                                        }, ' of ', {
+                                                            text: pages.toString()
+                                                        }]
+                                                    }
+                                                ],
+                                                margin: [45, 5]
+                                            }
+                                        });
+                                        doc.defaultStyle.fontSize = 8;
                                     }
-                                ]
+                                },
+                            {
+                                extend: 'print',
+                                text: '<i class="fa fa-print"> Print</i>',
+                                columns: [0, 1, 2, 5],
+                                titleAttr: 'Print',
+                                exportOptions: {
+                                    columns: ':visible'
+                                },
+                                title: CoName,
+                                messageTop: 'Rate Diff Report: ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                footer: true
                             }
                         ]
-                            
+                    }
+                ]
                     } );
                 }
                 else{

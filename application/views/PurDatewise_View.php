@@ -2,6 +2,8 @@
 <html>
 <?php
 include 'header.php';
+$CoName = $this->session->userdata('CoName');
+
 ?>
         <!-- background: linear-gradient(to top, #003399 0%, #d2e0fc 100%);  -->
 
@@ -197,49 +199,146 @@ include 'header.php';
 
     //DataTable Buttons
     $(document).ready(function() {
+        var fromYear = new Date(document.getElementById("fromYear").value);
+            var fromDate = fromYear.getDate();
+
+            var fromMon = fromYear.getMonth() + 1;
+            var fromYr = fromYear.getFullYear();
+
+            var fromYear = fromDate + '/' + fromMon + '/' + fromYr;
+
+            var toYear = new Date(document.getElementById("toYear").value);
+            var toDate = toYear.getDate();
+
+            var toMon = toYear.getMonth() + 1;
+            var toYr = toYear.getFullYear();
+
+            var toYear = toDate + '/' + toMon + '/' + toYr;
+
+            var CoName = '<?php echo $CoName ?>';
+            CoName = CoName.replace(/%20/g, " ");
         $('#example').DataTable( {
             responsive: true,
             dom: 'lBfrtip',
             aLengthMenu: [[10, 50, 100,500, -1], [10, 50, 100,500, "All"]],
             iDisplayLength: 10,
             pageLength: 10,
-            buttons: [
-                {
-                    extend: 'colvis',
-                    postfixButtons: ['colvisRestore'],
-                },
-                {        
-                extend: 'collection',
-                text: 'Export',
-                buttons: [
-                {
-                    extend:    'copyHtml5',
-                    text:      '<i class="fa fa-files-o"> Copy</i>',
-                    titleAttr: 'Copy'
-                },
-                {
-                    extend:    'excelHtml5',
-                    text:      '<i class="fa fa-file-excel-o"> Excel </i>',
-                    titleAttr: 'Excel'
-                },
-                {
-                    extend:    'csvHtml5',
-                    text:      '<i class="fa fa-file-text-o"> CSV</i>',
-                    titleAttr: 'CSV'
-                },
-                {
-                    extend:    'pdfHtml5',
-                    text:      '<i class="fa fa-file-pdf-o"> PDF</i>',
-                    titleAttr: 'PDF'
-                },
-                {
-                    extend:    'print',
-                    text:      '<i class="fa fa-print"> Print</i>',
-                    titleAttr: 'Print'
-                }
-                ]
-            }
-            ],
+            buttons: [{
+                        extend: 'colvis',
+                        postfixButtons: ['colvisRestore'],
+                    },
+                    {
+                        extend: 'collection',
+                        text: 'Export',
+                        buttons: [{
+                                extend: 'copyHtml5',
+                                text: '<i class="fa fa-files-o"> Copy</i>',
+                                titleAttr: 'Copy',
+                                exportOptions: {
+                                    columns: ':visible'
+                                },
+                                title: CoName,
+                                messageTop: 'PurchaseDatewise: ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                footer: true
+                            },
+                            {
+                                extend: 'excelHtml5',
+                                text: '<i class="fa fa-file-excel-o"> Excel </i>',
+                                titleAttr: 'Excel',
+                                exportOptions: {
+                                    columns: ':visible'
+                                },
+                                title: CoName,
+                                messageTop: 'PurchaseDatewise: ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                footer: true
+                            },
+                            {
+                                extend: 'csvHtml5',
+                                text: '<i class="fa fa-file-text-o"> CSV</i>',
+                                titleAttr: 'CSV',
+                                exportOptions: {
+                                    columns: ':visible'
+                                },
+                                title: CoName,
+                                messageTop: 'PurchaseDatewise: ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                footer: true
+                            },
+                            {
+                                    extend: 'pdfHtml5',
+                                    text: '<i class="fa fa-file-pdf-o"> PDF</i>',
+                                    orientation: 'landscape',
+                                    pageSize: 'A4',
+                                    titleAttr: 'PDF',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    },
+                                    title: '',
+                                    footer: true,
+                                    customize: function(doc) {
+                                        var table_head = {};
+
+                                        doc['styles'] = {
+                                            userTable: {
+                                                margin: [0, 5, 0, 5]
+                                            },
+                                            tableHeader: {
+                                                bold: !0,
+                                                fontSize: 8,
+                                                fillColor: '#154360',
+                                                color: 'white'
+                                            },
+                                            tableFooter: {
+                                                bold: !0,
+                                                fontSize: 8,
+                                                fillColor: '#154360',
+                                                color: 'white'
+                                            }
+                                        };
+                                        doc['header'] = (function(page, pages) {
+                                            return {
+                                                columns: [
+                                                    CoName + '\r\n' +
+                                                    'PurchaseDatewise  ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                                ],
+                                                margin: [40, 10],
+                                                fontSize: 12
+                                            }
+                                        });
+                                        doc['footer'] = (function(page, pages) {
+                                            return {
+                                                columns: [
+                                                    'www.APMCTraders.com',
+                                                    {
+                                                        // This is the right column
+                                                        alignment: 'right',
+                                                        text: ['Page ', {
+                                                            text: page.toString()
+                                                        }, ' of ', {
+                                                            text: pages.toString()
+                                                        }]
+                                                    }
+                                                ],
+                                                margin: [45, 5]
+                                            }
+                                        });
+                                        doc.defaultStyle.fontSize = 8;
+                                    }
+                                },
+                            {
+                                extend: 'print',
+                                text: '<i class="fa fa-print"> Print</i>',
+                                columns: [0, 1, 2, 5],
+                                titleAttr: 'Print',
+                                exportOptions: {
+                                    columns: ':visible'
+                                },
+                                title: CoName,
+                                messageTop: 'PurchaseDatewise: ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                footer: true
+                            }
+                        ]
+                    }
+                ],
             colReorder: true,
         } );
     } );

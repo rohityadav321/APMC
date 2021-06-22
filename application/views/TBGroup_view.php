@@ -557,13 +557,64 @@ $CoName = $this->session->userdata('CoName');
                                 },
                                 {
                                     extend: 'pdfHtml5',
+                                    text: '<i class="fa fa-file-pdf-o"> PDF</i>',
                                     orientation: 'landscape',
                                     pageSize: 'A4',
-                                    text: '<i class="fa fa-file-pdf-o"> PDF</i>',
                                     titleAttr: 'PDF',
-                                    title: 'Trial Balances',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    },
+                                    title: '',
                                     footer: true,
+                                    customize: function(doc) {
+                                        var table_head = {};
 
+                                        doc['styles'] = {
+                                            userTable: {
+                                                margin: [0, 5, 0, 5]
+                                            },
+                                            tableHeader: {
+                                                bold: !0,
+                                                fontSize: 8,
+                                                fillColor: '#154360',
+                                                color: 'white'
+                                            },
+                                            tableFooter: {
+                                                bold: !0,
+                                                fontSize: 8,
+                                                fillColor: '#154360',
+                                                color: 'white'
+                                            }
+                                        };
+                                        doc['header'] = (function(page, pages) {
+                                            return {
+                                                columns: [
+                                                    CoName + '\r\n' +
+                                                    'Trial Balance  ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                                ],
+                                                margin: [40, 10],
+                                                fontSize: 12
+                                            }
+                                        });
+                                        doc['footer'] = (function(page, pages) {
+                                            return {
+                                                columns: [
+                                                    'www.APMCTraders.com',
+                                                    {
+                                                        // This is the right column
+                                                        alignment: 'right',
+                                                        text: ['Page ', {
+                                                            text: page.toString()
+                                                        }, ' of ', {
+                                                            text: pages.toString()
+                                                        }]
+                                                    }
+                                                ],
+                                                margin: [45, 5]
+                                            }
+                                        });
+                                        doc.defaultStyle.fontSize = 8;
+                                    }
                                 },
                                 {
                                     extend: 'print',

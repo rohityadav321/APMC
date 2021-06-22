@@ -1,5 +1,6 @@
 <?php
 include 'header.php';
+$CoName = $this->session->userdata('CoName');
 ?>
 <!-- <script type="text/javascript" src="../../assets/assets/js/jquery-3.3.1.js"></script> -->
 <!-- <link rel="stylesheet" type="text/css" href="../../assets/assets/tables/DataTables/datatables.min.css"/> -->
@@ -13,10 +14,9 @@ include 'header.php';
 <script type="text/javascript" src="../../assets/assets/tables/DataTables/datatables.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <!-- <script type="text/javascript" src="https://cdn.datatables.net/fixedcolumns/3.3.1/js/dataTables.fixedColumns.min.js"></script> -->
-    
-
-
-  
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.5/css/buttons.dataTables.min.css">
+   
 
 
 <style>
@@ -72,6 +72,13 @@ include 'header.php';
     /* .th{
         text-align:center;
     } */
+    tr:nth-child(odd) {
+            background: #c1c8b6;
+        }
+
+        tr:nth-child(even) {
+            background: #fff;
+        }
 
 </style>
 <script>
@@ -134,9 +141,9 @@ include 'header.php';
 </script>
 
 
-<div class="container">  
+<div class="" style="margin:0 0 0 10px;">  
     
-            <center>
+            <!-- <center>
                 <?php
                     $CoName =  str_ireplace("%20"," ",$this->session->userdata('CoName'));
                     $WorkYear = $this->session->userdata('WorkYear') ;
@@ -144,11 +151,12 @@ include 'header.php';
                     <legend><?php echo  $CoName . ' - ' . $WorkYear; ?> - Ledger Report</legend>
                     &nbsp;
             
-            </center>
+            </center> -->
             <div>
-                    <div>
+                    <div style="display:flex;">
                    
-                        <label> Account Name : </label>
+                       <div>
+                       <label> Account Name : </label>
                         <input 
                             type="text"  
                             id="AC_Name"  
@@ -162,13 +170,10 @@ include 'header.php';
                            data-target="#AccountListModal">
                             <i class="glyphicon glyphicon-th"></i>
                         </a>
-
-                    </div>
-                    &nbsp;
-                    <div>
-
-                        <table style = "align:left" id = "btntable" border = "1">
-                                <tr>
+                        </div>
+                        <div  style="margin:0 0 0 10px">
+                            <table style = "align:left" id = "btntable" border = "1">
+                                <tr style="background:transparent;">
                                     <td >
                                         <label>From :  </label>
                                     </td> 
@@ -197,21 +202,15 @@ include 'header.php';
                                     <script>
                                     
                                     </script>
-                                    <button   class="" id="refresh"  onclick = "senData()">Refresh</button>
+                                    <button   class="btn btn-success" id="refresh"  onclick = "senData()">Refresh</button>
                                     </td>
                                 </tr>
-                        </table>
-                        
-                        
+                            </table>
+                        </div>
 
-                        
-                        <!-- <input type="checkbox" id="tshape" name="tshape" value="tshape">
-                        <label for="showtshape"> Show TShape</label> -->
                     </div>
             </div>
-            &nbsp;
-            &nbsp;
-            &nbsp;
+
             <div class="datatable">
                 <div class= "table-main" >
                 

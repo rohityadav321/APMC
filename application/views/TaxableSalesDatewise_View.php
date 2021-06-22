@@ -324,7 +324,7 @@ $CoName = $this->session->userdata('CoName');
                                         columns: ':visible'
                                     },
                                     title: CoName,
-                                    messageTop: 'Taxabale Sales DateWise: ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                    messageTop: 'Taxable Sales DateWise: ' + fromYear + '    To : ' + toYear + '\r\n ',
                                     footer: true,
 
                                 },
@@ -336,7 +336,7 @@ $CoName = $this->session->userdata('CoName');
                                         columns: ':visible'
                                     },
                                     title: CoName,
-                                    messageTop: 'Taxabale Sales DateWise: ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                    messageTop: 'Taxable Sales DateWise: ' + fromYear + '    To : ' + toYear + '\r\n ',
                                     footer: true,
 
                                 },
@@ -348,21 +348,20 @@ $CoName = $this->session->userdata('CoName');
                                         columns: ':visible'
                                     },
                                     title: CoName,
-                                    messageTop: 'Taxabale Sales DateWise: ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                    messageTop: 'Taxable Sales DateWise: ' + fromYear + '    To : ' + toYear + '\r\n ',
                                     footer: true,
 
                                 },
                                 {
                                     extend: 'pdfHtml5',
+                                    text: '<i class="fa fa-file-pdf-o"> PDF</i>',
                                     orientation: 'landscape',
                                     pageSize: 'A4',
-                                    text: '<i class="fa fa-file-pdf-o"> PDF</i>',
                                     titleAttr: 'PDF',
                                     exportOptions: {
                                         columns: ':visible'
                                     },
-                                    title: CoName,
-                                    messageTop: 'Taxabale Sales DateWise: ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                    title: '',
                                     footer: true,
                                     customize: function(doc) {
                                         var table_head = {};
@@ -384,6 +383,33 @@ $CoName = $this->session->userdata('CoName');
                                                 color: 'white'
                                             }
                                         };
+                                        doc['header'] = (function(page, pages) {
+                                            return {
+                                                columns: [
+                                                    CoName + '\r\n' +
+                                                    'Taxable Sales Datewise:  ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                                ],
+                                                margin: [40, 10],
+                                                fontSize: 12
+                                            }
+                                        });
+                                        doc['footer'] = (function(page, pages) {
+                                            return {
+                                                columns: [
+                                                    'www.APMCTraders.com',
+                                                    {
+                                                        // This is the right column
+                                                        alignment: 'right',
+                                                        text: ['Page ', {
+                                                            text: page.toString()
+                                                        }, ' of ', {
+                                                            text: pages.toString()
+                                                        }]
+                                                    }
+                                                ],
+                                                margin: [45, 5]
+                                            }
+                                        });
                                         doc.defaultStyle.fontSize = 8;
                                     }
                                 },
@@ -396,7 +422,7 @@ $CoName = $this->session->userdata('CoName');
                                         columns: ':visible'
                                     },
                                     title: CoName,
-                                    messageTop: 'Taxabale Sales DateWise: ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                    messageTop: 'Taxable Sales DateWise: ' + fromYear + '    To : ' + toYear + '\r\n ',
                                     footer: true,
 
                                 }

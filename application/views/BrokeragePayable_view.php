@@ -357,21 +357,21 @@ $CoName = $this->session->userdata('CoName');
 
                 document.getElementById("fromYear").value = '<?php echo $fromYear; ?>';
                 document.getElementById("toYear").value = '<?php echo $toYear; ?>';
-                // var fromYear = new Date(document.getElementById("fromYear").value);
-                // var fromDate = fromYear.getDate();
+                var fromYear = new Date(document.getElementById("fromYear").value);
+                var fromDate = fromYear.getDate();
 
-                // var fromMon = fromYear.getMonth() + 1;
-                // var fromYr = fromYear.getFullYear();
+                var fromMon = fromYear.getMonth() + 1;
+                var fromYr = fromYear.getFullYear();
 
-                // var fromYear = fromDate + '/' + fromMon + '/' + fromYr;
+                var fromYear = fromDate + '/' + fromMon + '/' + fromYr;
 
-                // var toYear = new Date(document.getElementById("toYear").value);
-                // var toDate = toYear.getDate();
+                var toYear = new Date(document.getElementById("toYear").value);
+                var toDate = toYear.getDate();
 
-                // var toMon = toYear.getMonth() + 1;
-                // var toYr = toYear.getFullYear();
+                var toMon = toYear.getMonth() + 1;
+                var toYr = toYear.getFullYear();
 
-                // var toYear = toDate + '/' + toMon + '/' + toYr;
+                var toYear = toDate + '/' + toMon + '/' + toYr;
 
                 var groupColumn = 1;
                 var CoName = '<?php echo $CoName ?>';
@@ -610,8 +610,8 @@ $CoName = $this->session->userdata('CoName');
                                     return Number(a) + Number(b);
 
                                 }, 0);
-                            // Update footer
-                            $(api.column(j).footer()).html(pageTotal.toFixed(2) + '<hr>' + pageTotal1.toFixed(2));
+                            // Update footer  pageTotal.toFixed(2) + '<hr>' +
+                            $(api.column(j).footer()).html(pageTotal1.toFixed(2));
                             j++;
 
                         }

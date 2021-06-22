@@ -1011,41 +1011,106 @@ $CoName = $this->session->userdata('CoName');
                                 extend: 'copyHtml5',
                                 text: '<i class="fa fa-files-o"> Copy</i>',
                                 titleAttr: 'Copy',
-                                messageTop: CoName + '\r\n From : ' + fromYear + '    To : ' + toYear + '\r\n ' + ' OutStanding Receivable ' + ' \r\n ',
+                                exportOptions: {
+                                    columns: ':visible'
+                                },
+                                title: CoName,
+                                messageTop: 'OS Single Receivables: ' + fromYear + '    To : ' + toYear + '\r\n ',
                                 footer: true
                             },
                             {
                                 extend: 'excelHtml5',
                                 text: '<i class="fa fa-file-excel-o"> Excel </i>',
                                 titleAttr: 'Excel',
-                                messageTop: CoName + '\r\n From : ' + fromYear + '    To : ' + toYear + '\r\n ' + ' OutStanding Receivable ' + ' \r\n ',
+                                exportOptions: {
+                                    columns: ':visible'
+                                },
+                                title: CoName,
+                                messageTop: 'OS Single Receivables: ' + fromYear + '    To : ' + toYear + '\r\n ',
                                 footer: true
                             },
                             {
                                 extend: 'csvHtml5',
                                 text: '<i class="fa fa-file-text-o"> CSV</i>',
                                 titleAttr: 'CSV',
-                                title: 'Outstanding Receivables',
-                                messageTop: CoName + '\r\n From : ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                exportOptions: {
+                                    columns: ':visible'
+                                },
+                                title: CoName,
+                                messageTop: 'OS Single Receivables: ' + fromYear + '    To : ' + toYear + '\r\n ',
                                 footer: true
                             },
                             {
-                                extend: 'pdfHtml5',
-                                orientation: 'portrait',
-                                pageSize: 'A4',
-                                text: '<i class="fa fa-file-pdf-o"> PDF</i>',
-                                titleAttr: 'PDF',
-                                title: 'Outstanding Receivables',
-                                messageTop: CoName + '\r\n From : ' + fromYear + '    To : ' + toYear + '\r\n ',
-                                footer: true,
+                                    extend: 'pdfHtml5',
+                                    text: '<i class="fa fa-file-pdf-o"> PDF</i>',
+                                    orientation: 'landscape',
+                                    pageSize: 'A4',
+                                    titleAttr: 'PDF',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    },
+                                    title: '',
+                                    footer: true,
+                                    customize: function(doc) {
+                                        var table_head = {};
 
-                            },
+                                        doc['styles'] = {
+                                            userTable: {
+                                                margin: [0, 5, 0, 5]
+                                            },
+                                            tableHeader: {
+                                                bold: !0,
+                                                fontSize: 8,
+                                                fillColor: '#154360',
+                                                color: 'white'
+                                            },
+                                            tableFooter: {
+                                                bold: !0,
+                                                fontSize: 8,
+                                                fillColor: '#154360',
+                                                color: 'white'
+                                            }
+                                        };
+                                        doc['header'] = (function(page, pages) {
+                                            return {
+                                                columns: [
+                                                    CoName + '\r\n' +
+                                                    'OS Single Receivables  ' + fromYear + '    To : ' + toYear + '\r\n ',
+                                                ],
+                                                margin: [40, 10],
+                                                fontSize: 12
+                                            }
+                                        });
+                                        doc['footer'] = (function(page, pages) {
+                                            return {
+                                                columns: [
+                                                    'www.APMCTraders.com',
+                                                    {
+                                                        // This is the right column
+                                                        alignment: 'right',
+                                                        text: ['Page ', {
+                                                            text: page.toString()
+                                                        }, ' of ', {
+                                                            text: pages.toString()
+                                                        }]
+                                                    }
+                                                ],
+                                                margin: [45, 5]
+                                            }
+                                        });
+                                        doc.defaultStyle.fontSize = 8;
+                                    }
+                                },
                             {
                                 extend: 'print',
                                 text: '<i class="fa fa-print"> Print</i>',
-                                columns: [0, 1, 2, 5, 6, 7, 8, 9, 10],
+                                columns: [0, 1, 2, 5],
                                 titleAttr: 'Print',
-                                messageTop: CoName + '\r\n From : ' + fromYear + '    To : ' + toYear + '\r\n ' + ' OutStanding Receivable ' + ' \r\n ',
+                                exportOptions: {
+                                    columns: ':visible'
+                                },
+                                title: CoName,
+                                messageTop: 'OS Single Receivables: ' + fromYear + '    To : ' + toYear + '\r\n ',
                                 footer: true
                             }
                         ]
