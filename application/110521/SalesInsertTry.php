@@ -1138,15 +1138,15 @@
                                                 tabindex="-1">
                                               <span class="text-danger"><?php echo form_error('ItemMark'); ?></span>
                                           </td>
+                                          <!-- onkeydown="focusnext(event)" -->
                                           <td>
                                               <input
                                                 style="height: inherit;"
                                                 type="text"
                                                 class="form-control"
                                                 id="Qty"
-                                                onkeydown="focusnext(event)"
                                                 name="Qty"
-                                                onblur="calculateCharges();"
+                                                onkeydown="calculateCharges(event);"
                                                 value="<?php echo set_value('Qty'); ?>"
                                                 placeholder="Qty"
                                                 onfocus="this.select();"
@@ -1794,6 +1794,8 @@
                       <th width="100">Mark</th>
                       <th width="100">G</th>
                       <th width="100">Ledger</th>
+                      <th width="100">InwQty</th>
+                      <th width="100">OutQty</th>
                       <th width="100">Balance</th>
                       <th width="100">Packing</th>
                       <th width="100">GDNDate</th>
@@ -1827,6 +1829,8 @@
                     <td><?php echo $List->Mark;?></td>
                     <td><?php echo $List->GodownID;?></td>
                     <td><?php echo $List->SalesTitle;?></td>
+                    <td><?php echo $List->InwQty;?></td>
+                    <td><?php echo $List->OutQty;?></td>
                     <td><?php echo $List->BalQty;?></td>
                     <td><?php echo $List->Units;?></td>
                     <td><?php echo $List->GoodsRcptDate;?></td>
@@ -2352,6 +2356,8 @@
                                               { "title":"Mark","data": "Mark" },
                                               { "title":"G","data": "GodownID" },
                                               { "title":"Ledger","data": "SalesTitle" },
+                                              { "title":"InwQty","data": "InwQty" },
+                                              { "title":"OutQty","data": "OutQty" },
                                               { "title":"Balance","data": "BalQty" },
                                               { "title":"Packing","data": "Packing" },
                                               { "title":"GDNDate","data": "GoodsRcptDate" },
@@ -2377,17 +2383,9 @@
                                   'className': 'select-checkbox'
                                   },
                                   {
-                                    "targets": [ 13 ],
+                                    "targets": [ 15 ],
                                     "visible": false,
                                     "searchable": false
-                                  },
-                                  {
-                                      "targets": [ 14 ],
-                                      "visible": false
-                                  },
-                                  {
-                                      "targets": [ 15 ],
-                                      "visible": false
                                   },
                                   {
                                       "targets": [ 16 ],
@@ -2396,18 +2394,18 @@
                                   {
                                       "targets": [ 17 ],
                                       "visible": false
-                                  },{
+                                  },
+                                  {
                                       "targets": [ 18 ],
                                       "visible": false
-                                  } ,{
+                                  },
+                                  {
                                       "targets": [ 19 ],
                                       "visible": false
-                                  } 
-                                  ,{
+                                  },{
                                       "targets": [ 20 ],
                                       "visible": false
-                                  }
-                                  ,{
+                                  } ,{
                                       "targets": [ 21 ],
                                       "visible": false
                                   } 
@@ -2418,13 +2416,21 @@
                                   ,{
                                       "targets": [ 23 ],
                                       "visible": false
-                                  }
+                                  } 
                                   ,{
                                       "targets": [ 24 ],
                                       "visible": false
+                                  }
+                                  ,{
+                                      "targets": [ 25 ],
+                                      "visible": false
+                                  }
+                                  ,{
+                                      "targets": [ 26 ],
+                                      "visible": false
                         
                                   } ],
-                                select: {
+                                  select: {
                                     // 'style':    'multi',
                                     'style': 'os',
                                     'selector': 'td:first-child'
@@ -2504,7 +2510,7 @@
                                     document.getElementById("TaxRate").value = TaxRate;
                                     document.getElementById("SalesCode").value = SalesCode;
                                     document.getElementById("SalesTitle").value = SalesTitle;
-                                    //document.getElementById("Qty").value = BalQty;
+                                    document.getElementById("Qty").value = BalQty;
                                     document.getElementById("BalQty").value = BalQty;
                                     document.getElementById("IDNumber").value = IDNumber;
                                     document.getElementById("Weight").value = Weight; 
@@ -2590,7 +2596,44 @@
                         }
                       }
                       
-                      function calculateCharges()
+                      function calculateCharges(e)
+                      {
+                        if(e.keyCode==13){
+                              if(document.getElementById("Qty").value != "")
+                              { 
+                                  var mQty =    parseFloat(document.getElementById("Qty").value);   
+                                  var mBalQty = parseFloat(document.getElementById("BalQty").value);   
+
+                                  // if ( document.getElementById("Qty").value > document.getElementById("BalQty").value)
+                                  if ( mQty > mBalQty)
+                                  {
+                                    alert("Qty Entered is more than Balance");
+                                    document.getElementById("Qty").focus();
+                                  }
+                                  else
+                                  {
+                                        var charges = document.getElementById("Qty").value * parseFloat(document.getElementById("PackingCharge").value);
+                                        var grossWt = document.getElementById("GrossWtOrginal").value * document.getElementById("Qty").value;
+                                                                      
+                                        // document.getElementById("GrossWt").value = grossWt.toFixed(2);
+                                        document.getElementsByName("GrossWt")[0].placeholder = grossWt.toFixed(2);
+
+                                        var netWt = document.getElementById("NetWtOriginal").value * document.getElementById("Qty").value;
+                                        document.getElementById("NetWt").value = netWt.toFixed(2);
+
+                                        document.getElementsByName("ContChrg")[0].placeholder = charges.toFixed(2);
+                                        window.charges = charges.toFixed(2);
+                                        document.getElementById("GrossWt").focus();
+                                  }
+                              }
+                              else
+                              {
+                                // alert("Please Enter Quantity.");
+                              }
+                        }
+                      }
+
+                      function x_calculateCharges_170521()
                       {
                         if(document.getElementById("Qty").value != "")
                         {

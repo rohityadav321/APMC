@@ -64,6 +64,9 @@
     } -->
 
     <script type="text/javascript">
+
+
+
         $(document).ready(function() {
           // Setup - add a text input to each footer cell
           $('#example tfoot th').each( function () {
@@ -116,9 +119,6 @@
           return true;
         }
 
-        function changePage(){
-            location.href= 'garuPurchaseHeader.php';
-        }
     </script>
 
   </head>
@@ -137,12 +137,12 @@
          
 
           <?php
-            $fromyear=$Item_List[1];
-            $toyear=$Item_List[2];
+            $fromYear=$Item_List[1];
+            $toYear=$Item_List[2];
             if(isset($_POST['submit']))
             {
-                $fromyear=$_POST['fromYear'];
-                $toyear=$_POST['toYear'];
+                $fromYear=$_POST['fromYear'];
+                $toYear=$_POST['toYear'];
                 
             }
           ?>
@@ -151,10 +151,19 @@
             <form method='post' action='<?php echo base_url()?>index.php/SalesController/show'>
                 <label style="margin-left:-17%;">Bill Date </label>
                 <label style="position:absolute;margin-left:10px;">From : </label>
-                <input style="position:absolute;margin-left:60px;margin-top:-6px;" type="date" id="fromYear" name="fromYear" value="<?php echo $fromyear;?>">
+                <input style="position:absolute;margin-left:60px;margin-top:-6px;" 
+                        type="date" 
+                        id="fromYear" 
+                        name="fromYear" 
+                        onchange="date()"
+                        value="<?php echo $fromYear;?>">
 
                 <label style="position:absolute;margin-left:250px;">To : </label>
-                <input style="position:absolute;margin-left:278px;margin-top:-6px;" type="date" id="toYear" name="toYear" value="<?php echo $toyear;?>">
+                <input style="position:absolute;margin-left:278px;margin-top:-6px;" 
+                        type="date" 
+                        id="toYear" 
+                        name="toYear" 
+                        value="<?php echo $toYear;?>">
             
                 <input type='submit' name='submit' class="refresh" id="refresh" value="Refresh" >
             </form>
