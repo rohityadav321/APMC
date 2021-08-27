@@ -31,7 +31,7 @@ class SalesModel extends CI_Model
         $toYear = date("$WY-03-t");
       }
 
-      $sql = "
+      $xsql = "
             select BillNo, BillDate, GodownID, SaleMast.PartyCode CPName, 
                     PartyMaster.PartyName PartyTitle, 
                     BrokerID, Broker.ACTitle BrokerTitle, 
@@ -53,6 +53,40 @@ class SalesModel extends CI_Model
               order by BillDate DESC, CAST(BillNo AS Integer) DESC 
 
       ";
+
+      $sql = "
+                select 
+                    BillNo, 
+                    BillDate, 
+                    GodownID, 
+                    SaleMast.PartyCode CPName, 
+                    (
+                              SELECT
+                                      PartyMaster.PartyName
+                                FROM  PartyMaster
+                                where SaleMast.PartyCode = PartyMaster.PartyCode
+                                and SaleMast.CoID = PartyMaster.CoID 
+                                and SaleMast.WorkYear = PartyMaster.WorkYear 
+                    ) as PartyTitle,
+                    BrokerID, 
+                    (
+                      SELECT
+                              Broker.ACTitle
+                        FROM  ACMaster Broker
+                        where SaleMast.BrokerId = Broker.ACCode
+                        and SaleMast.CoID = Broker.CoID
+                        and SaleMast.WorkYear = Broker.WorkYear
+                    ) as BrokerTitle,
+                    BillAmt
+
+              from SaleMast
+
+              where SaleMast.CoID = '$CoID'
+                and SaleMast.WorkYear = '$WorkYear'
+                and BillDate BETWEEN '$fromYear' AND '$toYear'
+                order by BillDate DESC, CAST(BillNo AS Integer) DESC 
+      ";
+
       // $query = $this->db->query($sql);
       // $result = $query->result();
       // return $result;
@@ -71,32 +105,41 @@ class SalesModel extends CI_Model
     $CoID = $this->session->userdata('CoID') ;
     $WorkYear = $this->session->userdata('WorkYear') ; 
 
-    $sql = "        
+    $sql = "
               select 
                   BillNo, 
                   BillDate, 
                   GodownID, 
                   SaleMast.PartyCode CPName, 
-                  PartyMaster.PartyName PartyTitle, 
+                  (
+                            SELECT
+                                    PartyMaster.PartyName
+                              FROM  PartyMaster
+                              where SaleMast.PartyCode = PartyMaster.PartyCode
+                              and SaleMast.CoID = PartyMaster.CoID 
+                              and SaleMast.WorkYear = PartyMaster.WorkYear 
+                  ) as PartyTitle,
                   BrokerID, 
-                  Broker.ACTitle BrokerTitle, 
+                  (
+                    SELECT
+                            Broker.ACTitle
+                      FROM  ACMaster Broker
+                      where SaleMast.BrokerId = Broker.ACCode
+                      and SaleMast.CoID = Broker.CoID
+                      and SaleMast.WorkYear = Broker.WorkYear
+                  ) as BrokerTitle,
                   BillAmt
   
-              from SaleMast, PartyMaster, ACMaster Broker
+              from SaleMast
 
-              where SaleMast.PartyCode = PartyMaster.PartyCode
-                and SaleMast.CoID = PartyMaster.CoID 
-                and SaleMast.WorkYear = PartyMaster.WorkYear 
-                    
-                and SaleMast.BrokerId = Broker.ACCode
-                and SaleMast.CoID = Broker.CoID
-                and SaleMast.WorkYear = Broker.WorkYear
-
-                and SaleMast.CoID = '$CoID'
+              where SaleMast.CoID = '$CoID'
                 and SaleMast.WorkYear = '$WorkYear'
                 and BillDate BETWEEN '$fromYear' AND '$toYear'
                 order by BillDate DESC, CAST(BillNo AS Integer) DESC 
     ";
+                  // PartyMaster.PartyName PartyTitle, 
+                  // Broker.ACTitle BrokerTitle, 
+
     $result = $this->db->query($sql)->result_array();
 
     if(empty($result)){

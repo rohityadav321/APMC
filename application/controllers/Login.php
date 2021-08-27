@@ -91,6 +91,15 @@ class Login extends CI_Controller
                     $sessiondata['dbusername'] = 'apmc_sa';
                     $sessiondata['dbpassword'] = 'aPmC%210420';
 
+                    // // apmc_admin database
+                    // $sessiondata['clientid'] = '1';
+                    // $sessiondata['clientname'] = 'StartUP';
+                    // $sessiondata['hostname'] = '127.0.0.1';
+                    // // $sessiondata['hostname'] = '206.189.137.92';
+                    // $sessiondata['databasename'] = 'admin';
+                    // $sessiondata['dbusername'] = 'root';
+                    // $sessiondata['dbpassword'] = '';
+
 
 
                     $this->session->set_userdata($sessiondata);

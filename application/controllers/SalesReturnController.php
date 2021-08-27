@@ -34,6 +34,7 @@ class SalesReturnController extends CI_Controller
         } else {
             $this->load->model('SalesReturnModel');
             $data['Item_List'] = $this->SalesReturnModel->get_details();
+
             $this->load->view('menu_1');
             $this->load->view('SalesReturnGrid', $data);
         }

@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class ReportController extends CI_Controller
 {
@@ -12,7 +12,7 @@ class ReportController extends CI_Controller
           $this->load->database();
           $this->load->helper('html');
           $this->load->library('form_validation');
-          $this->load->model('BankMasterModel');
+          // $this->load->model('BankMasterModel');
 
           //load date helper
           $this->load->helper('date');
@@ -24,10 +24,10 @@ class ReportController extends CI_Controller
           $fromYear = '2017-03-01';
           $toYear = '2021-04-01';
 
-          $data['result'] = $this->ReportModel->get_brokerWiseDetails($fromYear,$toYear);    
+          $data['result'] = $this->ReportModel->get_brokerWiseDetails($fromYear, $toYear);
 
           $this->load->view('menu_1.php');
-          $this->load->view('OutstandingReport_View',$data);
+          $this->load->view('OutstandingReport_View', $data);
      }
 
      public function showFilterData()
@@ -48,71 +48,69 @@ class ReportController extends CI_Controller
           // echo $fromYear, $toYear;
           // die ; 
 
-          if($filter == "Brokerwise"){
-               $data['result'] = $this->ReportModel->get_brokerWiseDetails($fromYear,$toYear);
+          if ($filter == "Brokerwise") {
+               $data['result'] = $this->ReportModel->get_brokerWiseDetails($fromYear, $toYear);
+          } elseif ($filter == "Areawise") {
+               $data['result'] = $this->ReportModel->get_areaWiseDetails($fromYear, $toYear);
+          } else {
+               $data['result'] = $this->ReportModel->get_partyWiseDetails($fromYear, $toYear);
           }
-          elseif($filter == "Areawise"){
-               $data['result'] = $this->ReportModel->get_areaWiseDetails($fromYear,$toYear);
-          }
-          else{
-               $data['result'] = $this->ReportModel->get_partyWiseDetails($fromYear,$toYear);
-          }
-           
+
           // print_r ($data);
           // die ;
           $this->load->view('menu_1.php');
-          $this->load->view('OutstandingReport_View',$data);
-     }
-
-    //updated 13-02-21
-     function OSReceivables(){
-          $this->load->model('ReportModel');
-          $y= date("Y");
-          $m=date("m");
-          $fromYear= $y."-".$m."-01";
-          $toYear=date("Y-m-t", strtotime($fromYear));
-
-          $data['result'] = $this->ReportModel->get_OSReceivablesB($fromYear,$toYear);
-          // print_r ($data);
-          // die ; 
-          $this->load->view('menu_1.php');
-          $this->load->view('OSReceivables_View',$data);
+          $this->load->view('OutstandingReport_View', $data);
      }
 
      //updated 13-02-21
-     function OSReceivablesFilter(){
-          if($this->input->post('submit') != NULL ){
-          $postData = $this->input->post();
-     
-          // Read POST data
-          $fromYear = $postData['fromYear'];
-          $toYear = $postData['toYear'];
-
-          $filter = $this->input->post('filter');
-
+     function OSReceivables()
+     {
           $this->load->model('ReportModel');
+          $y = date("Y");
+          $m = date("m");
+          $fromYear = $y . "-" . $m . "-01";
+          $toYear = date("Y-m-t", strtotime($fromYear));
+
+          $data['result'] = $this->ReportModel->get_OSReceivablesB($fromYear, $toYear);
+          // print_r ($data);
+          // die ; 
+          $this->load->view('menu_1.php');
+          $this->load->view('OSReceivables_View', $data);
+     }
+
+     //updated 13-02-21
+     function OSReceivablesFilter()
+     {
+          if ($this->input->post('submit') != NULL) {
+               $postData = $this->input->post();
+
+               // Read POST data
+               $fromYear = $postData['fromYear'];
+               $toYear = $postData['toYear'];
+
+               $filter = $this->input->post('filter');
+
+               $this->load->model('ReportModel');
 
                $data['RTYPE'] = $filter;
 
-               if($filter == "Brokerwise"){
-                    $data['result'] = $this->ReportModel->get_OSReceivablesB($fromYear,$toYear);
-               }
-               elseif($filter == "Areawise"){
-                    $data['result'] = $this->ReportModel->get_OSReceivablesA($fromYear,$toYear);
-               }
-               else{
-                    $data['result'] = $this->ReportModel->get_OSReceivablesP($fromYear,$toYear);
+               if ($filter == "Brokerwise") {
+                    $data['result'] = $this->ReportModel->get_OSReceivablesB($fromYear, $toYear);
+               } elseif ($filter == "Areawise") {
+                    $data['result'] = $this->ReportModel->get_OSReceivablesA($fromYear, $toYear);
+               } else {
+                    $data['result'] = $this->ReportModel->get_OSReceivablesP($fromYear, $toYear);
                }
 
 
                // print_r($data);
                // die ; 
-          //   $data['result'] = $this->ReportModel->get_OSReceivablesFilter($fromYear,$toYear);
+               //   $data['result'] = $this->ReportModel->get_OSReceivablesFilter($fromYear,$toYear);
 
-          $this->load->view('menu_1.php');
-          $this->load->view('OSReceivables_View',$data,$fromYear,$toYear);
+               $this->load->view('menu_1.php');
+               $this->load->view('OSReceivables_View', $data, $fromYear, $toYear);
           }
-     }        
+     }
 
      // updated 01-04-21 RY
      function OSSingleReceivables()
@@ -176,59 +174,56 @@ class ReportController extends CI_Controller
      }
 
      // updated 31-03-21   
-     function rateDiffReport(){
+     function rateDiffReport()
+     {
           $this->load->model('ReportModel');
-          $y= date("Y");
-          $m=date("m");
-          $fromYear= $y."-".$m."-01";
-          $toYear=date("Y-m-t", strtotime($fromYear));
+          $y = date("Y");
+          $m = date("m");
+          $fromYear = $y . "-" . $m . "-01";
+          $toYear = date("Y-m-t", strtotime($fromYear));
 
           $data['RTYPE'] = "Brokerwise";
           $data['RTYPE1'] = "Detail";
-          $data['result'] = $this->ReportModel->get_RateDiffBD($fromYear,$toYear);
-     
+          $data['result'] = $this->ReportModel->get_RateDiffBD($fromYear, $toYear);
+
           $this->load->view('menu_1.php');
-          $this->load->view('RateDiffReport_View',$data);
+          $this->load->view('RateDiffReport_View', $data);
      }
 
      // updated 31-03-21 
-     function rateDiffReportFilter(){
-          if($this->input->post('submit') != NULL ){
-          $postData = $this->input->post();
-     
-          // Read POST data
-          $fromYear = $postData['fromYear'];
-          $toYear = $postData['toYear'];
+     function rateDiffReportFilter()
+     {
+          if ($this->input->post('submit') != NULL) {
+               $postData = $this->input->post();
 
-          $filter = $this->input->post('filter');
-          $filter1 = $this->input->post('filter1');
+               // Read POST data
+               $fromYear = $postData['fromYear'];
+               $toYear = $postData['toYear'];
 
-          $this->load->model('ReportModel');
+               $filter = $this->input->post('filter');
+               $filter1 = $this->input->post('filter1');
+
+               $this->load->model('ReportModel');
 
                $data['RTYPE'] = $filter;
                $data['RTYPE1'] = $filter1;
 
-               if($filter == "Brokerwise" && $filter1 == "Detail"){
-                    $data['result'] = $this->ReportModel->get_RateDiffBD($fromYear,$toYear);
+               if ($filter == "Brokerwise" && $filter1 == "Detail") {
+                    $data['result'] = $this->ReportModel->get_RateDiffBD($fromYear, $toYear);
+               } elseif ($filter == "Areawise" && $filter1 == "Detail") {
+                    $data['result'] = $this->ReportModel->get_RateDiffAD($fromYear, $toYear);
+               } elseif ($filter == "Partywise" && $filter1 == "Detail") {
+                    $data['result'] = $this->ReportModel->get_RateDiffPD($fromYear, $toYear);
+               } elseif ($filter == "Partywise" && $filter1 == "Summary") {
+                    $data['result'] = $this->ReportModel->get_RateDiffBS($fromYear, $toYear);
+               } elseif ($filter == "Areawise" && $filter1 == "Summary") {
+                    $data['result'] = $this->ReportModel->get_RateDiffAS($fromYear, $toYear);
+               } else {
+                    $data['result'] = $this->ReportModel->get_RateDiffPS($fromYear, $toYear);
                }
-               elseif($filter == "Areawise" && $filter1 == "Detail"){
-                    $data['result'] = $this->ReportModel->get_RateDiffAD($fromYear,$toYear);
-               }
-               elseif($filter == "Partywise" && $filter1 == "Detail"){
-                    $data['result'] = $this->ReportModel->get_RateDiffPD($fromYear,$toYear);
-               }
-               elseif($filter == "Partywise" && $filter1 == "Summary"){
-                    $data['result'] = $this->ReportModel->get_RateDiffBS($fromYear,$toYear);
-               }
-               elseif($filter == "Areawise" && $filter1 == "Summary"){
-                    $data['result'] = $this->ReportModel->get_RateDiffAS($fromYear,$toYear);
-               }
-               else{
-                    $data['result'] = $this->ReportModel->get_RateDiffPS($fromYear,$toYear); 
-               }
-               
-          $this->load->view('menu_1.php');
-          $this->load->view('RateDiffReport_View',$data,$fromYear,$toYear);
+
+               $this->load->view('menu_1.php');
+               $this->load->view('RateDiffReport_View', $data, $fromYear, $toYear);
           }
      }
 
@@ -273,6 +268,29 @@ class ReportController extends CI_Controller
           echo json_encode($data);
           exit;
      }
+     // 15/07/2021
+     function SalesReport()
+     {
+          $this->load->model('SalesReportModel');
+          if ($this->input->post('submit') != NULL) {
+               $postData = $this->input->post();
 
+               // Read POST data
+               $fromYear = $postData['fromYear'];
+               $toYear = $postData['toYear'];
 
+               $data['result'] = $this->SalesReportModel->get_Salesfilter($fromYear, $toYear);
+          } else {
+               $y = date("Y");
+               $m = date("m");
+               $fromYear = $y . "-" . $m . "-01";
+               $toYear = date("Y-m-t", strtotime($fromYear));
+               // $ACTitle = $postData['ACTitle'];
+               $data['result'] = $this->SalesReportModel->get_Sales($fromYear, $toYear);
+          }
+          // print_r($data);
+          // die;
+          $this->load->view('menu_1.php');
+          $this->load->view('SalesReport', $data);
+     }
 }
