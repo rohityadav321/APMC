@@ -282,6 +282,8 @@ $today = date("Y-m-d");
     }
   }
 
+
+
   function ShowHide() {
     $K = "BB";
     $Z = "BZ";
@@ -330,6 +332,7 @@ $today = date("Y-m-d");
     var ACCode = $('#ACCode').val();
     var ACTitle = $('#ACTitle').val();
     var Group = $('#Group').val();
+    var Amount = $('#Amount').val();
     var Amount1 = $('#Amount1').val();
     var DebitCredit = $('#DRCR').val();
     var Cheque_No = $('#Cheque_No').val();
@@ -338,40 +341,46 @@ $today = date("Y-m-d");
     var CNarration = $('#CNarration').val();
 
     var UPid = $('#UPid').val();
+    if (parseFloat(Amount1) <= parseFloat(Amount)) {
+      var url = "<?php echo base_url('index.php/RojmelController/Update/') ?>" + IDNumber;
+
+      $.ajax({
+        url: url,
+        type: "POST",
+        data: $('form').serialize(),
+        success: function(data) {
+          // alert("Added Successfully!!");
+          // alert("Data"+data);
+
+          var Idnumber = document.getElementById("IDNumber").value;
+          var ACCode = document.getElementById("ACCode").value = "";
+          var ACTitle = document.getElementById("ACTitle").value = "";
+          var Group = document.getElementById("Group").value = "";
+          var Amount1 = document.getElementById("Amount1").value = "";
+          var DebitCredit = document.getElementById("DRCR").value = "";
+          var Cheque_No = document.getElementById("Cheque_No").value = "";
+          var Lot_No = document.getElementById("Lot_No").value = "";
+          var UPid = document.getElementById("UPid").value = "";
 
 
-    var url = "<?php echo base_url('index.php/RojmelController/Update/') ?>" + IDNumber;
+          updateref(Idnumber);
+          alert("Entry Added")
 
-    $.ajax({
-      url: url,
-      type: "POST",
-      data: $('form').serialize(),
-      success: function(data) {
-        // alert("Added Successfully!!");
-        // alert("Data"+data);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
 
-        var Idnumber = document.getElementById("IDNumber").value;
-        var ACCode = document.getElementById("ACCode").value = "";
-        var ACTitle = document.getElementById("ACTitle").value = "";
-        var Group = document.getElementById("Group").value = "";
-        var Amount1 = document.getElementById("Amount1").value = "";
-        var DebitCredit = document.getElementById("DRCR").value = "";
-        var Cheque_No = document.getElementById("Cheque_No").value = "";
-        var Lot_No = document.getElementById("Lot_No").value = "";
-        var UPid = document.getElementById("UPid").value = "";
+          alert(errorThrown);
+          // updateref(Idnumber);
+        }
+
+      });
+    } else {
+      alert("Entered Amount is greater than Header Amount!!!");
+      $("#Amount1").focus();
+
+    }
 
 
-        updateref(Idnumber);
-        alert("Entry Added")
-
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-
-        alert(errorThrown);
-        // updateref(Idnumber);
-      }
-
-    });
   }
   // ADD ROJMEL END
 
@@ -629,6 +638,8 @@ $today = date("Y-m-d");
     document.getElementById("GroupCode1").value = $GroupCode;
     //document.getElementById("Amount").value = $OpeningBal;
     document.getElementById("Balance").value = $ClosingBal;
+    ShowHide();
+    ClosingBal();
   }
 
   function ACCodeFrom($ACCode, $ACTitle, $GroupCode) {
@@ -674,7 +685,7 @@ $today = date("Y-m-d");
       var idarray = ["RojDate", "BCode", "ACCode", "DRCR", "Amount1", "Cheque_No", "Lot_No", "Show_Narr", "ADD"];
 
     } else {
-      var idarray = ["RojDate", "BCode", "Amount", "ACCode", "DRCR", "Amount1", "Cheque_No", "Lot_No", "Show_Narr", "ADD"];
+      var idarray = ["RojDate", "BCode", "Amount", "Nature", "ACCode", "DRCR", "Amount1", "Cheque_No", "Lot_No", "Show_Narr", "ADD"];
 
     }
 
@@ -719,7 +730,7 @@ $today = date("Y-m-d");
     </div>
 
 
-    <div class="card-body" id="abc" style="font-size: 14px; align: left">
+    <div class="card-body" id="abc" style="font-size: 14px; text-align: left">
       <div class="col-md-12">
         <div class="row">
           <div class="col-md-12">
@@ -758,7 +769,7 @@ $today = date("Y-m-d");
                 </a>
 
                 <div class="col-md-2">
-                  <input style="width: 100%;" type="text" class="form-control" id="BCode" name="BCode" tabindex="5" onkeydown="focusnext(event)" placeholder="">
+                  <input style="width: 100%;" type="text" class="form-control" id="BCode" name="BCode" tabindex="5" placeholder="">
                   <span class="text-danger"><?php echo form_error('BCode'); ?>
                   </span>
                 </div>
@@ -780,27 +791,56 @@ $today = date("Y-m-d");
 
 
             </div>
-            <? //second part
-            ?>
+            <!-- New Change -->
+            <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> -->
+
+            <script>
+              function moveCursorTo(e) {
+                var Amount = $('#Amount').val();
+                if (e.keyCode == 13) {
+                  $('#Nature').focus();
+                  $('#Amount1').val(Amount);
+                }
+              }
+              // $('#Nature').on('change', function() {
+              //   alert(this.value);
+              // });
+
+              function getval(select) {
+                // if (e.keyCode == 13) {
+                alert(select.value);
+                if (select.value == 'Withdraw') {
+                  $('#DRCR option[value=CR]').removeAttr('selected');
+                  $('#DRCR option[value=DR]').attr('selected', 'selected');
+                  $('#ACCode').focus();
+                } else if (select.value == 'Deposit') {
+                  $('#DRCR option[value=DR]').removeAttr('selected');
+                  $('#DRCR option[value=CR]').attr('selected', 'selected');
+                  $('#ACCode').focus();
+                }
+                // }
+              }
+            </script>
             <div class="col-md-4">
 
               <div class="form-group row" style="margin-right: -50%; align-content: right">
-                <label class="control-label col-md-3 blue" id=LAmount for="Amount">Amount</label>
+                <label class="control-label col-md-3 blue" id="LAmount" for="Amount">Amount</label>
 
 
                 <div class="col-md-3">
-                  <input type="text" class="form-control" id="Amount" onkeydown="focusnext(event)" tabindex="7" name="Amount" onblur="moveCursorTo()" value="" placeholder="Amount">
+                  <input type="text" class="form-control" id="Amount" tabindex="7" name="Amount" onkeydown="moveCursorTo(event)" value="" placeholder="Amount">
                   <span class="text-danger"><?php echo form_error('Amount'); ?>
                   </span>
                 </div>
               </div>
+              <!-- New Change end -->
 
               <div class="form-group row" style="margin-right: -50%; align-content: right">
                 <label class="control-label col-md-3 blue" id="LNature" for="Nature">Nature</label>
 
 
                 <div class="col-md-3">
-                  <select name="Nature" id="Nature" onkeydown="focusnext(event)" value="<?php echo set_value('DRCR'); ?>" tabindex="8" placeholder="Nature">
+                  <select name="Nature" id="Nature" onkeydown="focusnext(event)" onchange="getval(this);" value="<?php echo set_value('DRCR'); ?>" tabindex="8" placeholder="Nature">
                     <option value="1">Receipt</option>
                     <option value="2">Payment</option>
                   </select>
@@ -944,7 +984,7 @@ $today = date("Y-m-d");
                   <td style="border: none;">
                     <div class=row1>
                       <div class="column" style="float: left;">
-                        <input type="text" class="form-control" id="ACCode" name="ACCode" onkeydown="focusnext(event)" value="<?php echo set_value('ACCode'); ?>">
+                        <input type="text" class="form-control" id="ACCode" name="ACCode" value="<?php echo set_value('ACCode'); ?>">
                       </div>
 
                     </div>
@@ -977,7 +1017,22 @@ $today = date("Y-m-d");
             <option value="DR">DR</option>
             <option value="CR">CR</option>
         </td>
-        <td style="border: none;"><input type="text" class="form-control" id="Amount1" name="Amount1" onkeydown="focusnext(event)" value="<?php echo set_value('Amount'); ?>">
+        <script>
+          function CheckAmt(e) {
+            var DetAmount = $('#Amount1').val();
+            var HeadAmount = $('#Amount').val();
+            if (e.keyCode == 13) {
+              if (parseFloat(DetAmount) > parseFloat(HeadAmount)) {
+                alert("Entered Amount is greater than Header Amount!!!");
+                $("#Amount1").focus();
+              } else {
+                $("#Cheque_No").focus();
+
+              }
+            }
+          }
+        </script>
+        <td style="border: none;"><input type="text" class="form-control" id="Amount1" name="Amount1" onkeydown="CheckAmt(event)" value="<?php echo set_value('Amount'); ?>">
           <span class="text-danger"><?php echo form_error('Amount'); ?></span>
         </td>
         <td style="border: none;"><input type="text" class="form-control" id="Cheque_No" name="Cheque_No" onblur="focusnext(event)" onkeydown="focusnext(event)" value="<?php echo set_value('Cheque_No'); ?>">
@@ -1247,6 +1302,16 @@ $today = date("Y-m-d");
             ShowHide();
             ClosingBal();
           }
+        }
+      });
+      $("#BCode").keydown(function(event) {
+        if (event.keyCode == 13)
+          var BCodevalue = $("#GroupCode1").val();
+        if (BCodevalue == "J") {
+          $("#ACCode").focus();
+
+        } else {
+          $("#Amount").focus();
 
         }
       });
@@ -1309,8 +1374,13 @@ $today = date("Y-m-d");
           }
 
         }
-
       });
+      $("#ACCode").keydown(function(event) {
+        if (event.keyCode == 13)
+          $("#Amount1").focus();
+      });
+
+
     });
   </script>
   <!-- DropDown Code end for ACCOUNT  Code-->

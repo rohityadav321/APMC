@@ -14,9 +14,9 @@ $downloadfile = 'BankReco' . date("ymdHi");
     <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.4.1/jspdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.6/jspdf.plugin.autotable.min.js"></script>
-    <script type="text/javascript" src="../../assets/export/src/tableHTMLExport.js"></script>
-    <!-- <script type="text/javascript" src="../../assets/csvexport/src/table2csv.js"></script> -->
+    <script type="text/javascript" src="../../assets/assets/moment.js"></script>
 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
     <link rel="stylesheet" type="text/css" href="../../assets/assets/tables/DataTables/datatables.min.css" />
@@ -38,10 +38,21 @@ $downloadfile = 'BankReco' . date("ymdHi");
 
         }
 
-        /* .headernav {
-            position: absolute;
-            left: 0;
-        } */
+        body>.main {
+            width: 100%;
+        }
+
+        .headernav {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+
+        }
+
+        .head-form-in {
+            display: flex;
+            flex-direction: column;
+        }
 
         h4 {
             margin-left: 10px;
@@ -56,9 +67,9 @@ $downloadfile = 'BankReco' . date("ymdHi");
             border-radius: 5px;
             border: none;
             position: absolute;
-            top: 20px;
+            /* top: 20px; */
             margin-left: 10px;
-            margin-top: -43px;
+            /* margin-top: -43px; */
             cursor: pointer;
         }
 
@@ -308,6 +319,7 @@ if (isset($_POST['submit'])) {
     }
 </script>
 <!-- end 19-08-21 -->
+<!-- style="position:relative; margin-left:10px; margin-top:10px;" -->
 
 <body>
     <div class="main">
@@ -318,105 +330,149 @@ if (isset($_POST['submit'])) {
                     $(".ClrType[value='<?php echo $ClrType ?>']").attr('checked', true);
                 });
             </script>
-            <div style="position:relative; margin-left:10px; margin-top:10px;">
-                <form method='post' action='<?php echo base_url() ?>index.php/BankRecoController/show'>
-                    <div class="form-group row">
-                        <b style=" font-size:15px;  margin-right:10px;">Ledger</b>
-                        <label class="control-label " style="font-size: 15px;" for="BCodeLab">ACCount Name</label>
-                        <a id="BHelp" type="button" class="btn btn-info" style="width:50px;" data-toggle="modal" data-target="#BookModalFrom">
-                            <i class="glyphicon glyphicon-th"></i>
-                        </a>
-                        <div class="col-md-2">
-                            <input type="text" name="BCode" style="font-size:15px;" id="BCode" value="<?php echo $result[2]; ?>" placeholder="BookCode">
-                            <span class="text-danger"><?php echo form_error('BCode'); ?>
-                            </span>
-                            <input type="text" name="BName" hidden readonly style="font-size:15px; width:200px;" id="BName" value="<?php echo $result[3]; ?>" placeholder="BookName">
-                            <span class="text-danger"><?php echo form_error('BName'); ?>
-                            </span>
-                        </div>
-                        <div class="col-md-2">
-                            <label style="font-size:15px;" class="lable">Date: </label>
-                            <input type="date" style="font-size:15px;" id="toYear" name="toYear" value="<?php echo $Date; ?>">
-                        </div>
-                        <div class="col-md-2">
-                            <div style="border:1px solid; padding:5px 10px;">
-                                <input type="Radio" style="font-size:15px;" id="ClrType" class="ClrType" name="ClrType" required value="pending">
-                                <label style="font-size:15px;" class="lable">Pending </label>
-                                &nbsp;
-                                &nbsp;
-                                &nbsp;
-                                &nbsp;
-                                &nbsp;
-                                &nbsp;
-                                &nbsp;
-                                &nbsp;
-                                &nbsp;
-                                <input type="Radio" style="font-size:15px;" id="ClrType" class="ClrType" required name="ClrType" value="all">
-                                <label style="font-size:15px;" class="lable">All </label>
+            <div class="head-form-in">
+                <div style="width:100%;">
+                    <form method='post' style="width:100%;" action='<?php echo base_url() ?>index.php/BankRecoController/show'>
+                        <div class="row" style="display: flex; flex-direction:row; width:100%">
+                            <!-- <div style="margin:0 10px" class="col-md-3"> -->
+                            <b style=" font-size:15px;  margin:0 10px 0 10px;">Bank Reconcilation</b>
+                            <label class="control-label " style="font-size: 15px;" for="BCodeLab">ACCount Name</label>
+                            <a id="BHelp" type="button" class="btn btn-info" style="width:50px;" data-toggle="modal" data-target="#BookModalFrom">
+                                <i class="glyphicon glyphicon-th"></i>
+                            </a>
+                            <!-- </div> -->
+                            <div style="margin:0 10px">
+
+                                <input type="text" name="BCode" style="font-size:15px;" id="BCode" value="<?php echo $result[2]; ?>" placeholder="BookCode">
+                                <span class="text-danger"><?php echo form_error('BCode'); ?>
+                                </span>
+                                <input type="text" name="BName" hidden readonly style="font-size:15px; width:200px;" id="BName" value="<?php echo $result[3]; ?>" placeholder="BookName">
+                                <span class="text-danger"><?php echo form_error('BName'); ?>
+                                </span>
+
+                            </div>
+                            <div style="margin:0 10px">
+                                <label style="font-size:15px;" class="lable">Date: </label>
+                                <input type="date" style="font-size:15px;" id="toYear" name="toYear" value="<?php echo date_format((date_create($Date)), 'Y-m-d'); ?>">
+                            </div>
+                            <div style="margin:0 10px">
+                                <div style="border:1px solid; padding:5px 10px;">
+                                    <input type="Radio" style="font-size:15px;" id="ClrType" class="ClrType" name="ClrType" required value="pending">
+                                    <label style="font-size:15px;" class="lable">Pending </label>
+                                    &nbsp;
+                                    &nbsp;
+                                    &nbsp;
+                                    &nbsp;
+                                    &nbsp;
+                                    &nbsp;
+                                    &nbsp;
+                                    &nbsp;
+                                    &nbsp;
+                                    <input type="Radio" style="font-size:15px;" id="ClrType" class="ClrType" required name="ClrType" value="all">
+                                    <label style="font-size:15px;" class="lable">All </label>
+                                </div>
+                            </div>
+                            <div style="margin:0 10px">
+                                <input type='submit' name='submit' class="refresh" id="refresh" value="Refresh">
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <input type='submit' name='submit' class="refresh" id="refresh" value="Refresh">
-                        </div>
-                    </div>
-                </form>
+                    </form>
+
+                </div>
                 <div>
 
                     <label style="font-size:15px;" class="lable">Balance As Per Bank Book </label>
                     <input type="text" readonly name="BBBalance" style="font-size:15px;" id="BBBalance" value="<?php echo $BBBalance; ?>" placeholder=" Balance">
                     <label style="font-size:15px;" class="lable">Balance As Per Bank Statement </label>
                     <input type="text" readonly name="BSBalance" style="font-size:15px;" id="BSBalance" value="<?php echo $BSBalance; ?>" placeholder=" Balance">
-                </div>
-                <div style="float:right; transform:translate(-100px,-50px)">
                     <Button onclick="createPDF()">Print <i class="glyphicon glyphicon-print"></i></Button>
                     <Button onclick="startDownload()">Excel <i class="glyphicon glyphicon-file"></i> </Button>
                 </div>
+                <!-- style="float:right; transform:translate(-100px,-50px)" -->
+
                 <hr>
             </div>
         </div>
-        <!-- 19-08-21 -->
+        <!-- 3-09-21 -->
         <script>
-            function handleClick(num, val, Code) {
+            function handleClick(num, val, Code, e, d) {
                 var IDNumber = num;
                 var Type = val;
                 var BookCode = Code;
-                var ClearDate = $('#Date' + IDNumber + '').val();
+                var ClrDate = $('#Date' + IDNumber + '').val();
+                var ClearDate = new Date($('#Date' + IDNumber + '').val());
+
+                var chequeDate = new Date(d);
+                // var chequeDate = d;
+
                 var atLeastOneIsChecked = $('#Clr' + IDNumber + ':checked').length > 0;
-                alert(atLeastOneIsChecked);
+                // alert(ClearDate + '    ' + chequeDate);
                 if (atLeastOneIsChecked == true) {
-                    var url = "<?= base_url() ?>index.php/BankRecoController/UpdateType/" + IDNumber + "/" + Type + "/" + BookCode;
+                    if (ClrDate != "") {
+                        if (chequeDate < ClearDate) {
+                            var url = "<?= base_url() ?>index.php/BankRecoController/UpdateType/" + IDNumber + "/" + Type + "/" + BookCode;
+                            $.ajax({
+                                url: url,
+                                type: "post",
+                                data: {
+                                    IDNumber: IDNumber,
+                                    Type: Type,
+                                    BookCode: BookCode,
+                                    ClrDate: ClrDate
+                                },
+                                dataType: "json",
+                                cache: false,
+                                success: function(result) {
+                                    console.log(result['Balance'][0]);
+                                    Output = result['Balance'][0];
+                                    $('#BBBalance').val(Output['BBBalance']);
+                                    $('#BSBalance').val(Output['BSBalance']);
+
+                                },
+                                error: function(xhr, ajaxOptions, thrownError) {
+                                    alert(xhr.responseText);
+                                }
+                            });
+                        } else {
+                            alert("Entered date is earlier than Cheque Date....");
+                            e.preventDefault();
+                        }
+                    } else {
+                        alert("Please Enter Cheque Clear Date.....");
+                        e.preventDefault();
+                    }
                 } else if (atLeastOneIsChecked == false) {
                     var url = "<?= base_url() ?>index.php/BankRecoController/UpdateType2/" + IDNumber + "/" + Type + "/" + BookCode;
-                }
-                $.ajax({
-                    url: url,
-                    type: "post",
-                    data: {
-                        IDNumber: IDNumber,
-                        Type: Type,
-                        BookCode: BookCode,
-                        ClearDate: ClearDate
-                    },
-                    dataType: "json",
-                    cache: false,
-                    success: function(result) {
-                        console.log(result['Balance'][0]);
-                        Output = result['Balance'][0];
-                        $('#BBBalance').val(Output['BBBalance']);
-                        $('#BSBalance').val(Output['BSBalance']);
+                    $.ajax({
+                        url: url,
+                        type: "post",
+                        data: {
+                            IDNumber: IDNumber,
+                            Type: Type,
+                            BookCode: BookCode,
+                            ClrDate: ClrDate
+                        },
+                        dataType: "json",
+                        cache: false,
+                        success: function(result) {
+                            console.log(result['Balance'][0]);
+                            Output = result['Balance'][0];
+                            $('#BBBalance').val(Output['BBBalance']);
+                            $('#BSBalance').val(Output['BSBalance']);
 
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        alert(xhr.responseText);
-                    }
-                });
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            alert(xhr.responseText);
+                        }
+                    });
+                }
             }
         </script>
 
         <script>
-            function ChangeDate(IDNumber) {
-                $('#Date' + IDNumber + '').attr('type', 'Date');
-            }
+            // function ChangeDate(IDNumber) {
+            //     $('#Date' + IDNumber + '').attr('type', 'Date');
+            // }
         </script>
 
         <script>
@@ -456,7 +512,7 @@ if (isset($_POST['submit'])) {
                             //         </td>';
                             $html .= '<td class="ignore">
                                         <div>
-                                            <input type="checkbox" value="' . $value['ClrType'] . '" class="Clr" id="Clr' . $value['IDNumber'] . '" onchange="handleClick(' . $value['IDNumber'] . ',\'' . $value['EntryType'] . '\'' . ',\'' . $value['BookCode'] . '\')";>
+                                            <input type="checkbox" value="' . $value['ClrType'] . '" class="Clr" id="Clr' . $value['IDNumber'] . '" onclick="handleClick(' . $value['IDNumber'] . ',\'' . $value['EntryType'] . '\'' . ',\'' . $value['BookCode'] . '\',event,\'' . $value['ACCDate'] . '\')";>
                                           
                                         </div>
                                     </td>';
@@ -465,7 +521,7 @@ if (isset($_POST['submit'])) {
                                     if ($value2 == '00/00/0000') {
                                         $html .= '<td >
                                                     <div class="ignore">
-                                                        <input type="radio" class="Date" id="Date' . $value['IDNumber'] . '" onclick="ChangeDate(' . $value['IDNumber'] . ')";>
+                                                        <input type="date" class="Date" id="Date' . $value['IDNumber'] . '" >
                                                     </div>
                                                 </td>';
                                     } else {
@@ -552,7 +608,7 @@ if (isset($_POST['submit'])) {
             $('#example').DataTable({
                 columnDefs: [{
                     "visible": false,
-                    "targets": [groupColumn, 2, 7, 8, 11]
+                    "targets": [groupColumn, 2, 7, 8, 11, 12]
                 }],
                 order: [
                     [groupColumn, 'desc']

@@ -110,9 +110,9 @@ class BankRecoModel extends CI_Model
                     `Collection`.`ClrDate` as `ClrDate`
                 FROM
                     `Collection`,SaleMast 
-
-                WHERE 
-						SaleMast.BillNo=Collection.BillNo
+                WHERE SaleMast.CoID=Collection.CoID
+                    and SaleMast.WorkYear=Collection.WorkYear
+					and	SaleMast.BillNo=Collection.BillNo
 					and  `Collection`.`CoID` = '$CoID'
                     and `Collection`.`WorkYear` = '$WorkYear'
                     
@@ -220,7 +220,8 @@ class BankRecoModel extends CI_Model
                     DRCR,EntryType,BookCode,
                     if(DRCR='DR',ACCAmount,0) as Withdrawal,
                     if(DRCR='CR',ACCAmount*-1,0) as Deposit,
-                    ClrType
+                    ClrType,
+                    ACCDate
                 from Ledger
                 where CoID='$CoID'
                 and WorkYear='$WorkYear'
@@ -237,19 +238,21 @@ class BankRecoModel extends CI_Model
 
     public function GetAllData($BookCode, $Date, $BookName)
     {
+
         $this->CreateBankReco();
         $CoID = $this->session->userdata('CoID');
         $WorkYear = $this->session->userdata('WorkYear');
         $sql = "
                     select 
-                        date_format(ClrDate,'%d/%m/%Y') as Clear_Date,
+                         date_format(ClrDate,'%d/%m/%Y') as Clear_Date,
                         IDNumber,
                         date_format(ACCDate,'%d/%m/%Y') as Date,
                         PartyName as Perticular,ChequeNo,
                         DRCR,EntryType,BookCode,
                         if(DRCR='DR',ACCAmount,0) as Withdrawal,
                         if(DRCR='CR',ACCAmount*-1,0) as Deposit,
-                        ClrType
+                        ClrType,
+                        ACCDate
                     from Ledger
                     where CoID='$CoID'
                     and WorkYear='$WorkYear'
@@ -267,7 +270,8 @@ class BankRecoModel extends CI_Model
                         DRCR,EntryType,BookCode,
                         if(DRCR='CR',ACCAmount,0) as Withdrawal,
                         if(DRCR='DR',ACCAmount*-1,0) as Deposit,
-                        ClrType
+                        ClrType,
+                        ACCDate
                     from Ledger
                     where CoID='$CoID'
                     and WorkYear='$WorkYear'
@@ -286,11 +290,3 @@ class BankRecoModel extends CI_Model
         return array($query, $Date, $BookCode, $BookName);
     }
 }
-                    // and `TDSonPayment`.`DepoBankCode` = 'K'
-                    // and `TDSonPayment`.`ClrType` <> 'C'
-                    // and `PurPayments`.`BankCode` = 'K'
-                    // and `PurPayments`.`ClrType` <> 'C'
-                    // and `ACCDetails`.`BookCode` = 'K'
-                    // and `ACCDetails`.`ClrType` <> 'C'
-                    // and `Collection`.`DepBankCode` = 'K'
-                    // and `Collection`.`ClrType` <> 'C'

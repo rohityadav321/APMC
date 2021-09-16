@@ -4,12 +4,14 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class CollectionModel extends CI_Model
 {
-  function __construct(){
+  function __construct()
+  {
     // Call the Model constructor
     parent::__construct();
   }
 
-  function companyDetails(){
+  function companyDetails()
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
     $sql = "
@@ -97,9 +99,10 @@ class CollectionModel extends CI_Model
     $query = $this->db->query($sql);
     $result = $query->result();
     return $result;
-  }  
+  }
   //  function Get_Slip_Header($IDNumber)
-  function Get_Slip_Header($CollectDate){
+  function Get_Slip_Header($CollectDate)
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
     $sql = " 
@@ -117,7 +120,8 @@ class CollectionModel extends CI_Model
 
 
   //  function Get_Slip_Data($IDNumber)
-  function Get_Slip_Data($CollectDate){
+  function Get_Slip_Data($CollectDate)
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
 
@@ -175,7 +179,8 @@ class CollectionModel extends CI_Model
   }
 
 
-  function get_CollectionDatewise(){
+  function get_CollectionDatewise()
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
     $sql = "";
@@ -333,7 +338,8 @@ class CollectionModel extends CI_Model
     return array($query, $f, $t);
   }
 
-  function get_CollectionDatewiseFilter($fromDate, $toDate){
+  function get_CollectionDatewiseFilter($fromDate, $toDate)
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
 
@@ -484,7 +490,8 @@ class CollectionModel extends CI_Model
     return  array($query, $fromDate, $toDate);
   }
 
-  function x_get_CollectionDatewise(){
+  function x_get_CollectionDatewise()
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
     $sql = "
@@ -506,7 +513,8 @@ class CollectionModel extends CI_Model
     return $query;
   }
 
-  function x_get_CollectionDatewiseFilter($fromYear, $toYear){
+  function x_get_CollectionDatewiseFilter($fromYear, $toYear)
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
     $sql = "
@@ -531,22 +539,21 @@ class CollectionModel extends CI_Model
 
   function get_details($CoID, $WorkYear)
   {
-    $CoID = $this->session->userdata('CoID') ;
-    $WorkYear = $this->session->userdata('WorkYear') ;
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
 
-    $fromYear="";$toYear="";
+    $fromYear = "";
+    $toYear = "";
     $current_month = date("m");
     $current_year = date("Y");
-    $yearArray = explode("-",$WorkYear);
-    $year = explode("-",$yearArray[0]);
-    $WY = substr($year[0], 0, 2).$yearArray[1];
+    $yearArray = explode("-", $WorkYear);
+    $year = explode("-", $yearArray[0]);
+    $WY = substr($year[0], 0, 2) . $yearArray[1];
 
-    if((int)$WY > (int)$current_year)
-    {
+    if ((int)$WY > (int)$current_year) {
       $fromYear = date("$current_year-$current_month-01");
       $toYear = date("$current_year-$current_month-t");
-    }
-    else{
+    } else {
       $fromYear = date("$WY-03-01");
       $toYear = date("$WY-03-t");
     }
@@ -563,19 +570,20 @@ class CollectionModel extends CI_Model
           ";
     $result = $this->db->query($sql)->result_array();
 
-    if(empty($result)){
-      $emptyArray=array("empty");   
-      return array($emptyArray,$fromYear,$toYear);
+    if (empty($result)) {
+      $emptyArray = array("empty");
+      return array($emptyArray, $fromYear, $toYear);
     }
-    return array($result,$fromYear,$toYear);
+    return array($result, $fromYear, $toYear);
   }
 
-    // Get Collection Details Datewise for CollectionGrid
-    function get_detailsFilter($fromYear,$toYear){
-      $CoID = $this->session->userdata('CoID') ;
-      $WorkYear = $this->session->userdata('WorkYear') ; 
-  
-      $sql = " 
+  // Get Collection Details Datewise for CollectionGrid
+  function get_detailsFilter($fromYear, $toYear)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+
+    $sql = " 
           SELECT 
               DISTINCT IDNumber,
               CollectDate,
@@ -588,18 +596,19 @@ class CollectionModel extends CI_Model
             Group by IDNumber
             order by CollectDate DESC       
       ";
-      $result = $this->db->query($sql)->result_array();
-  
-      if(empty($result)){
-            $emptyArray=array("empty");   
-            return array($emptyArray,$fromYear,$toYear);
-      }
-  
-      return  array($result,$fromYear,$toYear); 
-    }
-  
+    $result = $this->db->query($sql)->result_array();
 
-  function x_get_details_180521($CoID, $WorkYear){
+    if (empty($result)) {
+      $emptyArray = array("empty");
+      return array($emptyArray, $fromYear, $toYear);
+    }
+
+    return  array($result, $fromYear, $toYear);
+  }
+
+
+  function x_get_details_180521($CoID, $WorkYear)
+  {
     $sql = "
           SELECT 
             DISTINCT IDNumber,
@@ -616,7 +625,8 @@ class CollectionModel extends CI_Model
     return $result;
   }
 
-  function get_details2($CoID, $WorkYear){
+  function get_details2($CoID, $WorkYear)
+  {
     $sql = "
           SELECT 
             DISTINCT IDNumber,
@@ -651,7 +661,8 @@ class CollectionModel extends CI_Model
   //     return $result;
   //   }
 
-  function getBillWiseData($CoID, $WorkYear, $IDNumber){
+  function getBillWiseData($CoID, $WorkYear, $IDNumber)
+  {
     $sql = "
         SELECT ID, IDNumber,BillNo, 
         LDays, VatavRate, VatavAmt, 
@@ -668,7 +679,8 @@ class CollectionModel extends CI_Model
     return $result;
   }
 
-  function getData($CoID, $WorkYear, $IDNumber){
+  function getData($CoID, $WorkYear, $IDNumber)
+  {
     $sql = "
             SELECT 
               IDNumber,
@@ -715,7 +727,8 @@ class CollectionModel extends CI_Model
     return $result;
   }
 
-  function getBankData($CoID, $WorkYear, $IDNumber, $ID){
+  function getBankData($CoID, $WorkYear, $IDNumber, $ID)
+  {
     $sql = "
             SELECT 
               BillNo,
@@ -740,7 +753,8 @@ class CollectionModel extends CI_Model
     return $result;
   }
 
-  function getDataByID($CoID, $WorkYear, $id){
+  function getDataByID($CoID, $WorkYear, $id)
+  {
     $sql = "
           SELECT 
           IDNumber,
@@ -768,7 +782,8 @@ class CollectionModel extends CI_Model
     return $result;
   }
 
-  function getDataByIDNum($CoID, $WorkYear, $idnum){
+  function getDataByIDNum($CoID, $WorkYear, $idnum)
+  {
     $sql = "
               SELECT 
                   IDNumber,
@@ -796,7 +811,8 @@ class CollectionModel extends CI_Model
     return $result;
   }
 
-  function getBillWiseData1($CoID, $WorkYear, $idnumber){
+  function getBillWiseData1($CoID, $WorkYear, $idnumber)
+  {
     $sql = "
         SELECT ID, IDNumber, BillNo, 
         LDays, VatavRate, VatavAmt, 
@@ -814,9 +830,10 @@ class CollectionModel extends CI_Model
   }
 
 
-  function getTotals($IDNumber){
-    $CoID = $this->session->userdata('CoID') ;
-    $WorkYear = $this->session->userdata('WorkYear') ;
+  function getTotals($IDNumber)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
 
     $sql = "
           SELECT 
@@ -838,9 +855,10 @@ class CollectionModel extends CI_Model
     return $result;
   }
 
-  function getBillAmt($billno){
-    $CoID = $this->session->userdata('CoID') ;
-    $WorkYear = $this->session->userdata('WorkYear') ;
+  function getBillAmt($billno)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
 
     $sql = "
               SELECT BillAmt From SaleMast Where BillNo = '$billno' and CoID = '$CoID' and WorkYear = '$WorkYear'
@@ -850,9 +868,10 @@ class CollectionModel extends CI_Model
     return $result;
   }
 
-  function getBillNo($id){
-    $CoID = $this->session->userdata('CoID') ;
-    $WorkYear = $this->session->userdata('WorkYear') ;
+  function getBillNo($id)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
 
     $sql = "
               SELECT BillNo From Collection Where ID = '$id' and CoID = '$CoID' and WorkYear = '$WorkYear'
@@ -862,9 +881,10 @@ class CollectionModel extends CI_Model
     return $result;
   }
 
-  function getBillNo1($id){
-    $CoID = $this->session->userdata('CoID') ;
-    $WorkYear = $this->session->userdata('WorkYear') ;
+  function getBillNo1($id)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
 
     $sql = "
               SELECT BillNo From Collection Where IDNumber = '$id' and CoID = '$CoID' and WorkYear = '$WorkYear'
@@ -874,7 +894,8 @@ class CollectionModel extends CI_Model
     return $result;
   }
 
-  function getTotals1($CoID, $WorkYear, $idnumber){
+  function getTotals1($CoID, $WorkYear, $idnumber)
+  {
     $sql = "
           SELECT 
               count(BillNo) As BillCount,
@@ -911,9 +932,10 @@ class CollectionModel extends CI_Model
   //   }
   // }
 
-  public function pname_ddmodel(){
-    $CoID = $this->session->userdata('CoID') ;
-    $WorkYear = $this->session->userdata('WorkYear') ;
+  public function pname_ddmodel()
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
 
     $sql = "
                   SELECT 
@@ -929,7 +951,8 @@ class CollectionModel extends CI_Model
   }
 
   //ACcount help
-  function Get_Party_List(){
+  function Get_Party_List()
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
 
@@ -945,7 +968,8 @@ class CollectionModel extends CI_Model
     return $result;
   }
 
-  function getPartyCode($ACCode){
+  function getPartyCode($ACCode)
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
 
@@ -961,7 +985,8 @@ class CollectionModel extends CI_Model
     return $query->result_array();
   }
 
-  function getPartyName($ACTitle){
+  function getPartyName($ACTitle)
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
 
@@ -977,9 +1002,10 @@ class CollectionModel extends CI_Model
     return $query->result_array();
   }
 
-  function Get_Customer_List(){
-    $CoID = $this->session->userdata('CoID') ;
-    $WorkYear = $this->session->userdata('WorkYear') ;
+  function Get_Customer_List()
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
 
     $sql = "
         SELECT
@@ -997,9 +1023,10 @@ class CollectionModel extends CI_Model
     return $result;
   }
 
-  function getCustomer($PartyName){
-    $CoID = $this->session->userdata('CoID') ;
-    $WorkYear = $this->session->userdata('WorkYear') ;
+  function getCustomer($PartyName)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
 
     $sql = "
         SELECT
@@ -1018,7 +1045,8 @@ class CollectionModel extends CI_Model
     return $query->result_array();
   }
 
-  function Get_Broker_List($CoID, $WorkYear){
+  function Get_Broker_List($CoID, $WorkYear)
+  {
     $sql = "
         SELECT
           ACCode,
@@ -1035,7 +1063,8 @@ class CollectionModel extends CI_Model
   }
 
 
-  function getBrokerCode($ACCode){
+  function getBrokerCode($ACCode)
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
 
@@ -1056,7 +1085,8 @@ class CollectionModel extends CI_Model
   }
 
 
-  function getBrokerName($ACTitle){
+  function getBrokerName($ACTitle)
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
 
@@ -1076,13 +1106,14 @@ class CollectionModel extends CI_Model
     return $query->result_array();
   }
 
-  public function customer_name_ddmodel(){
+  public function customer_name_ddmodel()
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
 
     $this->db->select('PartyCode, PartyName');
     $this->db->from('PartyMaster');
-    $multi_where = array('CoID' => $CoID, 'WorkYear' => $WorkYear );
+    $multi_where = array('CoID' => $CoID, 'WorkYear' => $WorkYear);
     $this->db->where($multi_where);
     $query = $this->db->get();
 
@@ -1094,7 +1125,8 @@ class CollectionModel extends CI_Model
     }
   }
 
-  function getid($IDNumber){
+  function getid($IDNumber)
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
 
@@ -1119,7 +1151,8 @@ class CollectionModel extends CI_Model
     return strval($NewValue);
   }
 
-  function getEditData($id){
+  function getEditData($id)
+  {
     $sql = "
               SELECT 
                   Collection.ID,
@@ -1175,7 +1208,8 @@ class CollectionModel extends CI_Model
 
 
   // Cash Account
-  function Get_ACMaster_List($CoID, $WorkYear){
+  function Get_ACMaster_List($CoID, $WorkYear)
+  {
     $sql = "
             SELECT
               ACCode,
@@ -1191,7 +1225,8 @@ class CollectionModel extends CI_Model
     return $result;
   }
 
-  function GetCashAccount($CoID, $WorkYear, $ACCode){
+  function GetCashAccount($CoID, $WorkYear, $ACCode)
+  {
     $sql = "
             SELECT
               ACCode,
@@ -1208,7 +1243,8 @@ class CollectionModel extends CI_Model
   }
 
   // Deposit Bank 
-  function Get_ACMaster_List1($CoID, $WorkYear){
+  function Get_ACMaster_List1($CoID, $WorkYear)
+  {
     $sql = "
         SELECT
           ACCode,
@@ -1224,7 +1260,8 @@ class CollectionModel extends CI_Model
     return $result;
   }
 
-  function GetDepositBank($CoID, $WorkYear, $ACCode){
+  function GetDepositBank($CoID, $WorkYear, $ACCode)
+  {
     $sql = "
             SELECT
               ACCode,
@@ -1241,7 +1278,8 @@ class CollectionModel extends CI_Model
   }
 
   // Cheque Bank
-  function Get_Bank_List(){
+  function Get_Bank_List()
+  {
     $sql = "
         SELECT
           BankCode,
@@ -1253,7 +1291,8 @@ class CollectionModel extends CI_Model
     return $result;
   }
 
-  function GetChequeBank($BankCode){
+  function GetChequeBank($BankCode)
+  {
     $sql = "
             SELECT
             BankCode,
@@ -1267,7 +1306,8 @@ class CollectionModel extends CI_Model
 
 
   // Get data for Party
-  function Get_Party_Data($CoID, $WorkYear, $ACCode){
+  function Get_Party_Data($CoID, $WorkYear, $ACCode)
+  {
     $sql = "
                 SELECT distinct
                 SaleMast.BillNo As BillNo,
@@ -1328,7 +1368,8 @@ class CollectionModel extends CI_Model
   }
 
   // Get data for Customer
-  function Get_Cust_Data($CoID, $WorkYear, $ACCode){
+  function Get_Cust_Data($CoID, $WorkYear, $ACCode)
+  {
     $sql = "
                   SELECT distinct
                   SaleMast.BillNo As BillNo,
@@ -1406,7 +1447,8 @@ class CollectionModel extends CI_Model
   }
 
   // Get data for Broker
-  function Get_Broker_Data($CoID, $WorkYear, $ACCode){
+  function Get_Broker_Data($CoID, $WorkYear, $ACCode)
+  {
     $sql = "
               SELECT distinct
               SaleMast.BillNo As BillNo,
@@ -1460,7 +1502,8 @@ class CollectionModel extends CI_Model
     return $result;
   }
 
-  function Get_Bill_List1($CoID, $WorkYear, $PartyCode){
+  function Get_Bill_List1($CoID, $WorkYear, $PartyCode)
+  {
     $sql = "
                   SELECT
                         SaleMast.BillNo As BillNo,
@@ -1491,9 +1534,10 @@ class CollectionModel extends CI_Model
     return $result;
   }
 
-  function getBillDetails($CoID, $WorkYear, $BillNo){
-    $sql = "
-              SELECT 
+
+  function getBillDetails($CoID, $WorkYear, $BillNo)
+  {
+    $sql = "SELECT 
               SaleMast.BillNo As BillNo,
               SaleMast.CoID AS Comp,
               SaleMast.DebtorID as DebtorCode,
@@ -1536,7 +1580,9 @@ class CollectionModel extends CI_Model
                         FROM Collection
                         where Collection.WorkYear = SaleMast.WorkYear
                         and Collection.CoID = SaleMast.CoID
-                        and Collection.BillNo = SaleMast.BillNo)
+                        and Collection.BillNo = SaleMast.BillNo
+                        and Collection.CheqReturn<>'Y'
+                        )
                       ,0) as AmtRecd,
               (SaleMast.BillAmt - 
                     IFNULL(
@@ -1553,8 +1599,92 @@ class CollectionModel extends CI_Model
                         FROM Collection
                         where Collection.WorkYear = SaleMast.WorkYear
                         and Collection.CoID = SaleMast.CoID
-                        and Collection.BillNo = SaleMast.BillNo)
+                        and Collection.BillNo = SaleMast.BillNo
+                        and Collection.CheqReturn<>'Y'
+                        )
                       ,0)                   
+              ) as BalAmt  
+              FROM SaleMast
+              where SaleMast.BillNo = '$BillNo'
+              and SaleMast.CoID = '$CoID'
+              and SaleMast.WorkYear = '$WorkYear'
+              -- and SaleMast.CheqReturn = 'N'
+        ";
+
+
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
+  }
+
+  function GetReturnBillDetails($CoID, $WorkYear, $BillNo)
+  {
+    $sql = "SELECT 
+              SaleMast.BillNo As BillNo,
+              SaleMast.CoID AS Comp,
+              SaleMast.DebtorID as DebtorCode,
+              (select ACMaster.ACTitle 
+                        from ACMaster 
+                        where ACMaster.CoID = SaleMast.CoID 
+                          and ACMaster.WorkYear = SaleMast.WorkYear
+                          and ACMaster.ACCode = SaleMast.DebtorID ) as DebtorTitle,
+              SaleMast.PartyCode as CustomerCode,
+              (select PartyMaster.PartyName 
+                        from PartyMaster 
+                        where SaleMast.PartyCode = PartyMaster.PartyCode
+                          and SaleMast.CoID = PartyMaster.CoID
+                          and SaleMast.WorkYear = PartyMaster.WorkYear) as CustomerName,
+              (select PartyMaster.PartyArea 
+                        from PartyMaster 
+                        where SaleMast.PartyCode = PartyMaster.PartyCode
+                          and SaleMast.CoID = PartyMaster.CoID
+                          and SaleMast.WorkYear = PartyMaster.WorkYear) as Area,
+              SaleMast.BrokerID as BrokerCode,
+              (select ACMaster.ACTitle 
+                      from ACMaster 
+                      where ACMaster.CoID = SaleMast.CoID 
+                      and ACMaster.WorkYear = SaleMast.WorkYear
+                      and ACMaster.ACCode = SaleMast.BrokerID ) as BrokerTitle,
+              SaleMast.BillDate As BillDate,
+              SaleMast.ItemAmt As ItemAmt, 
+              SaleMast.BillAmt As BillAmt,
+              IFNULL(
+                      (SELECT sum(
+                                  VatavAmt+
+                                  BrokAmt-
+                                  (IntAmt+
+                                  LFeeAmt+
+                                  Chithi)+
+                                  ChequeAmt+
+                                  CashAmt+
+                                  KasarAmt
+                                  ) 
+                        FROM Collection
+                        where Collection.WorkYear = SaleMast.WorkYear
+                        and Collection.CoID = SaleMast.CoID
+                        and Collection.BillNo = SaleMast.BillNo
+                        and Collection.CheqReturn='N'
+                        )
+                      ,0) as AmtRecd,
+              (SaleMast.BillAmt - 
+                    IFNULL(
+                      (SELECT sum(
+                                  VatavAmt+
+                                  BrokAmt-
+                                  (IntAmt+
+                                  LFeeAmt+
+                                  Chithi)+
+                                  ChequeAmt+
+                                  CashAmt+
+                                  KasarAmt
+                                ) 
+                        FROM Collection
+                        where Collection.WorkYear = SaleMast.WorkYear
+                        and Collection.CoID = SaleMast.CoID
+                        and Collection.BillNo = SaleMast.BillNo
+                        and Collection.CheqReturn='N'
+                        )
+                      ,0)+ SaleMast.CRChrg                  
               ) as BalAmt  
               FROM SaleMast
               where SaleMast.BillNo = '$BillNo'
@@ -1563,6 +1693,23 @@ class CollectionModel extends CI_Model
         ";
 
 
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
+  }
+
+  public function checkCheqReturn($billNo)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "SELECT SaleMast.CheqReturn
+            from SaleMast,Collection
+            where Collection.CoID=SaleMast.CoID 
+            and Collection.WorkYear=SaleMast.WorkYear
+            and Collection.BillNo=SaleMast.BillNo
+            and SaleMast.CoID='$CoID'
+            and SaleMast.WorkYear='$WorkYear'
+            and SaleMast.BillNo='$billNo'";
     $query = $this->db->query($sql);
     $result = $query->result();
     return $result;

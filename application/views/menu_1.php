@@ -250,6 +250,7 @@
                                 <li>
                                 <li><a href="<?= site_url('TBReportController/stockshow') ?>">Stock Summary</a></li>
                                 <li><a href="<?= site_url('TBReportController/Lotwise_Stockshow') ?>">LotWisteStock </a></li>
+                                <li><a href="<?= site_url('TBReportController/Itemwise_Stockshow') ?>">Itemwise Stock </a></li>
                                 <li><a href="<?= site_url('PaymentTdsController/show') ?>">TDS </a></li>
                                 <li><a href="<?= site_url('rtgs/show') ?>">Rtgs </a></li>
                                 <li><a href="<?= site_url('SalesReturnController/Show') ?>">salesReturn </a></li>

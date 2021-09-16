@@ -150,6 +150,10 @@ $date = date('Y-m-d');
       },
       dataType: 'json',
       success: function(result) {
+        // console.log(result);
+        // for (var i = 0; i < result.length; i++) {
+        //   alert(result[i]['BillNo']);
+        // }
         alert('Cheque Return Entered...');
         $('#debtor_code').val('');
         $('#debtor_name').val('');

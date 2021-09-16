@@ -51,10 +51,11 @@ class CheckReturnController extends CI_Controller
   {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
+    $refId = $this->input->post('RefIDNumber');
     $data = array(
       'CoID' => $CoID,
       'WorkYear' => $WorkYear,
-      'RefIDNumber' => $this->input->post('RefIDNumber'),
+      'RefIDNumber' => $refId,
       'ReturnDate' => $this->input->post('ReturnDate'),
       'CRChrg' => $this->input->post('CRChrg'),
       'ReturnAmt' => $this->input->post('ReturnAmt'),
@@ -69,11 +70,28 @@ class CheckReturnController extends CI_Controller
     $multiwhere = array(
       'CoID' => $CoID,
       'WorkYear' => $WorkYear,
-      'IDNumber' => $this->input->post('RefIDNumber')
+      'IDNumber' => $refId
     );
     $this->db->where($multiwhere);
     $this->db->update('Collection', $data);
-    echo json_encode($data);
+
+    $bills['Bills'] = $this->CheckReturnModel->getBills($refId);
+    $BillNo = $bills['Bills'];
+
+    for ($i = 0; $i < count($BillNo); $i++) {
+      $data = array(
+        'CheqReturn' => "Y",
+        'CRChrg' => $this->input->post('CRChrg')
+      );
+      $multiwhere = array(
+        'CoID' => $CoID,
+        'WorkYear' => $WorkYear,
+        'BillNo' => $BillNo[$i]->BillNo
+      );
+      $this->db->where($multiwhere);
+      $this->db->update('SaleMast', $data);
+    }
+    echo json_encode($BillNo);
   }
   // 25-08-21
   public function UpdateCheque($IDNumber)
@@ -121,6 +139,23 @@ class CheckReturnController extends CI_Controller
     );
     $this->db->where($multiwhere);
     $this->db->update('Collection', $data);
+
+    $bills['Bills'] = $this->CheckReturnModel->getBills($result[0]->RefIDNumber);
+    $BillNo = $bills['Bills'];
+
+    for ($i = 0; $i < count($BillNo); $i++) {
+      $data = array(
+        'CheqReturn' => "Y",
+        'CRChrg' => $this->input->post('CRChrg')
+      );
+      $multiwhere = array(
+        'CoID' => $CoID,
+        'WorkYear' => $WorkYear,
+        'BillNo' => $BillNo[$i]->BillNo
+      );
+      $this->db->where($multiwhere);
+      $this->db->update('SaleMast', $data);
+    }
     echo json_encode($data);
   }
 
@@ -155,6 +190,22 @@ class CheckReturnController extends CI_Controller
     );
     $this->db->where($multiwhere);
     $this->db->update('Collection', $data);
+    $bills['Bills'] = $this->CheckReturnModel->getBills($refers_no);
+    $BillNo = $bills['Bills'];
+
+    for ($i = 0; $i < count($BillNo); $i++) {
+      $data = array(
+        'CheqReturn' => "N",
+        'CRChrg' => 00
+      );
+      $multiwhere = array(
+        'CoID' => $CoID,
+        'WorkYear' => $WorkYear,
+        'BillNo' => $BillNo[$i]->BillNo
+      );
+      $this->db->where($multiwhere);
+      $this->db->update('SaleMast', $data);
+    }
     echo "<script> ";
     echo "alert('Cheque Deleted !!');";
     echo "window.location.href = '" . base_url() . "index.php/CheckReturnController/show'";

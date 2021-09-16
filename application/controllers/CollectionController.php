@@ -3,7 +3,8 @@
 class CollectionController extends CI_Controller
 {
 
-  public function __construct(){
+  public function __construct()
+  {
     parent::__construct();
     $this->load->library('session');
     $this->load->helper('form');
@@ -17,7 +18,8 @@ class CollectionController extends CI_Controller
   }
 
   //  public function PrintFromGrid($IDNumber)
-  public function PrintFromGrid($CollectDate){
+  public function PrintFromGrid($CollectDate)
+  {
     $this->load->model('CollectionModel');
     //  $data["SlipHead"] = $this->CollectionModel->Get_Slip_Header($IDNumber);
     //  $data["Slip"] = $this->CollectionModel->Get_Slip_Data($IDNumber);
@@ -51,7 +53,8 @@ class CollectionController extends CI_Controller
     $this->load->view('reciept_view', $data);
   }
 
-  public function convert_number($number){
+  public function convert_number($number)
+  {
     //        $number=226545129.11;
     $no = intval($number);
     $point = round($number - $no, 2) * 100;
@@ -107,7 +110,8 @@ class CollectionController extends CI_Controller
     return $result . $points . "Only  ";
   }
 
-  function CollectionDatewise(){
+  function CollectionDatewise()
+  {
     $this->load->model('CollectionModel');
     $data['result'] = $this->CollectionModel->get_CollectionDatewise();
     // print_r ($data);
@@ -116,7 +120,8 @@ class CollectionController extends CI_Controller
     $this->load->view('CollectionDatewise_View', $data);
   }
 
-  function collectionDatewiseFilter(){
+  function collectionDatewiseFilter()
+  {
     if ($this->input->post('submit') != NULL) {
       $postData = $this->input->post();
 
@@ -133,40 +138,37 @@ class CollectionController extends CI_Controller
 
 
 
-  public function show(){
+  public function show()
+  {
     $this->load->model('CollectionModel');
-    if($this->input->post('submit') != NULL ){
+    if ($this->input->post('submit') != NULL) {
       $postData = $this->input->post();
-  
+
       // Read POST data
       $fromYear = $postData['fromYear'];
       $toYear = $postData['toYear'];
-      
-      $sessiondata['collectionfromyear'] = $fromYear ;
-      $sessiondata['collectiontoyear'] = $toYear ; 
-    
-      $this->session->set_userdata($sessiondata); 
-        
-      $data['Item_List'] = $this->CollectionModel->get_detailsFilter($fromYear,$toYear);
+
+      $sessiondata['collectionfromyear'] = $fromYear;
+      $sessiondata['collectiontoyear'] = $toYear;
+
+      $this->session->set_userdata($sessiondata);
+
+      $data['Item_List'] = $this->CollectionModel->get_detailsFilter($fromYear, $toYear);
 
       $this->load->view('menu_1');
-      $this->load->view('CollectionGrid',$data);
-    }
-    else{
-      if ($this->session->userdata('collectionfromyear') != '')
-      {
+      $this->load->view('CollectionGrid', $data);
+    } else {
+      if ($this->session->userdata('collectionfromyear') != '') {
         // echo "Session variables set salesfrom year and saleto year ";
         // echo $this->session->userdata('salesfromyear');
         // echo $this->session->userdata('salestoyear');
-        $fromYear = $this->session->userdata('collectionfromyear'); 
-        $toYear   = $this->session->userdata('collectiontoyear');       
-        $data['Item_List'] = $this->CollectionModel->get_detailsFilter($fromYear,$toYear);
-      }
-      else
-      {
+        $fromYear = $this->session->userdata('collectionfromyear');
+        $toYear   = $this->session->userdata('collectiontoyear');
+        $data['Item_List'] = $this->CollectionModel->get_detailsFilter($fromYear, $toYear);
+      } else {
         $CoID = $this->session->userdata('CoID');
         $WorkYear = $this->session->userdata('WorkYear');
-          // echo "Session variables not year set salesfrom year and saleto year ";
+        // echo "Session variables not year set salesfrom year and saleto year ";
         $data['Item_List'] = $this->CollectionModel->get_details($CoID, $WorkYear);
       }
       $this->load->view('menu_1');
@@ -174,7 +176,8 @@ class CollectionController extends CI_Controller
     }
   }
 
-  public function x_show_180521(){
+  public function x_show_180521()
+  {
     $this->load->model('CollectionModel');
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
@@ -184,7 +187,8 @@ class CollectionController extends CI_Controller
   }
 
 
-  public function showTry(){
+  public function showTry()
+  {
     $this->load->model('CollectionModel');
     $this->form_validation->set_rules('IDNumber', 'IDNumber', 'trim');
     $CoID = $this->session->userdata('CoID');
@@ -199,7 +203,8 @@ class CollectionController extends CI_Controller
     $this->load->view('CollectionTry', $data);
   }
 
-  public function partycode($ACCode){
+  public function partycode($ACCode)
+  {
     if (empty($ACCode)) {
       echo json_encode([]);
       exit;
@@ -211,7 +216,8 @@ class CollectionController extends CI_Controller
     exit;
   }
 
-  public function partyname($ACTitle){
+  public function partyname($ACTitle)
+  {
     if (empty($ACTitle)) {
       echo json_encode([]);
       exit;
@@ -223,7 +229,8 @@ class CollectionController extends CI_Controller
     exit;
   }
 
-  public function customer($PartyName){
+  public function customer($PartyName)
+  {
     if (empty($PartyName)) {
       echo json_encode([]);
       exit;
@@ -235,7 +242,8 @@ class CollectionController extends CI_Controller
     exit;
   }
 
-  public function brokercode($ACCode){
+  public function brokercode($ACCode)
+  {
     if (empty($ACCode)) {
       echo json_encode([]);
       exit;
@@ -247,7 +255,8 @@ class CollectionController extends CI_Controller
     exit;
   }
 
-  public function brokername($ACTitle){
+  public function brokername($ACTitle)
+  {
     if (empty($ACTitle)) {
       echo json_encode([]);
       exit;
@@ -260,19 +269,22 @@ class CollectionController extends CI_Controller
   }
 
 
-  public function party_name_dropdown(){
+  public function party_name_dropdown()
+  {
     $this->load->model('CollectionModel');
     $value = $this->CollectionModel->party_name_ddmodel();
     echo json_encode($value);
   }
 
-  public function customer_name_dropdown(){
+  public function customer_name_dropdown()
+  {
     $this->load->model('CollectionModel');
     $value = $this->CollectionModel->customer_name_ddmodel();
     echo json_encode($value);
   }
 
-  public function cashAccount($ACCode){
+  public function cashAccount($ACCode)
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
 
@@ -287,7 +299,8 @@ class CollectionController extends CI_Controller
     exit;
   }
 
-  public function depositBank($ACCode){
+  public function depositBank($ACCode)
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
 
@@ -302,7 +315,8 @@ class CollectionController extends CI_Controller
     exit;
   }
 
-  public function chequeBank($BankCode){
+  public function chequeBank($BankCode)
+  {
     if (empty($BankCode)) {
       echo json_encode([]);
       exit;
@@ -314,7 +328,8 @@ class CollectionController extends CI_Controller
     exit;
   }
 
-  public function show2($bill){
+  public function show2($bill)
+  {
     $this->load->model('CollectionModel');
     $data['TableData'] = $this->CollectionModel->getBillWiseData($bill);
     $data['Totals'] = $this->CollectionModel->getTotals($bill);
@@ -324,7 +339,8 @@ class CollectionController extends CI_Controller
   }
 
   //  Fetching Bill Data based on BillNo
-  public function getBillData(){
+  public function getBillData()
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
 
@@ -339,9 +355,41 @@ class CollectionController extends CI_Controller
       echo json_encode($result);
     }
   }
+  // 16-09-21
+
+  public function CheckCheqRet()
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+
+    $BillNo = $this->input->post('BillNo');
+    $this->load->model('CollectionModel');
+    // $multiwhere = array('CoID' => $CoID, 'WorkYear' => $WorkYear, 'BillNo' => $BillNo);
+    // $this->db->where($multiwhere);
+    // $this->db->delete('Collection');
+    $result = $this->CollectionModel->checkCheqReturn($BillNo);
+    echo json_encode($result);
+  }
+  public function GetReturnData()
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+
+    $BillNo = $this->input->post('BillNo');
+
+    $this->load->model('CollectionModel');
+    $result = $this->CollectionModel->GetReturnBillDetails($CoID, $WorkYear, $BillNo);
+
+    if ($result == null) {
+      echo json_encode('ERROR');
+    } else {
+      echo json_encode($result);
+    }
+  }
 
   // Generating SlipNo
-  public function collectionSlipNo(){
+  public function collectionSlipNo()
+  {
     $WorkYear = $this->session->userdata('WorkYear');
 
     $sql = "select max(cast(SlipNo as unsigned) ) SlipNo
@@ -355,7 +403,8 @@ class CollectionController extends CI_Controller
     echo json_encode($result);
   }
 
-  public function CollectionInsertTry(){
+  public function CollectionInsertTry()
+  {
     $this->load->model('CollectionModel');
     $this->form_validation->set_rules('IDNumber', 'IDNumber', 'trim');
     $CoID = $this->session->userdata('CoID');
@@ -486,7 +535,8 @@ class CollectionController extends CI_Controller
     }
   }
 
-  public function InsertCollectionTry2($IDNumber){
+  public function InsertCollectionTry2($IDNumber)
+  {
     $this->load->model('CollectionModel');
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
@@ -614,7 +664,8 @@ class CollectionController extends CI_Controller
     }
   }
 
-  public function addBankDetails($IDNumber){
+  public function addBankDetails($IDNumber)
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
 
@@ -648,7 +699,8 @@ class CollectionController extends CI_Controller
   }
 
 
-  public function EditTry2($id, $idnumber){
+  public function EditTry2($id, $idnumber)
+  {
     $this->load->model('CollectionModel');
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
@@ -774,13 +826,15 @@ class CollectionController extends CI_Controller
     }
   }
 
-  public function name_dropdown(){
+  public function name_dropdown()
+  {
     $this->load->model('CollectionModel');
     $value = $this->CollectionModel->pname_ddmodel();
     echo json_encode($value);
   }
 
-  public function getPartyBillList(){
+  public function getPartyBillList()
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
 
@@ -791,7 +845,8 @@ class CollectionController extends CI_Controller
     echo json_encode($value);
   }
 
-  public function getCustBillList(){
+  public function getCustBillList()
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
 
@@ -801,7 +856,8 @@ class CollectionController extends CI_Controller
     echo json_encode($value);
   }
 
-  public function getBrokerBillList(){
+  public function getBrokerBillList()
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
 
@@ -811,7 +867,8 @@ class CollectionController extends CI_Controller
     echo json_encode($value);
   }
 
-  public function Get_Bill_List(){
+  public function Get_Bill_List()
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
     $this->load->model('CollectionModel');
@@ -820,7 +877,8 @@ class CollectionController extends CI_Controller
     echo json_encode($value);
   }
 
-  public function EditTry($id){
+  public function EditTry($id)
+  {
     $this->load->model('CollectionModel');
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
@@ -1079,7 +1137,8 @@ class CollectionController extends CI_Controller
 
   // }
 
-  public function DeleteFromGrid($idnumber){
+  public function DeleteFromGrid($idnumber)
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
 
@@ -1129,7 +1188,8 @@ class CollectionController extends CI_Controller
     echo "</script>";
   }
 
-  public function Delete1($id, $IDNumber){
+  public function Delete1($id, $IDNumber)
+  {
     $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
 

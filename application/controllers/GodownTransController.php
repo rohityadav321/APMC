@@ -130,4 +130,124 @@ class GodownTransController extends CI_Controller
         $this->db->update('PurDetails', $data);
         echo json_encode($data);
     }
+
+
+    public function Edit($IDNumber){
+
+        $data['Godown']=$this->GodownTransModel->GetGodowntrans($IDNumber);
+        // echo json_encode($data);
+        // die;
+        $this->load->view('godowntransEdit_view',$data);
+    }
+    public function UpdateTransferGodown($IDNumber){
+        $CoID = $this->session->userdata('CoID');
+        $WorkYear = $this->session->userdata('WorkYear');
+        $Bal = $this->input->post('BalQty');
+        $Qty = $this->input->post('Qty');
+        $refIDNumber = $this->input->post('refIDNumber');
+        $refIDNumber2 = $this->input->post('refIDNumber2');
+        $BalQty = $Bal - $Qty;
+        // Add Data In Godown Transfer
+        $data = array(
+            'CoID' => $CoID,
+            'WorkYear' => $WorkYear,
+            'IDNumber' => $IDNumber,
+            'PartyCode' => $this->input->post('PartyCode'),
+            'ItemCode' => $this->input->post('ItemCode'),
+            'Mark' => $this->input->post('Mark'),
+            'LotNo' => $this->input->post('LotNo'),
+            'TransferDate' => $this->input->post('TransferDate'),
+            'Qty' => $Qty,
+            'Weight' => $this->input->post('Weight'),
+            'FromGodown' => $this->input->post('FromGodown'),
+            'ToGodown' => $this->input->post('ToGodown'),
+            'EntryType' => "G"
+        );
+        // print_r($data);
+        // die;
+        $multiWhere = array(
+            'CoID' => $CoID,
+            'WorkYear' => $WorkYear,
+            'IDNumber' => $IDNumber
+        );
+        $this->db->where($multiWhere);
+        $this->db->update('GodownTransfer', $data);
+        // insert in PurDetails
+        $data = array(
+            'CoID' => $CoID,
+            'WorkYear' => $WorkYear,
+            'IDNumber' => $IDNumber,
+            'PartyCode' => $this->input->post('PartyCode'),
+            'ItemCode' => $this->input->post('ItemCode'),
+            'Mark' => $this->input->post('Mark'),
+            'LotNo' => $this->input->post('LotNo'),
+            'GoodsRcptDate' => $this->input->post('TransferDate'),
+            'Qty' => $Qty,
+            'Weight' => $this->input->post('Weight'),
+            'GodownID' => $this->input->post('ToGodown'),
+            'ItemName' => $this->input->post('ItemName'),
+            'Units' => $this->input->post('Units'),
+            'Packing' => $this->input->post('Packing'),
+            'EntryType' => "G"
+        );
+        $multiWhere = array(
+            'CoID' => $CoID,
+            'WorkYear' => $WorkYear,
+            'ID' => $refIDNumber2
+        );
+        $this->db->where($multiWhere);
+        $this->db->update('PurDetails', $data);
+        // Update PurDetails
+        $data = array(
+            'Qty' => $BalQty
+        );
+        $multiWhere = array(
+            'CoID' => $CoID,
+            'WorkYear' => $WorkYear,
+            'ID' => $refIDNumber
+        );
+        $this->db->where($multiWhere);
+        $this->db->update('PurDetails', $data);
+        echo json_encode($data);
+    }
+    public function Delete($IDNumber,$ID,$Qty){
+        $CoID = $this->session->userdata('CoID');
+        $WorkYear = $this->session->userdata('WorkYear');
+        $multiWhere = array(
+            'CoID' => $CoID,
+            'WorkYear' => $WorkYear,
+            'IDNumber' => $IDNumber
+        );
+        $this->db->where($multiWhere);
+        $this->db->Delete('GodownTransfer');
+        $multiWhere = array(
+            'CoID' => $CoID,
+            'WorkYear' => $WorkYear,
+            'IDNumber' => $IDNumber
+        );
+        $this->db->where($multiWhere);
+        $this->db->Delete('PurDetails');
+
+        $data['BalQty']=$this->GodownTransModel->GetQty($ID);
+        // echo json_encode($data['BalQty'][0]->Qty);
+        $BalQty=$data['BalQty'][0]->Qty;
+        $BalQty+=$Qty;
+        // echo $BalQty;
+        // die;
+        $data=array(
+            'Qty'=>$BalQty
+        );
+        $multiWhere = array(
+            'CoID' => $CoID,
+            'WorkYear' => $WorkYear,
+            'IDNumber' => $ID
+        );
+        $this->db->where($multiWhere);
+        $this->db->Update('PurDetails',$data);
+
+        echo "<script> ";
+        echo "alert('Deleted Successfully !!');";
+        echo "window.location.href = '" . base_url() . "index.php/GodownTransController/show'";
+        echo "</script>";
+    }
 }

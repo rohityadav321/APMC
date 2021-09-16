@@ -7,8 +7,8 @@ include "header-form.php";
 
 <head>
     <title>Check Return</title>
+    <!-- meta -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css">
     <script type="text/javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -110,6 +110,7 @@ include "header-form.php";
     // alert("Clicked");
     function insertData() {
         // alert("Clicked");
+        var IDNumber = $('#IDNumber').val();
         var PartyCode = $('#PartyCode').val();
         var ItemCode = $('#ItemCode').val();
         var ItemName = $('#ItemName').val();
@@ -124,13 +125,15 @@ include "header-form.php";
         var Units = $('#Bags').val();
         var BalQty = $('#BalQty').val();
         var refIDNumber = $('#refIDNumber').val();
+        var refIDNumber2 = $('#refIDNumber2').val();
         var Packing = $('#Packing').val();
         if (parseInt(Qty) <= parseInt(BalQty)) {
 
             $.ajax({
                 method: "POST",
-                url: "<?= base_url(); ?>index.php/GodownTransController/TransferGodown",
+                url: "<?= base_url(); ?>index.php/GodownTransController/UpdateTransferGodown/" + IDNumber,
                 data: {
+                    IDNumber: IDNumber,
                     PartyCode: PartyCode,
                     ItemCode: ItemCode,
                     ItemName: ItemName,
@@ -144,48 +147,37 @@ include "header-form.php";
                     Units: Units,
                     BalQty: BalQty,
                     refIDNumber: refIDNumber,
+                    refIDNumber2: refIDNumber2,
                     Packing: Packing
                 },
                 dataType: 'json',
                 success: function(result) {
                     alert('Item Transferred');
-                    $('#PartyCode').val('');
-                    $('#ItemCode').val('');
-                    $('#ItemName').val('');
-                    $('#ItemMark').val('');
-                    $('#LotNo').val('');
-                    // $('#TransDate').val('');
-                    $('#Qty').val('');
-                    $('#Weight').val('');
-                    $('#fromGdn').val('');
-                    $('#ToGdn').val('');
-                    $('#ItemName').val('');
-                    $('#Bags').val('');
-                    $('#BalQty').val('');
-                    $('#Packing').val('');
-                    $('#fromGdnName').val('');
-                    $('#ToGdnName').val('');
-                    $('#GRDate').val('');
-                    $('#PartyName').val('');
+                    // $('#PartyCode').val('');
+                    // $('#ItemCode').val('');
+                    // $('#ItemName').val('');
+                    // $('#ItemMark').val('');
+                    // $('#LotNo').val('');
+                    // // $('#TransDate').val('');
+                    // $('#Qty').val('');
+                    // $('#Weight').val('');
+                    // $('#fromGdn').val('');
+                    // $('#ToGdn').val('');
+                    // $('#ItemName').val('');
+                    // $('#Bags').val('');
+                    // $('#BalQty').val('');
+                    // $('#Packing').val('');
+                    // $('#fromGdnName').val('');
+                    // $('#ToGdnName').val('');
+                    // $('#GRDate').val('');
+                    // $('#PartyName').val('');
 
                 }
             });
         } else {
             alert('Insufficient Balance Quantity!');
-
         }
-
         // 
-    }
-</script>
-<script>
-    function focusnext(e) {
-        var idarray = ["return_date", "refer_no", "returnChrg", "AddCheque"];
-        for (var i = 0; i < idarray.length; i++) {
-            if (e.keyCode === 13 && e.target.id === idarray[i]) {
-                document.querySelector(`#${idarray[i + 1]}`).focus();
-            }
-        }
     }
 </script>
 <script>
@@ -513,8 +505,9 @@ include "header-form.php";
                                     <label>IDNumber</label>
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <input type="text" class="form-control" name="IDNumber" id="IDNumber" value="New" readonly />
-                                    <input type="hidden" class="form-control" name="refIDNumber" id="refIDNumber" />
+                                    <input type="text" class="form-control" name="IDNumber" id="IDNumber" value="<?php echo $Godown[0]->IDNumber ?>" readonly />
+                                    <input type="hidden" class="form-control" name="refIDNumber" id="refIDNumber" value="<?php echo $Godown[0]->RefID ?>" />
+                                    <input type="hidden" class="form-control" name="refIDNumber2" id="refIDNumber2" value="<?php echo $Godown[1]->RefID ?>" />
                                 </div>
                             </div>
                             <div class="col-md-10">
@@ -522,12 +515,13 @@ include "header-form.php";
                                     <label>Lot No</label>
                                 </div>
                                 <div class="form-group col-md-2">
-                                    <input type="text" class="form-control" name="LotNo" id="LotNo" onclick="getData()" />
+                                    <!-- onclick="getData()" -->
+                                    <input type="text" class="form-control" name="LotNo" id="LotNo" readonly onkeydown="focusnext(event)" value="<?php echo $Godown[0]->LotNo ?>" />
                                     <input type="hidden" class="form-control" name="Items" id="Items" data-toggle="modal" data-target="#LotWiseModalFrom" />
                                 </div>
                                 <div class="form-group col-md-5">
-                                    <input type="hidden" class="form-control readonly" name="PartyCode" id="PartyCode" />
-                                    <input type="text" class="form-control readonly" name="PartyName" id="PartyName" readonly />
+                                    <input type="hidden" class="form-control readonly" name="PartyCode" id="PartyCode" value="<?php echo $Godown[0]->PartyCode ?>" />
+                                    <input type="text" class="form-control readonly" name="PartyName" id="PartyName" readonly value="<?php echo $Godown[0]->PartyName ?>" />
                                 </div>
                             </div>
                             <div class="col-md-10">
@@ -535,14 +529,21 @@ include "header-form.php";
                                     <label>Item Code</label>
                                 </div>
                                 <div class="form-group col-md-2">
-                                    <input type="text" class="form-control" name="ItemCode" id="ItemCode" />
+                                    <input type="text" class="form-control" name="ItemCode" id="ItemCode" value="<?php echo $Godown[0]->ItemCode ?>" />
                                 </div>
                                 <div class="form-group col-md-5">
-                                    <input type="text" class="form-control readonly" name="ItemName" id="ItemName" readonly />
+                                    <input type="text" class="form-control readonly" name="ItemName" id="ItemName" readonly value="<?php echo $Godown[0]->ItemName ?>" />
                                 </div>
+                                <?php
+                                $BalQty = 0;
+                                for ($i = 0; $i < count($Godown); $i++) {
+                                    $BalQty += $Godown[$i]->BalQty;
+                                }
+
+                                ?>
                                 <div class="form-group col-md-2">
-                                    <input type="text" class="form-control readonly" name="Packing" id="Packing" readonly />
-                                    <input type="hidden" class="form-control readonly" name="BalQty" id="BalQty" readonly />
+                                    <input type="text" class="form-control readonly" name="Packing" id="Packing" readonly value="<?php echo $Godown[0]->Packing ?>" />
+                                    <input type="hidden" class="form-control readonly" name="BalQty" id="BalQty" readonly value="<?php echo $BalQty ?>" />
                                 </div>
                             </div>
                             <div class="col-md-10">
@@ -550,13 +551,13 @@ include "header-form.php";
                                     <label>Item Mark</label>
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <input type="text" class="form-control" name="ItemMark" id="ItemMark" />
+                                    <input type="text" class="form-control" name="ItemMark" id="ItemMark" value="<?php echo $Godown[0]->Mark ?>" />
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label>Gdn Rcpt Date</label>
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <input type="text" class="form-control" name="GRDate" id="GRDate" />
+                                    <input type="text" class="form-control" name="GRDate" id="GRDate" value="<?php echo $Godown[0]->TransferDate ?>" />
                                 </div>
                             </div>
                             <div class="col-md-10">
@@ -564,7 +565,7 @@ include "header-form.php";
                                     <label>Transfer Date</label>
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <input type="date" class="form-control" onkeydown="focusnext(event)" name="TransDate" value="<?php echo $Date; ?>" id="TransDate" />
+                                    <input type="date" class="form-control" autofocus onkeydown="focusnext(event)" name="TransDate" value="<?php echo $Date; ?>" id="TransDate" />
                                 </div>
                             </div>
                             <div class="col-md-10">
@@ -572,10 +573,10 @@ include "header-form.php";
                                     <label>Quantity[Bags]</label>
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <input type="text" class="form-control" name="Qty" id="Qty" onkeydown="calculateQty(event)" />
+                                    <input type="text" class="form-control" name="Qty" id="Qty" onkeydown="calculateQty(event)" value="<?php echo $Godown[0]->Qty ?>" />
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <input type="text" class="form-control" name="Bags" id="Bags" />
+                                    <input type="text" class="form-control" name="Bags" id="Bags" value="<?php echo $Godown[0]->Unit ?>" />
                                 </div>
                             </div>
                             <div class="col-md-10">
@@ -583,7 +584,7 @@ include "header-form.php";
                                     <label>Weight</label>
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <input type="text" class="form-control" onkeydown="focusnext(event)" name="Weight" id="Weight" />
+                                    <input type="text" class="form-control" onkeydown="focusnext(event)" name="Weight" id="Weight" value="<?php echo $Godown[0]->Weight ?>" />
                                 </div>
                             </div>
                             <div class="col-md-10">
@@ -591,10 +592,10 @@ include "header-form.php";
                                     <label>From Godown </label>
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <input type="text" class="form-control" name="fromGdn" id="fromGdn" />
+                                    <input type="text" class="form-control" name="fromGdn" id="fromGdn" value="<?php echo $Godown[0]->FromGodown ?>" />
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <input type="text" class="form-control" name="fromGdnName" id="fromGdnName" />
+                                    <input type="text" class="form-control" name="fromGdnName" id="fromGdnName" value="<?php echo $Godown[0]->FromGodownDesc ?>" />
                                 </div>
                             </div>
                             <div class="col-md-10">
@@ -603,10 +604,10 @@ include "header-form.php";
                                 </div>
                                 <div class="form-group col-md-3">
                                     <input type="hidden" class="form-control" name="Godown" id="Godown" data-toggle="modal" data-target="#GdnListModalFrom" />
-                                    <input type="text" class="form-control" name="ToGdn" id="ToGdn" onclick="getGodown()" onkeydown="getGodown()" />
+                                    <input type="text" class="form-control" name="ToGdn" id="ToGdn" onclick="getGodown()" onkeydown="getGodown()" value="<?php echo $Godown[0]->ToGodown ?>" />
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <input type="text" class="form-control" name="ToGdnName" id="ToGdnName" />
+                                    <input type="text" class="form-control" name="ToGdnName" id="ToGdnName" value="<?php echo $Godown[0]->ToGodownDesc ?>" />
                                 </div>
                             </div>
 

@@ -73,7 +73,7 @@ class BankRecoController extends CI_Controller
         $CoID = $this->session->userdata('CoID');
         $WorkYear = $this->session->userdata('WorkYear');
         date_default_timezone_set("Asia/Colombo");
-        $Date = $this->input->post("ClearDate");
+        $Date = $this->input->post("ClrDate");
         $ClrType = "C";
 
         if ($type == "RJ") {
@@ -124,7 +124,7 @@ class BankRecoController extends CI_Controller
         $WorkYear = $this->session->userdata('WorkYear');
         date_default_timezone_set("Asia/Colombo");
         // $Date = date("Y-m-d");
-        $Date = $this->input->post("ClearDate");
+        $Date = "";
         $ClrType = " ";
 
         if ($type == "RJ") {

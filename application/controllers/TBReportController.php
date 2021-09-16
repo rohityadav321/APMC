@@ -1,30 +1,31 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class TBReportController extends CI_Controller
 {
-     public $id1;
+        public $id1;
 
-     public function __construct()
-     {
-          parent::__construct();
-          $this->load->library('session');
-          $this->load->helper('form');
-          $this->load->helper('url');
-          $this->load->database();
-          $this->load->helper('html');
-          $this->load->library('form_validation');
-          //load date helper
-          $this->load->helper('date');
-     }
-     
-     public function show(){
+        public function __construct()
+        {
+                parent::__construct();
+                $this->load->library('session');
+                $this->load->helper('form');
+                $this->load->helper('url');
+                $this->load->database();
+                $this->load->helper('html');
+                $this->load->library('form_validation');
+                //load date helper
+                $this->load->helper('date');
+        }
+
+        public function show()
+        {
 
 
-        $this->load->dbutil();
-        $this->load->helper('file');
-        $this->load->helper('download');
+                $this->load->dbutil();
+                $this->load->helper('file');
+                $this->load->helper('download');
 
-        $query = "
+                $query = "
 
                         SELECT FinalLedger.ACCode, ACMaster.ACTitle,
                                 0 AS OpeningDr, 
@@ -69,25 +70,24 @@ class TBReportController extends CI_Controller
 
                 ";
 
-        $result = $this->db->query($query);
+                $result = $this->db->query($query);
 
-        $delimiter = ",";
-        $newline = "\r\n";
-        $filename='APMC-TrialBalance.csv';
-        $data = $this->dbutil->csv_from_result($result, $delimiter, $newline);
-        force_download( $filename, $data);
+                $delimiter = ",";
+                $newline = "\r\n";
+                $filename = 'APMC-TrialBalance.csv';
+                $data = $this->dbutil->csv_from_result($result, $delimiter, $newline);
+                force_download($filename, $data);
+        }
 
-    }
+        public function showgrouptb()
+        {
+                $fromYear = $this->input->post('fromYear');
+                $toYear = $this->input->post('toYear');
 
-    public function showgrouptb()
-    {
-        $fromYear = $this->input->post('fromYear');
-        $toYear = $this->input->post('toYear');
+                // $this->load->model('TrialBalanceModel');
+                // $data['trial'] = $this->TrialBalanceModel->trial_balance($fromYear, $toYear);
 
-        // $this->load->model('TrialBalanceModel');
-        // $data['trial'] = $this->TrialBalanceModel->trial_balance($fromYear, $toYear);
-
-        $sql = "
+                $sql = "
 
                         SELECT ACGroups.GroupTitle, FinalLedger.ACCode, ACMaster.ACTitle,
                                 0 AS OpeningDr, 
@@ -131,22 +131,22 @@ class TBReportController extends CI_Controller
 
                 ";
 
-        $query = $this->db->query($sql);
-        $data['trial'] = $query->result_array();        
+                $query = $this->db->query($sql);
+                $data['trial'] = $query->result_array();
 
-        $this->load->view('menu_1.php');
-        $this->load->view('TBGroup_view', $data);
+                $this->load->view('menu_1.php');
+                $this->load->view('TBGroup_view', $data);
+        }
 
-    }
+        public function stockshow()
+        {
 
-    public function stockshow(){
 
+                $this->load->dbutil();
+                $this->load->helper('file');
+                $this->load->helper('download');
 
-        $this->load->dbutil();
-        $this->load->helper('file');
-        $this->load->helper('download');
-
-        $query = "
+                $query = "
                         SELECT LotNo, PurDetails.ItemCode, ItemMaster.ItemName, Mark,
 
                                 (select IFNULL( sum(op.Qty),   0) 
@@ -195,68 +195,37 @@ class TBReportController extends CI_Controller
 
                 ";
 
-        $result = $this->db->query($query);
+                $result = $this->db->query($query);
 
-        $delimiter = ",";
-        $newline = "\r\n";
-        $filename='APMC-StockSummary.csv';
-        $data = $this->dbutil->csv_from_result($result, $delimiter, $newline);
-        force_download( $filename, $data);
-
-    }
-
-    public function Itemwise_Stockshow()
-    {
-        $CoID = $this->session->userdata('CoID') ;
-        $WorkYear = $this->session->userdata('WorkYear') ; 
-    
-        if($this->input->post('submit') != NULL ){
-                $postData = $this->input->post();            
-                // Read POST data
-                $fromYear = $postData['fromYear'];
-                $toYear = $postData['toYear'];
-                // $fromYear = $this->input->post('fromYear');
-                // $toYear = $this->input->post('toYear');
+                $delimiter = ",";
+                $newline = "\r\n";
+                $filename = 'APMC-StockSummary.csv';
+                $data = $this->dbutil->csv_from_result($result, $delimiter, $newline);
+                force_download($filename, $data);
         }
-        else 
+
+        public function Itemwise_Stockshow()
         {
-                $fromYear = date('Y-m-01');
-                $month_end = strtotime('last day of this month', time());
-                // echo 'end date ' . date('D, M jS Y', $month_end).'<br/>';
-                $toYear = date('Y-m-d', $month_end);
-        }
+                $CoID = $this->session->userdata('CoID');
+                $WorkYear = $this->session->userdata('WorkYear');
 
-        $data['fromYear'] = $fromYear;
-        $data['toYear'] = $toYear;
+                if ($this->input->post('submit') != NULL) {
+                        $postData = $this->input->post();
+                        // Read POST data
+                        $fromYear = $postData['fromYear'];
+                        $toYear = $postData['toYear'];
+                        // $fromYear = $this->input->post('fromYear');
+                        // $toYear = $this->input->post('toYear');
+                } else {
+                        $fromYear = date('Y-m-01');
+                        $month_end = strtotime('last day of this month', time());
+                        // echo 'end date ' . date('D, M jS Y', $month_end).'<br/>';
+                        $toYear = date('Y-m-d', $month_end);
+                }
 
-        // $sql="";$f="";$t="";
-        // $dt=date("d-m-yy");
-        // $current_month = date("m");
-        // $current_year = date("yy");
-        // $w=explode("-",$WorkYear);
-        // $WY = '20'.$w[1];
-    
-        // if((int)$WY > (int)$current_year)
-        // {
-        //   $f = date("$current_year-$current_month-01", strtotime($dt));
-        //   $t = date("$current_year-$current_month-t", strtotime($dt));
-        // }
-        // else{
-        //   $f = date("$WY-03-01", strtotime($dt));
-        //   $t = date("$WY-03-t", strtotime($dt));
-        // }
-
-        // echo $f ; 
-        // echo "<br>";
-        // echo $t ; 
-        // die ; 
-
-
-        //     $this->load->model('TrialBalanceModel');
-        //     $data['stock'] = $this->TrialBalanceModel->Item_stock($fromYear, $toYear);
-
-        $sql = "
-                        SELECT LotNo, Mark, PurDetails.ItemCode, ItemMaster.ItemName, 
+                $data['fromYear'] = $fromYear;
+                $data['toYear'] = $toYear;
+                $sql = "SELECT LotNo, Mark, PurDetails.ItemCode, ItemMaster.ItemName, 
 
                                 (select IFNULL( sum(op.Qty),   0) 
                                         FROM PurDetails op
@@ -314,42 +283,39 @@ class TBReportController extends CI_Controller
                         CAST(LotNo AS Integer), Mark                        
                 ";
 
-        $query = $this->db->query($sql);
-        $data['stock'] = $query->result_array();        
+                $query = $this->db->query($sql);
+                $data['stock'] = $query->result_array();
 
-        $this->load->view('menu_1.php');
-        $this->load->view('Itemwise_Stock_view', $data);
-
-    }
-
-    public function Lotwise_Stockshow()
-    {
-        $CoID = $this->session->userdata('CoID') ;
-        $WorkYear = $this->session->userdata('WorkYear') ; 
-    
-        if($this->input->post('submit') != NULL ){
-                $postData = $this->input->post();            
-                // Read POST data
-                $fromYear = $postData['fromYear'];
-                $toYear = $postData['toYear'];
-                // $fromYear = $this->input->post('fromYear');
-                // $toYear = $this->input->post('toYear');
+                $this->load->view('menu_1.php');
+                $this->load->view('Itemwise_Stock_view', $data);
         }
-        else 
+
+        public function Lotwise_Stockshow()
         {
-                $fromYear = date('Y-m-01');
-                $month_end = strtotime('last day of this month', time());
-                // echo 'end date ' . date('D, M jS Y', $month_end).'<br/>';
-                $toYear = date('Y-m-d', $month_end);
-        }
+                $CoID = $this->session->userdata('CoID');
+                $WorkYear = $this->session->userdata('WorkYear');
 
-        $data['fromYear'] = $fromYear;
-        $data['toYear'] = $toYear;
+                if ($this->input->post('submit') != NULL) {
+                        $postData = $this->input->post();
+                        // Read POST data
+                        $fromYear = $postData['fromYear'];
+                        $toYear = $postData['toYear'];
+                        // $fromYear = $this->input->post('fromYear');
+                        // $toYear = $this->input->post('toYear');
+                } else {
+                        $fromYear = date('Y-m-01');
+                        $month_end = strtotime('last day of this month', time());
+                        // echo 'end date ' . date('D, M jS Y', $month_end).'<br/>';
+                        $toYear = date('Y-m-d', $month_end);
+                }
 
-        // ' ' as Area,
-        // CONCAT(PartyMaster.PartyArea, ' ', AreaMaster.AreaName) AS Area,
+                $data['fromYear'] = $fromYear;
+                $data['toYear'] = $toYear;
 
-        $sql = "
+                // ' ' as Area,
+                // CONCAT(PartyMaster.PartyArea, ' ', AreaMaster.AreaName) AS Area,
+
+                $sql = "
                 SELECT * 
                 FROM (
                        SELECT 
@@ -429,42 +395,39 @@ class TBReportController extends CI_Controller
                 ) AS T 
                 ";
 
-        $query = $this->db->query($sql);
-        $data['stock'] = $query->result_array();        
+                $query = $this->db->query($sql);
+                $data['stock'] = $query->result_array();
 
-        // print_r($data);
-        // die;
-        $this->load->view('menu_1.php');
-        $this->load->view('Lotwise_Stock_view', $data);
-
-    }
-
-
-    public function BrokeragePayable()
-    {
-        $CoID = $this->session->userdata('CoID') ;
-        $WorkYear = $this->session->userdata('WorkYear') ; 
-    
-        if($this->input->post('submit') != NULL ){
-                $postData = $this->input->post();            
-                // Read POST data
-                $fromYear = $postData['fromYear'];
-                $toYear = $postData['toYear'];
-                // $fromYear = $this->input->post('fromYear');
-                // $toYear = $this->input->post('toYear');
+                // print_r($data);
+                // die;
+                $this->load->view('menu_1.php');
+                $this->load->view('Lotwise_Stock_view', $data);
         }
-        else 
+
+
+        public function BrokeragePayable()
         {
-                $fromYear = date('Y-m-01');
-                $month_end = strtotime('last day of this month', time());
-                // echo 'end date ' . date('D, M jS Y', $month_end).'<br/>';
-                $toYear = date('Y-m-d', $month_end);
-        }
+                $CoID = $this->session->userdata('CoID');
+                $WorkYear = $this->session->userdata('WorkYear');
 
-        $data['fromYear'] = $fromYear;
-        $data['toYear'] = $toYear;
+                if ($this->input->post('submit') != NULL) {
+                        $postData = $this->input->post();
+                        // Read POST data
+                        $fromYear = $postData['fromYear'];
+                        $toYear = $postData['toYear'];
+                        // $fromYear = $this->input->post('fromYear');
+                        // $toYear = $this->input->post('toYear');
+                } else {
+                        $fromYear = date('Y-m-01');
+                        $month_end = strtotime('last day of this month', time());
+                        // echo 'end date ' . date('D, M jS Y', $month_end).'<br/>';
+                        $toYear = date('Y-m-d', $month_end);
+                }
 
-        $sql = "
+                $data['fromYear'] = $fromYear;
+                $data['toYear'] = $toYear;
+
+                $sql = "
                                 SELECT 
                                 concat(
                                         SaleMast.BrokerID, ' ',
@@ -533,14 +496,12 @@ class TBReportController extends CI_Controller
                         order by  BrokerName, cast(SaleMast.BillNo as Integer)
                 ";
 
-        $query = $this->db->query($sql);
-        $data['stock'] = $query->result_array();        
+                $query = $this->db->query($sql);
+                $data['stock'] = $query->result_array();
 
-        // print_r($data);
-        // die;
-        $this->load->view('menu_1.php');
-        $this->load->view('BrokeragePayable_view', $data);
-    }
+                // print_r($data);
+                // die;
+                $this->load->view('menu_1.php');
+                $this->load->view('BrokeragePayable_view', $data);
+        }
 }
-
-?>

@@ -171,11 +171,11 @@ $today = date('Y-m-d');
                 ?>
                         <tr>
                             <td>
-                                <a onclick="isupdateconfirm();" href="<?php echo base_url() . "index.php/CheckReturnController/Edit/" . $Godown[0][$i]['IDNumber']; ?>">
+                                <a onclick="isupdateconfirm();" href="<?php echo base_url() . "index.php/GodownTransController/Edit/" . $Godown[0][$i]['IDNumber']."/".$Godown[0][$i]['ID']; ?>">
                                     <button class="btn btn-warning btn-xs"><i class="glyphicon glyphicon-pencil"></i></button>
                                 </a>
                                 &nbsp;
-                                <a onclick="isdeleteconfirm();" href="<?php echo base_url() . "index.php/CheckReturnController/DeleteCheque/" . $Godown[0][$i]['IDNumber']; ?>">
+                                <a onclick="isdeleteconfirm();" href="<?php echo base_url() . "index.php/GodownTransController/Delete/" . $Godown[0][$i]['IDNumber']."/".$Godown[0][$i]['ID']."/".$Godown[0][$i]['Qty']; ?>">
                                     <button class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove"></i></button>
                                 </a>
                                 &nbsp;

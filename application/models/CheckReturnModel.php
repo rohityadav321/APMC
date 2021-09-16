@@ -139,7 +139,8 @@ class CheckReturnModel extends CI_Model
                   ChequeReturn.IDNumber,
                   ChequeReturn.ReturnDate,
                   ChequeReturn.CRChrg,
-                  ChequeReturn.RefIDNumber
+                  ChequeReturn.RefIDNumber,
+                  ChequeReturn.ReturnAmt
 
               FROM
                   Collection,
@@ -208,6 +209,20 @@ class CheckReturnModel extends CI_Model
       where CoID='$CoID' 
       and WorkYear='$WorkYear'
       and IDNumber=$IDNumber";
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
+  }
+  function getBills($refId)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "SELECT BillNo
+            from Collection 
+            where CoID='$CoID'
+            and WorkYear='$WorkYear'
+            and IDNumber='$refId'
+        ";
     $query = $this->db->query($sql);
     $result = $query->result();
     return $result;

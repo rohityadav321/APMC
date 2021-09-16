@@ -613,7 +613,7 @@ $today = date("Y-m-d");
     var TDR = $('#Total_DR').val();
     var TCR = $('#Total_CR').val();
 
-    if ((codeval1 == "J") && (TDR != TCR)) {
+    if ((TDR != TCR)) {
       alert("Value of debit and credit not matched");
     } else {
       alert("Entries Saved Successfully");
@@ -642,6 +642,8 @@ $today = date("Y-m-d");
     document.getElementById("GroupCode1").value = $GroupCode;
     //document.getElementById("Amount").value = $OpeningBal;
     //document.getElementById("Balance").value = $ClosingBal;
+    ShowHide();
+    ClosingBal();
   }
 
   function ACCodeFrom($ACCode, $ACTitle, $GroupCode) {
@@ -790,8 +792,30 @@ $today = date("Y-m-d");
 
 
             </div>
-            <? //second part
-            ?>
+            <script>
+              function moveCursorTo(e) {
+                var Amount = $('#Amount').val();
+                if (e.keyCode == 13) {
+                  $('#ACCode').focus();
+                  $('#Amount1').val(Amount);
+                }
+              }
+
+              function getval(select) {
+                // if (e.keyCode == 13) {
+                alert(select.value);
+                if (select.value == 'Withdraw') {
+                  $('#DRCR option[value=CR]').removeAttr('selected');
+                  $('#DRCR option[value=DR]').attr('selected', 'selected');
+                  $('#ACCode').focus();
+                } else if (select.value == 'Deposit') {
+                  $('#DRCR option[value=DR]').removeAttr('selected');
+                  $('#DRCR option[value=CR]').attr('selected', 'selected');
+                  $('#ACCode').focus();
+                }
+                // }
+              }
+            </script>
             <div class="col-md-4">
 
               <div class="form-group row" style="margin-right: -50%; align-content: right">
@@ -799,7 +823,7 @@ $today = date("Y-m-d");
 
 
                 <div class="col-md-3">
-                  <input type="text" class="form-control" id="Amount" onkeydown="focusnext(event)" tabindex="7" name="Amount" onblur="moveCursorTo()" value="<?php echo $bal[0]->AMT; ?>" placeholder="Amount">
+                  <input type="text" class="form-control" id="Amount" tabindex="7" name="Amount" onkeydown="moveCursorTo(event)" value="<?php echo $bal[0]->AMT; ?>" placeholder="Amount">
                   <span class="text-danger"><?php echo form_error('Amount'); ?>
                   </span>
                 </div>
@@ -810,7 +834,7 @@ $today = date("Y-m-d");
 
 
                 <div class="col-md-3">
-                  <select name="Nature" id="Nature" onkeydown="focusnext(event)" value="<?php echo $Rojdata[0]->AMTNature; ?>" tabindex="8" placeholder="Nature">
+                  <select name="Nature" id="Nature" onkeydown="focusnext(event)" onchange="getval(this);" value="<?php echo $Rojdata[0]->AMTNature; ?>" tabindex="8" placeholder="Nature">
                     <option value="1">Receipt</option>
                     <option value="2">Payment</option>
                   </select>
@@ -954,7 +978,7 @@ $today = date("Y-m-d");
                   <td style="border: none;">
                     <div class=row1>
                       <div class="column" style="float: left;">
-                        <input type="text" class="form-control" id="ACCode" name="ACCode" onkeydown="focusnext(event)" value="<?php echo set_value('ACCode'); ?>">
+                        <input type="text" class="form-control" id="ACCode" name="ACCode" value="<?php echo set_value('ACCode'); ?>">
                       </div>
 
                     </div>
@@ -987,7 +1011,22 @@ $today = date("Y-m-d");
             <option value="DR">DR</option>
             <option value="CR">CR</option>
         </td>
-        <td style="border: none;"><input type="text" class="form-control" id="Amount1" name="Amount1" onkeydown="focusnext(event)" value="<?php echo set_value('Amount'); ?>">
+        <script>
+          function CheckAmt(e) {
+            var DetAmount = $('#Amount1').val();
+            var HeadAmount = $('#Amount').val();
+            if (e.keyCode == 13) {
+              if (parseFloat(DetAmount) > parseFloat(HeadAmount)) {
+                alert("Entered Amount is greater than Header Amount!!!");
+                $("#Amount1").focus();
+              } else {
+                $("#Cheque_No").focus();
+
+              }
+            }
+          }
+        </script>
+        <td style="border: none;"><input type="text" class="form-control" id="Amount1" name="Amount1" onkeydown="CheckAmt(event)" value="<?php echo set_value('Amount1'); ?>">
           <span class="text-danger"><?php echo form_error('Amount'); ?></span>
         </td>
         <td style="border: none;"><input type="text" class="form-control" id="Cheque_No" name="Cheque_No" onblur="focusnext(event)" onkeydown="focusnext(event)" value="<?php echo set_value('Cheque_No'); ?>">
@@ -1321,6 +1360,11 @@ $today = date("Y-m-d");
           }
 
         }
+      });
+
+      $("#ACCode").keydown(function(event) {
+        if (event.keyCode == 13)
+          $("#Amount1").focus();
       });
     });
   </script>
