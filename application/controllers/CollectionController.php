@@ -518,7 +518,8 @@ class CollectionController extends CI_Controller
       $RcptAmt = $result[0]->RcptAmt;
 
       $data1 = array(
-        'RcptAmt' => $RcptAmt
+        'RcptAmt' => $RcptAmt,
+        'CheqReturn' => 'N'
       );
 
       // $data1 = array(

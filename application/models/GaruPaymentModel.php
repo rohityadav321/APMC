@@ -1,19 +1,20 @@
-<?php 
+<?php
 
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class GaruPaymentModel extends CI_Model
 {
-    function __construct(){
-      // Call the Model constructor
-      parent::__construct();
-    }
+  function __construct()
+  {
+    // Call the Model constructor
+    parent::__construct();
+  }
 
-    function get_RTGS_details($id)
-    {
-        $CoID = $this->session->userdata('CoID');
-        $WorkYear = $this->session->userdata('WorkYear');
-        $sql = "
+  function get_RTGS_details($id)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "
             select ACMastDets.ACTitle as PatyName,
                 ACMastDets.ACCode as PatyCode,
                 concat(ACMastDets.AddressI,'',
@@ -37,16 +38,16 @@ class GaruPaymentModel extends CI_Model
                     and PurPayments.WorkYear='$WorkYear'
                     and PurPayments.PvNumber='$id'
                 ";
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        return $result;
-    }
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
+  }
 
-    function get_RTGS_BankDet($id)
-    {
-        $CoID = $this->session->userdata('CoID');
-        $WorkYear = $this->session->userdata('WorkYear');
-        $sql = "
+  function get_RTGS_BankDet($id)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "
             select ACMastDets.ACTitle as PatyName,
                 ACMastDets.ACCode as PatyCode,
                 concat(ACMastDets.AddressI,'',
@@ -69,15 +70,15 @@ class GaruPaymentModel extends CI_Model
                     and PurPayments.WorkYear='$WorkYear'
                     and PurPayments.PvNumber='$id'
                 ";
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        return $result;
-    }
-    function get_RTGScompany()
-    {
-        $CoID = $this->session->userdata('CoID');
-        $WorkYear = $this->session->userdata('WorkYear');
-        $sql = "
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
+  }
+  function get_RTGScompany()
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "
                     select Company.CoName,
                         concat(Company.Address1,' ',Company.Address2,' ',Company.Address3, ' ', CompData.FirmPinCode) as Address
                     from Company, CompData
@@ -85,15 +86,16 @@ class GaruPaymentModel extends CI_Model
                     and CompData.WorkYear = '$WorkYear'
                     and Company.CoID= '$CoID'
                 ";
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        return $result;
-    }
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
+  }
 
-    function GetRefIdData($Refid,$payDate){
-      $CoID = $this->session->userdata('CoID') ;
-      $WorkYear = $this->session->userdata('WorkYear') ;
-       $sql="
+  function GetRefIdData($Refid, $payDate)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "
           SELECT 
             `RefIDNumber`, 
             TotalAmount,
@@ -117,17 +119,18 @@ class GaruPaymentModel extends CI_Model
         AND PurHeader.CoID = ACMaster.CoID
         AND PurHeader.WorkYear = ACMaster.WorkYear
       ";
-       
-      $query = $this->db->query($sql);
-      $result = $query->result();
-        
-      return $result;
-    }
 
-    function GetId(){
-      $CoID = $this->session->userdata('CoID') ;
-      $WorkYear = $this->session->userdata('WorkYear') ;
-      $sql="
+    $query = $this->db->query($sql);
+    $result = $query->result();
+
+    return $result;
+  }
+
+  function GetId()
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "
       
               SELECT LastPaymentPVNumber
                 from CompData 
@@ -135,40 +138,43 @@ class GaruPaymentModel extends CI_Model
                 AND WorkYear = '$WorkYear'
       
       ";
-      $query = $this->db->query($sql);
-      $result = $query->result();
-  
-      $NewValue = IntVal($result[0]->LastPaymentPVNumber)+1;
-  
-      $multi_where = array('CoID' => $CoID, 'WorkYear' => $WorkYear );
-      $data2 = array('LastPaymentPVNumber' => $NewValue);              
-      $this->db->where($multi_where);
-      $this->db->update('CompData', $data2);
-  
-      return strval($NewValue);
+    $query = $this->db->query($sql);
+    $result = $query->result();
+
+    $NewValue = IntVal($result[0]->LastPaymentPVNumber) + 1;
+
+    $multi_where = array('CoID' => $CoID, 'WorkYear' => $WorkYear);
+    $data2 = array('LastPaymentPVNumber' => $NewValue);
+    $this->db->where($multi_where);
+    $this->db->update('CompData', $data2);
+
+    return strval($NewValue);
+  }
+
+
+  function get_PaymentDatewise()
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+
+    $sql = "";
+    $f = "";
+    $t = "";
+    $dt = date("d-m-yy");
+    $current_month = date("m");
+    $current_year = date("yy");
+    $w = explode("-", $WorkYear);
+    $WY = '20' . $w[1];
+
+    if ((int)$WY > (int)$current_year) {
+      $f = date("$current_year-$current_month-01", strtotime($dt));
+      $t = date("$current_year-$current_month-t", strtotime($dt));
+    } else {
+      $f = date("$WY-03-01", strtotime($dt));
+      $t = date("$WY-03-t", strtotime($dt));
     }
 
-
-    function get_PaymentDatewise(){
-      $CoID = $this->session->userdata('CoID') ;
-      $WorkYear = $this->session->userdata('WorkYear') ;
-
-      $sql="";$f="";$t="";
-      $dt=date("d-m-yy");
-      $current_month = date("m");
-      $current_year = date("yy");
-      $w=explode("-",$WorkYear);
-      $WY = '20'.$w[1];
-
-      if((int)$WY > (int)$current_year){
-        $f = date("$current_year-$current_month-01", strtotime($dt));
-        $t = date("$current_year-$current_month-t", strtotime($dt));
-      }else{
-        $f = date("$WY-03-01", strtotime($dt));
-        $t = date("$WY-03-t", strtotime($dt));
-      }
-      
-      $sql = "        
+    $sql = "        
         select distinct 
               pp.IDNumber as 'IDN No',
               pp.RefIDNumber as 'Ref Idn',
@@ -207,11 +213,11 @@ class GaruPaymentModel extends CI_Model
         and pp.CoId = '$CoID'
         order by pp.PaymentDate desc
       ";
-         
-      $query = $this->db->query($sql)->result_array();
 
-      if(empty($query)){
-        $sql = "        
+    $query = $this->db->query($sql)->result_array();
+
+    if (empty($query)) {
+      $sql = "        
           select distinct 
                 pp.IDNumber as 'IDN No',
                 pp.RefIDNumber as 'Ref Idn',
@@ -247,23 +253,24 @@ class GaruPaymentModel extends CI_Model
           on ph.BrokerCode = ac1.ACCode limit 1
 
         ";
-        
-        $query = $this->db->query($sql);
-        $ea=array("empty");
 
-        foreach ($query->list_fields() as $field){
-          array_push($ea, $field);
-        }
-        return array($ea,$f,$t);
+      $query = $this->db->query($sql);
+      $ea = array("empty");
+
+      foreach ($query->list_fields() as $field) {
+        array_push($ea, $field);
       }
-      return array($query,$f,$t);
+      return array($ea, $f, $t);
     }
-     
-    function get_PaymentDatewiseFilter($fromYear,$toYear){
-      $CoID = $this->session->userdata('CoID') ;
-      $WorkYear = $this->session->userdata('WorkYear') ;
-      
-      $sql = "        
+    return array($query, $f, $t);
+  }
+
+  function get_PaymentDatewiseFilter($fromYear, $toYear)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+
+    $sql = "        
         select distinct 
               pp.IDNumber as 'IDN No',
               pp.RefIDNumber as 'Ref Idn',
@@ -303,11 +310,11 @@ class GaruPaymentModel extends CI_Model
         order by pp.PaymentDate desc
                      
       ";
-      
-      $query = $this->db->query($sql)->result_array();
 
-      if(empty($query)){
-        $sql = "        
+    $query = $this->db->query($sql)->result_array();
+
+    if (empty($query)) {
+      $sql = "        
           select distinct 
               pp.IDNumber as 'IDN No',
               pp.RefIDNumber as 'Ref Idn',
@@ -345,24 +352,25 @@ class GaruPaymentModel extends CI_Model
           on ph.BrokerCode = ac1.ACCode limit 1
           
         ";
-         
-        $query = $this->db->query($sql);
-        $ea=array("empty");
 
-        foreach ($query->list_fields() as $field){
-          array_push($ea, $field);
-        }
-       
-        return array($ea,$fromYear,$toYear);
+      $query = $this->db->query($sql);
+      $ea = array("empty");
+
+      foreach ($query->list_fields() as $field) {
+        array_push($ea, $field);
       }
-      return  array($query,$fromYear,$toYear);
+
+      return array($ea, $fromYear, $toYear);
     }
+    return  array($query, $fromYear, $toYear);
+  }
 
-    function x_get_PaymentDatewise(){
-      $CoID = $this->session->userdata('CoID') ;
-      $WorkYear = $this->session->userdata('WorkYear') ;
+  function x_get_PaymentDatewise()
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
 
-      $sql = "
+    $sql = "
         select distinct 
             pp.*,
             ac.ACTitle as PartyName, 
@@ -382,16 +390,17 @@ class GaruPaymentModel extends CI_Model
         where pp.WorkYear='$WorkYear'
         order by pp.PaymentDate desc;         
       ";
-         
-      $query = $this->db->query($sql)->result_array();
-      return $query;
-    }
-     
-    function x_get_PaymentDatewiseFilter($fromYear,$toYear){
-      $CoID = $this->session->userdata('CoID') ;
-      $WorkYear = $this->session->userdata('WorkYear') ;
-       
-      $sql = "        
+
+    $query = $this->db->query($sql)->result_array();
+    return $query;
+  }
+
+  function x_get_PaymentDatewiseFilter($fromYear, $toYear)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+
+    $sql = "        
         select distinct 
             pp.*,
             ac.ACTitle as PartyName, 
@@ -412,34 +421,34 @@ class GaruPaymentModel extends CI_Model
         and pp.PaymentDate BETWEEN '$fromYear' AND '$toYear'
         order by pp.PaymentDate desc                     
       ";
-         
-      $query = $this->db->query($sql)->result_array();
-      return $query;
+
+    $query = $this->db->query($sql)->result_array();
+    return $query;
+  }
+
+  // Get Payment Details fro GaruPaymentGrid_view
+  function GetGridData()
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+
+    $fromYear = "";
+    $toYear = "";
+    $current_month = date("m");
+    $current_year = date("Y");
+    $yearArray = explode("-", $WorkYear);
+    $year = explode("-", $yearArray[0]);
+    $WY = substr($year[0], 0, 2) . $yearArray[1];
+
+    if ((int)$WY > (int)$current_year) {
+      $fromYear = date("$current_year-$current_month-01");
+      $toYear = date("$current_year-$current_month-t");
+    } else {
+      $fromYear = date("$WY-03-01");
+      $toYear = date("$WY-03-t");
     }
 
-    // Get Payment Details fro GaruPaymentGrid_view
-    function GetGridData(){
-      $CoID = $this->session->userdata('CoID') ;
-      $WorkYear = $this->session->userdata('WorkYear') ;
-
-      $fromYear="";$toYear="";
-      $current_month = date("m");
-      $current_year = date("Y");
-      $yearArray = explode("-",$WorkYear);
-      $year = explode("-",$yearArray[0]);
-      $WY = substr($year[0], 0, 2).$yearArray[1];
-
-      if((int)$WY > (int)$current_year)
-      {
-        $fromYear = date("$current_year-$current_month-01");
-        $toYear = date("$current_year-$current_month-t");
-      }
-      else{
-        $fromYear = date("$WY-03-01");
-        $toYear = date("$WY-03-t");
-      }
-
-      $sql="
+    $sql = "
         SELECT  
             p1.IDNumber as IDNumber, 
             p1.RefIDNumber, 
@@ -462,27 +471,28 @@ class GaruPaymentModel extends CI_Model
         Group By PvNumber
         order by p1.PaymentDate DESC
       ";
-       
-      // $query = $this->db->query($sql);
-      // $result = $query->result();
-      // return $result;
 
-      $result = $this->db->query($sql)->result_array();
+    // $query = $this->db->query($sql);
+    // $result = $query->result();
+    // return $result;
 
-      if(empty($result)){
-        $emptyArray=array("empty");   
-        return array($emptyArray,$fromYear,$toYear);
-      }
+    $result = $this->db->query($sql)->result_array();
 
-      return array($result,$fromYear,$toYear);
+    if (empty($result)) {
+      $emptyArray = array("empty");
+      return array($emptyArray, $fromYear, $toYear);
     }
 
-    // Get Payment Details Datewise for GaruPaymentGrid_view
-    function GetGridDataFilter($fromYear,$toYear){
-      $CoID = $this->session->userdata('CoID') ;
-      $WorkYear = $this->session->userdata('WorkYear') ; 
+    return array($result, $fromYear, $toYear);
+  }
 
-      $sql = "        
+  // Get Payment Details Datewise for GaruPaymentGrid_view
+  function GetGridDataFilter($fromYear, $toYear)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+
+    $sql = "        
             SELECT  
                 p1.IDNumber as IDNumber, 
                 p1.RefIDNumber, 
@@ -505,53 +515,56 @@ class GaruPaymentModel extends CI_Model
             Group By PvNumber
             order by p1.PaymentDate DESC
       ";
-      $result = $this->db->query($sql)->result_array();
+    $result = $this->db->query($sql)->result_array();
 
-      if(empty($result)){
-            $emptyArray=array("empty");   
-            return array($emptyArray,$fromYear,$toYear);
-      }
-
-      return  array($result,$fromYear,$toYear); 
+    if (empty($result)) {
+      $emptyArray = array("empty");
+      return array($emptyArray, $fromYear, $toYear);
     }
 
-    //new updated 23/01/2021
-    function GetRefHeader($id){
-      $CoID = $this->session->userdata('CoID') ;
-      $WorkYear = $this->session->userdata('WorkYear') ;
-       
-      $sql= "SELECT NetPayable,TotalPaid,BalanceDue  from PurHeader 
+    return  array($result, $fromYear, $toYear);
+  }
+
+  //new updated 23/01/2021
+  function GetRefHeader($id)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+
+    $sql = "SELECT NetPayable,TotalPaid,BalanceDue  from PurHeader 
             where RefIDNumber = '$id'
             AND CoID ='$CoID'
             AND WorkYear = '$WorkYear'
       ";
-      $query = $this->db->query($sql);
-      $result = $query->result();
-      print_r($result);
-      return $result;
-    }
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    print_r($result);
+    return $result;
+  }
 
-    //30jan
-    function getRefLoop($pno){
-      $CoID = $this->session->userdata('CoID') ;
-      $WorkYear = $this->session->userdata('WorkYear') ;
-      
-      $sql=" SELECT RefIDNumber
+  //30jan
+  function getRefLoop($pno)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+
+    $sql = " SELECT RefIDNumber
               from PurPayments
               where PvNumber='$pno'
       ";
-      $query = $this->db->query($sql);
+    $query = $this->db->query($sql);
 
-      $result = $query->result();
-    
-      return $result;
-    }
+    $result = $query->result();
 
-     //29jan
-    function checkref($PartyCode,$BrokerCode,$ref,$no){
-      $CoID = $this->session->userdata('CoID') ;
-      $WorkYear = $this->session->userdata('WorkYear') ;
-      $sql=" SELECT DISTINCT  
+    return $result;
+  }
+
+  //29jan
+  function checkref($PartyCode, $BrokerCode, $ref, $no)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = " SELECT DISTINCT  
                 PurHeader.RefIDNumber, 
                 TotalAmount,
                 DATE_FORMAT(PurHeader.GoodsRcptDate,'%d-%m-%Y') AS GoodsRcptDate, 
@@ -573,16 +586,17 @@ class GaruPaymentModel extends CI_Model
               AND PurHeader.WorkYear = '$WorkYear' 
       ";
 
-      $query = $this->db->query($sql);
-      $result = $query->result();
-      return $result;
-    }
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
+  }
 
-  public function totalAmt($PVref){
-    $CoID = $this->session->userdata('CoID') ;
-    $WorkYear = $this->session->userdata('WorkYear') ;
- 
-    $sql= " SELECT 
+  public function totalAmt($PVref)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+
+    $sql = " SELECT 
           sum(ChequeAmt) AS chq,
           sum(CashAmt) AS csh
           from PurPayments
@@ -596,16 +610,135 @@ class GaruPaymentModel extends CI_Model
     $query = $this->db->query($sql);
 
     $result = $query->result();
-    
+
+    return $result;
+  }
+  // Updated on 8/10/21
+  function GetModaldataParty($PartyCode, $payDate)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "SELECT 
+          `RefIDNumber`, 
+          TotalAmount,
+          DATE_FORMAT(GoodsRcptDate,'%d-%m-%Y') AS GoodsRcptDate, 
+          `PartyCode`, 
+          PartyName,
+          PurHeader.BrokerCode, 
+          `InvoiceNo`, 
+          DATE_FORMAT(InvoiceDate,'%d-%m-%Y') AS InvoiceDate,
+          `NetPayable`,
+       	  (
+                  ifnull(
+              (SELECT sum(ACCAmount)
+                  from ACCDetails
+                  where ACCDetails.CoID=PurHeader.CoID
+                  and ACCDetails.WorkYear=PurHeader.WorkYear
+                  and ACCDetails.RefIDNo=PurHeader.RefIDNumber
+              ),
+            0)
+                +
+                ifnull(( SELECT sum(TotalPay)
+            FROM PurPayments
+            where PurPayments.CoID = PurHeader.CoID
+                    and PurPayments.WorkYear = PurHeader.WorkYear
+            and PurPayments.PartyCode = PurHeader.PartyCode 
+            and PurPayments.RefIDNumber = PurHeader.RefIDNumber ),0) 
+                )TotalPaid,    
+          DATEDIFF($payDate,GoodsRcptDate) AS Days,
+               (`BalanceDue`
+          -
+          ifnull(
+					(SELECT sum(ACCAmount)
+							from ACCDetails
+							where ACCDetails.CoID=PurHeader.CoID
+							and ACCDetails.WorkYear=PurHeader.WorkYear
+							and ACCDetails.RefIDNo=PurHeader.RefIDNumber
+					),
+				0) 
+                ) BalanceDue,
+          `IntRate`
+      from PurHeader ,ACMaster
+      where (PartyCode = '$PartyCode')
+      AND BalanceDue > 0
+      AND PurHeader.CoID ='$CoID'
+      AND PurHeader.WorkYear = '$WorkYear' 
+      AND PurHeader.PartyCode = ACMaster.ACCode
+      AND PurHeader.CoID = ACMaster.CoID
+      AND PurHeader.WorkYear = ACMaster.WorkYear
+    ";
+
+    $query = $this->db->query($sql);
+    $result = $query->result();
+
     return $result;
   }
 
-  
-  function GetModaldata($PartyCode,$BrokerCode,$payDate){
-      $CoID = $this->session->userdata('CoID') ;
-      $WorkYear = $this->session->userdata('WorkYear') ;
-     	$sql="
-          SELECT 
+  function GetModaldataBroker($BrokerCode, $payDate)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "SELECT 
+        `RefIDNumber`, 
+        TotalAmount,
+        DATE_FORMAT(GoodsRcptDate,'%d-%m-%Y') AS GoodsRcptDate, 
+        `PartyCode`, 
+        PartyName,
+        PurHeader.BrokerCode, 
+        `InvoiceNo`, 
+        DATE_FORMAT(InvoiceDate,'%d-%m-%Y') AS InvoiceDate,
+        `NetPayable`,
+       	  (
+                  ifnull(
+              (SELECT sum(ACCAmount)
+                  from ACCDetails
+                  where ACCDetails.CoID=PurHeader.CoID
+                  and ACCDetails.WorkYear=PurHeader.WorkYear
+                  and ACCDetails.RefIDNo=PurHeader.RefIDNumber
+              ),
+            0)
+                +
+                ifnull(( SELECT sum(TotalPay)
+            FROM PurPayments
+            where PurPayments.CoID = PurHeader.CoID
+            and PurPayments.WorkYear = PurHeader.WorkYear
+            and PurPayments.PartyCode = PurHeader.PartyCode 
+            and PurPayments.RefIDNumber = PurHeader.RefIDNumber ),0) 
+                )TotalPaid,    
+          DATEDIFF($payDate,GoodsRcptDate) AS Days,
+               (`BalanceDue`
+          -
+          ifnull(
+					(SELECT sum(ACCAmount)
+							from ACCDetails
+							where ACCDetails.CoID=PurHeader.CoID
+							and ACCDetails.WorkYear=PurHeader.WorkYear
+							and ACCDetails.RefIDNo=PurHeader.RefIDNumber
+					),
+				0) 
+                ) BalanceDue,
+        `IntRate`
+        from PurHeader ,ACMaster
+        where (PurHeader.BrokerCode = '$BrokerCode')
+        AND BalanceDue > 0
+        AND PurHeader.CoID ='$CoID'
+        AND PurHeader.WorkYear = '$WorkYear' 
+        AND PurHeader.PartyCode = ACMaster.ACCode
+        AND PurHeader.CoID = ACMaster.CoID
+        AND PurHeader.WorkYear = ACMaster.WorkYear
+    ";
+
+    $query = $this->db->query($sql);
+    $result = $query->result();
+
+    return $result;
+  }
+
+  function GetModaldata($PartyCode, $BrokerCode, $payDate)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = " SELECT 
             `RefIDNumber`, 
             TotalAmount,
             DATE_FORMAT(GoodsRcptDate,'%d-%m-%Y') AS GoodsRcptDate, 
@@ -615,12 +748,38 @@ class GaruPaymentModel extends CI_Model
             `InvoiceNo`, 
             DATE_FORMAT(InvoiceDate,'%d-%m-%Y') AS InvoiceDate,
             `NetPayable`,
-            `TotalPaid`,
-            DATEDIFF('$payDate',GoodsRcptDate) AS Days,
-            `BalanceDue`,
+                 (
+                      ifnull(
+                  (SELECT sum(ACCAmount)
+                      from ACCDetails
+                      where ACCDetails.CoID=PurHeader.CoID
+                      and ACCDetails.WorkYear=PurHeader.WorkYear
+                      and ACCDetails.RefIDNo=PurHeader.RefIDNumber
+                  ),
+                0)
+                    +
+                    ifnull(( SELECT sum(TotalPay)
+                FROM PurPayments
+                where PurPayments.CoID = PurHeader.CoID
+                and PurPayments.WorkYear = PurHeader.WorkYear
+                and PurPayments.PartyCode = PurHeader.PartyCode 
+                and PurPayments.RefIDNumber = PurHeader.RefIDNumber ),0) 
+                    )TotalPaid,    
+              DATEDIFF($payDate,GoodsRcptDate) AS Days,
+                  (`BalanceDue`
+              -
+              ifnull(
+              (SELECT sum(ACCAmount)
+                  from ACCDetails
+                  where ACCDetails.CoID=PurHeader.CoID
+                  and ACCDetails.WorkYear=PurHeader.WorkYear
+                  and ACCDetails.RefIDNo=PurHeader.RefIDNumber
+              ),
+            0) 
+                    ) BalanceDue,
             `IntRate`
         from PurHeader ,ACMaster
-        where (PartyCode = '$PartyCode' or PurHeader.BrokerCode = '$BrokerCode')
+        where (PartyCode = '$PartyCode' and PurHeader.BrokerCode = '$BrokerCode')
         AND BalanceDue > 0
         AND PurHeader.CoID ='$CoID'
         AND PurHeader.WorkYear = '$WorkYear' 
@@ -628,19 +787,21 @@ class GaruPaymentModel extends CI_Model
         AND PurHeader.CoID = ACMaster.CoID
         AND PurHeader.WorkYear = ACMaster.WorkYear
       ";
-       
-      $query = $this->db->query($sql);
-      $result = $query->result();
-        
-      return $result;
+
+    $query = $this->db->query($sql);
+    $result = $query->result();
+
+    return $result;
   }
+  // Updated on 8/10/21 ends
 
   //new updated 23/01/2021
-  function GetHeaderGriddata($Refid){
-    $CoID = $this->session->userdata('CoID') ;
-    $WorkYear = $this->session->userdata('WorkYear') ;
-    
-    $sql="SELECT 
+  function GetHeaderGriddata($Refid)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+
+    $sql = "SELECT 
               `RefIDNumber`, 
               TotalAmount,
               DATE_FORMAT(GoodsRcptDate,'%d-%m-%Y') AS GoodsRcptDate, 
@@ -658,18 +819,19 @@ class GaruPaymentModel extends CI_Model
           AND CoID ='$CoID'
           AND WorkYear = '$WorkYear'
     ";
-       
+
     $query = $this->db->query($sql);
     $result = $query->result();
-        
+
     return $result;
   }
 
   // Get Data based on PvNumber from Garu Payment
-  function GetTabledata($PvNumber){
-    $CoID = $this->session->userdata('CoID') ;
-    $WorkYear = $this->session->userdata('WorkYear') ;
-    
+  function GetTabledata($PvNumber)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+
     $sql = "SELECT 
                 IDNumber,
                 PvNumber,
@@ -701,19 +863,19 @@ class GaruPaymentModel extends CI_Model
             AND CoID ='$CoID'
             AND WorkYear = '$WorkYear'
     ";
-    
+
     $query = $this->db->query($sql);
     $result = $query->result();
     return $result;
-
   }
 
   // Get Data based on IDNumber from Garu Payment
-  function GetTabledata1($Idnumber){
-      $CoID = $this->session->userdata('CoID') ;
-      $WorkYear = $this->session->userdata('WorkYear') ;
-      
-      $sql = "SELECT 
+  function GetTabledata1($Idnumber)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+
+    $sql = "SELECT 
                 IDNumber,
                 PvNumber,
                 DATE_FORMAT(PaymentDate,'%d-%m-%Y') AS PaymentDate,
@@ -759,18 +921,19 @@ class GaruPaymentModel extends CI_Model
               AND CoID ='$CoID'
               AND WorkYear = '$WorkYear'
       ";
-        
-      $query = $this->db->query($sql);
-      $result = $query->result();
-      return $result;
+
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
   }
 
 
   // Get Sum of TotalPay from Garu Payment Table
-  function GetTotalPaySum($PvNumber){
-    $CoID = $this->session->userdata('CoID') ;
-    $WorkYear = $this->session->userdata('WorkYear') ;
-    
+  function GetTotalPaySum($PvNumber)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+
     $sql = "SELECT 	
                 PurHeader.RefIDNumber,
                 PurHeader.NetPayable,
@@ -791,25 +954,27 @@ class GaruPaymentModel extends CI_Model
     $query = $this->db->query($sql);
     $result = $query->result();
     return $result;
-
   }
 
-  function GetNextPVId(){
-    $sql="SELECT max(PvNumber) as PVID FROM PurPayments";
+  function GetNextPVId()
+  {
+    $sql = "SELECT max(PvNumber) as PVID FROM PurPayments";
     $query = $this->db->query($sql);
     $result = $query->result();
     return $result;
   }
 
-  function GetNextId(){
-    $sql="SELECT max(IDNumber) as Currentid FROM PurPayments";
+  function GetNextId()
+  {
+    $sql = "SELECT max(IDNumber) as Currentid FROM PurPayments";
     $query = $this->db->query($sql);
     $result = $query->result();
     return $result;
   }
 
-  function GetDataSingle($refid){
-      $sql = "SELECT
+  function GetDataSingle($refid)
+  {
+    $sql = "SELECT
                   RefIDNumber, 
                   TotalAmount,
                   DATE_FORMAT(GoodsRcptDate,'%d-%m-%Y') AS GoodsRcptDate, 
@@ -824,13 +989,14 @@ class GaruPaymentModel extends CI_Model
               FROM PurHeader
               WHERE RefIDNumber = '$refid'
       ";
-      $query = $this->db->query($sql);
-      $result = $query->result();
-      return $result;
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
   }
-     
-  function GetDataSingle1($IDNumber){
-      $sql = "SELECT 
+
+  function GetDataSingle1($IDNumber)
+  {
+    $sql = "SELECT 
                   IDNumber,
                   PvNumber,
                   DATE_FORMAT(PaymentDate,'%d-%m-%Y') AS PaymentDate,
@@ -859,18 +1025,19 @@ class GaruPaymentModel extends CI_Model
               FROM PurPayments
               WHERE IDNumber = '$IDNumber'
       ";
-      $query = $this->db->query($sql);
-      $result = $query->result();
-      return $result;
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
   }
 
 
   //new updated 23/01/2021
-  function GetIdData1($PVIdnumber){
-      $CoID = $this->session->userdata('CoID') ;
-      $WorkYear = $this->session->userdata('WorkYear') ;
-      
-      $sql = "SELECT 
+  function GetIdData1($PVIdnumber)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+
+    $sql = "SELECT 
                 IDNumber,
                 PvNumber,
                 DATE_FORMAT(PaymentDate,'%d-%m-%Y') AS PaymentDate,
@@ -894,14 +1061,15 @@ class GaruPaymentModel extends CI_Model
               AND CoID ='$CoID'
               AND WorkYear = '$WorkYear'
       ";
-        
-      $query = $this->db->query($sql);
-      $result = $query->result();
-      return $result;
+
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
   }
 
-  function GetTotalSingle($Id){
-      $sql = "SELECT 
+  function GetTotalSingle($Id)
+  {
+    $sql = "SELECT 
                   COUNT(RefIDNumber) as TotalRecord,
                   SUM(VatavAmt) AS VatavAmt,
                   SUM(BrokAmt) AS BrokAmt,
@@ -914,16 +1082,17 @@ class GaruPaymentModel extends CI_Model
               FROM PurPayments
               WHERE IDNumber  = '$Id'
       ";
-      
-      $query = $this->db->query($sql);
-      $result = $query->result();
-      return $result;
+
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
   }
 
   //new updated 23/01/2021
-  function Totals($PVIdnumber){
-    $CoID = $this->session->userdata('CoID') ;
-    $WorkYear = $this->session->userdata('WorkYear') ;
+  function Totals($PVIdnumber)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
 
     $sql = "SELECT    
                 COUNT(RefIDNumber) as TotalRecord,
@@ -945,22 +1114,24 @@ class GaruPaymentModel extends CI_Model
             AND CoID ='$CoID'
             AND WorkYear = '$WorkYear'
     ";
-      
+
     $query = $this->db->query($sql);
     $result = $query->result();
     return $result;
   }
-  
+
   //new updated 23/01/2021
-  function GetReferenceId($IDNumber){
-      $sql = "SELECT RefIDNumber from PurPayments WHERE IDNumber='$IDNumber'";
-      $query = $this->db->query($sql);
-      $result = $query->result();
-      return $result;
+  function GetReferenceId($IDNumber)
+  {
+    $sql = "SELECT RefIDNumber from PurPayments WHERE IDNumber='$IDNumber'";
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
   }
 
-  function Get_Broker_List(){
-        $sql ="
+  function Get_Broker_List()
+  {
+    $sql = "
               SELECT
                 ACCode,
                 ACTitle,
@@ -968,17 +1139,18 @@ class GaruPaymentModel extends CI_Model
                 BrokerCode
               FROM  ACMaster
         ";
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        return $result;
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
   }
 
   //new updated 23/01/2021
-  function Get_CashCode_List(){
-    $CoID = $this->session->userdata('CoID') ;
-    $WorkYear = $this->session->userdata('WorkYear') ;
-    
-    $sql ="
+  function Get_CashCode_List()
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+
+    $sql = "
         SELECT
             ACCode,
             ACTitle,
@@ -989,18 +1161,19 @@ class GaruPaymentModel extends CI_Model
         AND CoID ='$CoID'
         AND WorkYear = '$WorkYear'
     ";
-        
+
     $query = $this->db->query($sql);
     $result = $query->result();
     return $result;
   }
 
   //new updated 23/01/2021
-  function Get_BankCode_List(){
-    $CoID = $this->session->userdata('CoID') ;
-    $WorkYear = $this->session->userdata('WorkYear') ;
-        
-    $sql ="
+  function Get_BankCode_List()
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+
+    $sql = "
         SELECT
           ACCode,
           ACTitle,
@@ -1011,17 +1184,18 @@ class GaruPaymentModel extends CI_Model
         AND CoID ='$CoID'
         AND WorkYear = '$WorkYear'
     ";
-         
+
     $query = $this->db->query($sql);
     $result = $query->result();
     return $result;
   }
 
-  function getSuppliers($ACCode){
-    $CoID = $this->session->userdata('CoID') ;
+  function getSuppliers($ACCode)
+  {
+    $CoID = $this->session->userdata('CoID');
     $WorkYear = $this->session->userdata('WorkYear');
 
-    $sql ="
+    $sql = "
           SELECT ACCode, ACTitle
           FROM  ACMaster
           WHERE CoID = '$CoID'
@@ -1033,13 +1207,14 @@ class GaruPaymentModel extends CI_Model
     return $query->result_array();
   }
 
-  function getBrokers($ACCode){
+  function getBrokers($ACCode)
+  {
 
-      $CoID = $this->session->userdata('CoID') ;
-      $WorkYear = $this->session->userdata('WorkYear');
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
 
 
-      $sql ="
+    $sql = "
               SELECT ACCode, ACTitle
               FROM  ACMaster
               WHERE CoID = '$CoID'
@@ -1047,46 +1222,7 @@ class GaruPaymentModel extends CI_Model
                 AND ACCode like '$ACCode%'
                 AND GroupCode = 'B1'
             ";
-      $query = $this->db->query($sql);
-      return $query->result_array();
+    $query = $this->db->query($sql);
+    return $query->result_array();
   }
 }
-?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

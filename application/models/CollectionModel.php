@@ -1308,8 +1308,7 @@ class CollectionModel extends CI_Model
   // Get data for Party
   function Get_Party_Data($CoID, $WorkYear, $ACCode)
   {
-    $sql = "
-                SELECT distinct
+    $sql = "SELECT distinct
                 SaleMast.BillNo As BillNo,
                 SaleMast.CoID AS Comp,
                 SaleMast.DebtorID,
@@ -1331,6 +1330,16 @@ class CollectionModel extends CI_Model
                 SaleMast.BillDate As BillDate,
                 SaleMast.ItemAmt As ItemAmt, 
                 SaleMast.BillAmt As BillAmt,
+                (
+                ifnull(
+                        (SELECT sum(ACCAmount)*(-1)
+                            from ACCDetails
+                            where ACCDetails.CoID=SaleMast.CoID
+                            and ACCDetails.WorkYear=SaleMast.WorkYear
+                            and ACCDetails.BillNo=SaleMast.BillNo
+                        ),
+                      0)
+                +
                 IFNULL(
                         (SELECT sum(
                                       VatavAmt+
@@ -1342,7 +1351,8 @@ class CollectionModel extends CI_Model
                           where Collection.WorkYear = SaleMast.WorkYear
                           and Collection.CoID = SaleMast.CoID
                           and Collection.BillNo = SaleMast.BillNo)
-                ,0) as AmtRecd,
+                ,0)
+                ) as AmtRecd,
                 (SaleMast.BillAmt - 
                         IFNULL(
                           (SELECT sum(VatavAmt+BrokAmt+LFeeAmt+Chithi+ChequeAmt+CashAmt+KasarAmt - IntAmt) 
@@ -1350,7 +1360,15 @@ class CollectionModel extends CI_Model
                             where Collection.WorkYear = SaleMast.WorkYear
                             and Collection.CoID = SaleMast.CoID
                             and Collection.BillNo = SaleMast.BillNo)
-                          ,0)                   
+                          ,0)- 
+                          ifnull(
+                              (SELECT sum(ACCAmount)*(-1)
+                                from ACCDetails
+                                where ACCDetails.CoID=SaleMast.CoID
+                                and ACCDetails.WorkYear=SaleMast.WorkYear
+                                and ACCDetails.BillNo=SaleMast.BillNo
+                              ),
+                        0)                 
                 ) as BalAmt  
                 FROM SaleMast, PartyMaster
                 where SaleMast.DebtorID = '$ACCode'
@@ -1370,8 +1388,7 @@ class CollectionModel extends CI_Model
   // Get data for Customer
   function Get_Cust_Data($CoID, $WorkYear, $ACCode)
   {
-    $sql = "
-                  SELECT distinct
+    $sql = "SELECT distinct
                   SaleMast.BillNo As BillNo,
                   SaleMast.CoID AS Comp,
                   SaleMast.DebtorID as ACCode,
@@ -1400,6 +1417,16 @@ class CollectionModel extends CI_Model
                   SaleMast.BillDate As BillDate,
                   SaleMast.ItemAmt As ItemAmt, 
                   SaleMast.BillAmt As BillAmt,
+                  (
+                ifnull(
+                        (SELECT sum(ACCAmount)*(-1)
+                            from ACCDetails
+                            where ACCDetails.CoID=SaleMast.CoID
+                            and ACCDetails.WorkYear=SaleMast.WorkYear
+                            and ACCDetails.BillNo=SaleMast.BillNo
+                        ),
+                      0)
+                +
                   IFNULL(
                     (SELECT sum(
                                 VatavAmt+
@@ -1415,7 +1442,8 @@ class CollectionModel extends CI_Model
                       where Collection.WorkYear = SaleMast.WorkYear
                       and Collection.CoID = SaleMast.CoID
                       and Collection.BillNo = SaleMast.BillNo)
-                    ,0) as AmtRecd,
+                    ,0)
+                    ) as AmtRecd,
                     (SaleMast.BillAmt - 
                           IFNULL(
                             (SELECT sum(
@@ -1432,7 +1460,15 @@ class CollectionModel extends CI_Model
                               where Collection.WorkYear = SaleMast.WorkYear
                               and Collection.CoID = SaleMast.CoID
                               and Collection.BillNo = SaleMast.BillNo)
-                            ,0)                   
+                            ,0)- 
+                          ifnull(
+                              (SELECT sum(ACCAmount)*(-1)
+                                from ACCDetails
+                                where ACCDetails.CoID=SaleMast.CoID
+                                and ACCDetails.WorkYear=SaleMast.WorkYear
+                                and ACCDetails.BillNo=SaleMast.BillNo
+                              ),
+                        0)                   
                       ) as BalAmt  
                   FROM SaleMast
                   where SaleMast.PartyCode = '$ACCode'
@@ -1449,8 +1485,7 @@ class CollectionModel extends CI_Model
   // Get data for Broker
   function Get_Broker_Data($CoID, $WorkYear, $ACCode)
   {
-    $sql = "
-              SELECT distinct
+    $sql = "SELECT distinct
               SaleMast.BillNo As BillNo,
               SaleMast.CoID AS Comp,
               SaleMast.BillDate As BillDate,
@@ -1471,13 +1506,24 @@ class CollectionModel extends CI_Model
                               and ACMaster.ACCode = SaleMast.BrokerID ) as BrokerTitle,
               SaleMast.ItemAmt As ItemAmt, 
               SaleMast.BillAmt As BillAmt,
+              (
+                ifnull(
+                        (SELECT sum(ACCAmount)*(-1)
+                            from ACCDetails
+                            where ACCDetails.CoID=SaleMast.CoID
+                            and ACCDetails.WorkYear=SaleMast.WorkYear
+                            and ACCDetails.BillNo=SaleMast.BillNo
+                        ),
+                      0)
+                +
               IFNULL(
                       (SELECT sum(VatavAmt+BrokAmt+LFeeAmt+Chithi+ChequeAmt+CashAmt+KasarAmt - IntAmt) 
                         FROM Collection
                         where Collection.WorkYear = SaleMast.WorkYear
                         and Collection.CoID = SaleMast.CoID
                         and Collection.BillNo = SaleMast.BillNo)
-              ,0) as AmtRecd,
+              ,0)
+              ) as AmtRecd,
               (SaleMast.BillAmt - 
                       IFNULL(
                         (SELECT sum(VatavAmt+BrokAmt+LFeeAmt+Chithi+ChequeAmt+CashAmt+KasarAmt - IntAmt) 
@@ -1485,7 +1531,15 @@ class CollectionModel extends CI_Model
                           where Collection.WorkYear = SaleMast.WorkYear
                           and Collection.CoID = SaleMast.CoID
                           and Collection.BillNo = SaleMast.BillNo)
-                        ,0)                   
+                        ,0)- 
+                          ifnull(
+                              (SELECT sum(ACCAmount)*(-1)
+                                from ACCDetails
+                                where ACCDetails.CoID=SaleMast.CoID
+                                and ACCDetails.WorkYear=SaleMast.WorkYear
+                                and ACCDetails.BillNo=SaleMast.BillNo
+                              ),
+                        0)                   
               ) as BalAmt  
               FROM SaleMast, PartyMaster
               where SaleMast.BrokerID = '$ACCode'
@@ -1584,26 +1638,51 @@ class CollectionModel extends CI_Model
                         and Collection.CheqReturn<>'Y'
                         )
                       ,0) as AmtRecd,
-              (SaleMast.BillAmt - 
-                    IFNULL(
-                      (SELECT sum(
-                                  VatavAmt+
-                                  BrokAmt-
-                                  (IntAmt+
-                                  LFeeAmt+
-                                  Chithi)+
-                                  ChequeAmt+
-                                  CashAmt+
-                                  KasarAmt 
-                                ) 
-                        FROM Collection
-                        where Collection.WorkYear = SaleMast.WorkYear
-                        and Collection.CoID = SaleMast.CoID
-                        and Collection.BillNo = SaleMast.BillNo
-                        and Collection.CheqReturn<>'Y'
-                        )
-                      ,0)                   
-              ) as BalAmt  
+                      case 
+                      when SaleMast.CheqReturn = 'Y'
+                      then (SaleMast.BillAmt - 
+                          IFNULL(
+                            (SELECT sum(
+                                        VatavAmt+
+                                        BrokAmt-
+                                        (IntAmt+
+                                        LFeeAmt+
+                                        Chithi)+
+                                        ChequeAmt+
+                                        CashAmt+
+                                        KasarAmt 
+                                      ) 
+                              FROM Collection
+                              where Collection.WorkYear = SaleMast.WorkYear
+                              and Collection.CoID = SaleMast.CoID
+                              and Collection.BillNo = SaleMast.BillNo
+                              and Collection.CheqReturn<>'Y'
+                              )
+                            ,0)+SaleMast.CRChrg                   
+                          ) 
+                        when SaleMast.CheqReturn <> 'Y'
+                        then (SaleMast.BillAmt - 
+                          IFNULL(
+                            (SELECT sum(
+                                        VatavAmt+
+                                        BrokAmt-
+                                        (IntAmt+
+                                        LFeeAmt+
+                                        Chithi)+
+                                        ChequeAmt+
+                                        CashAmt+
+                                        KasarAmt 
+                                      ) 
+                              FROM Collection
+                              where Collection.WorkYear = SaleMast.WorkYear
+                              and Collection.CoID = SaleMast.CoID
+                              and Collection.BillNo = SaleMast.BillNo
+                              and Collection.CheqReturn<>'Y'
+                              )
+                            ,0)                  
+                          ) 
+                          else 0 end as BalAmt
+              
               FROM SaleMast
               where SaleMast.BillNo = '$BillNo'
               and SaleMast.CoID = '$CoID'

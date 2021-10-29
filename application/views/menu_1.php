@@ -203,7 +203,7 @@
                                         <li><a href="<?= site_url('GaruPaymentController/showGrid') ?>">Payment</a></li>
                                         <li class="divider">
                                         <li>
-                                            <!-- <li><a href="<?= site_url('NewGaruPurController/PurDatewise') ?>">Purchase Register</a></li> -->
+                                        <li><a href="<?= site_url('Conversion/show') ?>">Conversion Details</a></li>
                                         <li><a href="<?= site_url('NewGaruPurController/TaxablePurDatewise') ?>">Purchase (Taxable)</a></li>
                                         <li><a href="<?= site_url('NewGaruPurController/ItemwisePurDatewise') ?>">Purchase (Itemwise)</a></li>
                                         <li class="divider">

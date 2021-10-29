@@ -365,13 +365,13 @@ class Login extends CI_Controller
         $ci->email->subject('Enquiry For APMC Traders From Contact Form');
 
         $message = '
-Dear Sir,
+            Dear Sir,
 
 
-Name:' . $name . '
-Email:' . $email . '
-Phone:' . $phone . '
-Message:' . $message;
+            Name:' . $name . '
+            Email:' . $email . '
+            Phone:' . $phone . '
+            Message:' . $message;
         $ci->email->message($message);
         if ($ci->email->send()) {
             echo "<script> ";

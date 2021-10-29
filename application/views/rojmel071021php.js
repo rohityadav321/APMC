@@ -1,7 +1,7 @@
 <?php
 include 'header-form.php';
 $attributes = array("class" => "form-horizontal", "id" => "rojmel", "name" => "rojmel");
-echo form_open("RojmelController/InsertTry/", $attributes);
+// echo form_open("RojmelController/InsertTry/", $attributes);
 //echo form_open("RojmelController/AddRojmel/",$attributes);
 
 $id = mt_rand(100000, 999999);
@@ -12,8 +12,6 @@ date_default_timezone_set($timezone);
 $today = date("Y-m-d");
 ?>
 
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css">
-<script type="text/javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
 <style type="text/css">
   /* POP UP FORM STYLE START */
 
@@ -47,7 +45,6 @@ $today = date("Y-m-d");
     center: 5px;
     border: 3px solid #f1f1f1;
     z-index: 9;
-
   }
 
   .form-popup3 {
@@ -123,17 +120,6 @@ $today = date("Y-m-d");
     height: 100px !important;
   }
 
-  #GoodsRcptDate,
-  #InvoiceDate,
-  #LRDate {
-    background-color: #FFB6C1;
-    width: 60%;
-    height: 25px;
-    padding: 0px 0px 0px 0px;
-    margin: 0px 0;
-    box-sizing: border-box;
-  }
-
   #modal-size {
     max-width: inherit;
     width: auto;
@@ -145,6 +131,16 @@ $today = date("Y-m-d");
     margin: auto;
   }
 
+  #GoodsRcptDate,
+  #InvoiceDate,
+  #LRDate {
+    background-color: #FFB6C1;
+    width: 60%;
+    height: 25px;
+    padding: 0px 0px 0px 0px;
+    margin: 0px 0;
+    box-sizing: border-box;
+  }
 
   #RefIDNumber,
   #PartyName,
@@ -265,17 +261,18 @@ $today = date("Y-m-d");
 
 <script type=text/javascript>
   $(document).ready(function() {
-    ShowHide();
-    ClosingBal();
-
+    $("#Amount").hide();
+    $("#Nature").hide();
+    $("#LAmount").hide();
+    $("#LNature").hide();
+    $("#Balance").hide();
+    $("#LBalance").hide();
     $IDN = $("#IDNumber").val();
     updateref($IDN);
-    // updateamt($IDN);
     $('#BookFrom').DataTable();
     $('#AccountFrom').DataTable();
 
-
-    //   $('#BCode').click(function() 
+    //       $('#BCode').click(function() 
     // {
     //     ShowHide();
     //     ClosingBal();
@@ -285,7 +282,6 @@ $today = date("Y-m-d");
 
 
   // END
-
   function ClosingBal() {
     var BCode = $('#BCode').val();
     $IDN = $("#IDNumber").val();
@@ -326,9 +322,12 @@ $today = date("Y-m-d");
     }
   }
 
+
+
   function ShowHide() {
     $K = "BB";
     $Z = "BZ";
+
     var BCodevalue = $("#GroupCode1").val();
     if (BCodevalue == $K) {
       $("#Amount").show();
@@ -338,10 +337,7 @@ $today = date("Y-m-d");
       $("#Balance").show();
       $("#LBalance").show();
       var select = $('#Nature');
-      $nat = "<?php echo $Rojdata[0]->Nature; ?>";
-      select.empty().append('<option value="' + $nat + '">' + $nat + '</option><option value="Withdraw">Withdraw</option><option value="Deposit">Deposit</option>');
-
-      //select.empty().append('<option value="Withdraw">Withdraw</option><option value="Deposit">Deposit</option>');
+      select.empty().append('<option></option><option value="Withdraw">Withdraw</option><option value="Deposit">Deposit</option>');
     } else if (BCodevalue == $Z) {
       $("#Amount").show();
       $("#Nature").show();
@@ -350,7 +346,7 @@ $today = date("Y-m-d");
       $("#Balance").show();
       $("#LBalance").show();
       var select = $('#Nature');
-      select.empty().append('<option value="Payment">Payment</option><option value="Receipt">Receipt</option>');
+      select.empty().append('<option value=Payment"">Payment</option><option value="Receipt">Receipt</option>');
     } else {
       $("#Amount").hide();
       $("#Nature").hide();
@@ -366,6 +362,7 @@ $today = date("Y-m-d");
       $("#Balance").val("");
 
     }
+
   }
 
   // Add rojmel start
@@ -375,57 +372,56 @@ $today = date("Y-m-d");
     var ACCode = $('#ACCode').val();
     var ACTitle = $('#ACTitle').val();
     var Group = $('#Group').val();
+    var Amount = $('#Amount').val();
     var Amount1 = $('#Amount1').val();
     var DebitCredit = $('#DRCR').val();
     var Cheque_No = $('#Cheque_No').val();
     var Lot_No = $('#Lot_No').val();
     var IDNumber = $('#IDNumber').val();
+    var CNarration = $('#CNarration').val();
+    var RefIDNum = $('#RefIDNum');
 
     var UPid = $('#UPid').val();
+    if (parseFloat(Amount1) <= parseFloat(Amount)) {
+      var url = "<?php echo base_url('index.php/RojmelController/Update/') ?>" + IDNumber;
+
+      $.ajax({
+        url: url,
+        type: "POST",
+        data: $('form').serialize(),
+        success: function(data) {
+          // alert("Added Successfully!!");
+          // alert("Data"+data);
+
+          var Idnumber = document.getElementById("IDNumber").value;
+          var ACCode = document.getElementById("ACCode").value = "";
+          var ACTitle = document.getElementById("ACTitle").value = "";
+          var Group = document.getElementById("Group").value = "";
+          var Amount1 = document.getElementById("Amount1").value = "";
+          // var DebitCredit = document.getElementById("DRCR").value = "";
+          var Cheque_No = document.getElementById("Cheque_No").value = "";
+          var Lot_No = document.getElementById("Lot_No").value = "";
+          var UPid = document.getElementById("UPid").value = "";
 
 
-    var url = "<?php echo base_url('index.php/RojmelController/Update/') ?>" + IDNumber;
+          updateref(Idnumber);
+          alert("Entry Added")
+
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+
+          alert(errorThrown);
+          // updateref(Idnumber);
+        }
+
+      });
+    } else {
+      alert("Entered Amount is greater than Header Amount!!!");
+      $("#Amount1").focus();
+
+    }
 
 
-    $.ajax({
-      url: url,
-      type: "POST",
-      data: $('form').serialize(),
-      success: function(data) {
-        // alert("Added Successfully!!");
-        // alert("Data"+data);
-
-        var Idnumber = document.getElementById("IDNumber").value;
-        var ACCode = document.getElementById("ACCode").value = "";
-        var ACTitle = document.getElementById("ACTitle").value = "";
-        var Group = document.getElementById("Group").value = "";
-        var Amount1 = document.getElementById("Amount1").value = "";
-        var DebitCredit = document.getElementById("DRCR").value = "";
-        var Cheque_No = document.getElementById("Cheque_No").value = "";
-        var Lot_No = document.getElementById("Lot_No").value = "";
-        var UPid = document.getElementById("UPid").value = "";
-
-
-        updateref(Idnumber);
-        alert("Entry Added");
-
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        // var Idnumber= document.getElementById("IDNumber").value;
-        // var ACCode = document.getElementById("ACCode").value = "";
-        // var ACTitle = document.getElementById("ACTitle").value = "";
-        // var Group = document.getElementById("Group").value = "";
-        // var Amount1 = document.getElementById("Amount1").value = "";
-        // var DebitCredit = document.getElementById("DRCR").value = "";
-        // var Cheque_No = document.getElementById("Cheque_No").value = "";
-        // var Lot_No = document.getElementById("Lot_No").value = "";
-        // var UPid = document.getElementById("UPid").value = "";
-
-        alert(errorThrown);
-        // updateref(Idnumber);
-      }
-
-    });
   }
   // ADD ROJMEL END
 
@@ -469,14 +465,13 @@ $today = date("Y-m-d");
       cache: false,
       success: function(result) {
 
+
         if (Nature == "Deposit") {
           //alert("1"+Nature);
           // $("#Total_DR").val(parseFloat(result[0]['Debit']) + parseFloat(Amtval));
           $("#Total_DR").val(parseFloat(result[0]['Debit']));
           $("#Total_CR").val(parseFloat(result[0]['Credit']));
-
           $amtval = Amtval - $("#Total_DR").val() - $("#Total_CR").val();
-          // $amtval = $("#Total_DR").val() - $("#Total_CR").val();
 
           if ($amtval < 0) {
             $amtval = $amtval * -1;
@@ -491,9 +486,8 @@ $today = date("Y-m-d");
           $("#Total_DR").val(parseFloat(result[0]['Debit']));
           // $("#Total_CR").val(parseFloat(result[0]['Credit']) + parseFloat(Amtval));
           $("#Total_CR").val(parseFloat(result[0]['Credit']));
-
           $amtval = Amtval - $("#Total_DR").val() - $("#Total_CR").val();
-          // $amtval = $("#Total_DR").val() - $("#Total_CR").val();
+
           if ($amtval < 0) {
             $amtval = $amtval * -1;
             $("#DRCR").val("DR");
@@ -502,13 +496,13 @@ $today = date("Y-m-d");
             $("#DRCR").val("CR");
             $("#Amount1").val($amtval);
           }
+
         } else {
           //alert("3"+Nature);
           $("#Total_DR").val(parseFloat(result[0]['Debit']));
           $("#Total_CR").val(parseFloat(result[0]['Credit']));
-          // 28/09/21
+
           $amtval = Amtval - $("#Total_DR").val() - $("#Total_CR").val();
-          // $amtval = $("#Total_DR").val() - $("#Total_CR").val();
 
           if ($amtval < 0) {
             $amtval = $amtval * -1;
@@ -533,13 +527,11 @@ $today = date("Y-m-d");
 
   function display(Idnumber) {
     var Idnumber = Idnumber;
-
+    table = $('#Rojmel1').DataTable();
+    table.destroy();
     // var btn = '<a class="btn btn-warning btn-xs" accesskey="e" onclick="isupdateconfirm('+Idnumber+')" href= ""><i class="glyphicon glyphicon-pencil"></i></a><a class="btn btn-danger btn-xs" accesskey="d" onclick="deleteRecord('+Idnumber+')" href= ""><i class="glyphicon glyphicon-remove"></i></a>';
 
-    table = $('#Rojmel').DataTable();
-    table.destroy();
-
-    table = $('#Rojmel').DataTable({
+    table = $('#Rojmel1').DataTable({
       "ajax": {
         "type": "POST",
         "url": "<?php echo base_url('index.php/RojmelController/AddedRecord1/') ?>/" + Idnumber,
@@ -590,7 +582,6 @@ $today = date("Y-m-d");
         [1, 'asc']
       ]
     });
-
     table.ajax.reload();
   }
 
@@ -598,7 +589,6 @@ $today = date("Y-m-d");
   function isupdateconfirm(Idnumber) {
     // focusnext();
     var Idnumber = Idnumber;
-
     var abc = document.getElementById("UPid").value = Idnumber;
     var url = '<?php echo base_url() . "index.php/RojmelController/UpdateRecord1/"; ?>' + Idnumber;
 
@@ -661,7 +651,7 @@ $today = date("Y-m-d");
     var TDR = $('#Total_DR').val();
     var TCR = $('#Total_CR').val();
 
-    if ((TDR != TCR)) {
+    if (TDR != TCR) {
       alert("Value of debit and credit not matched");
     } else {
       alert("Entries Saved Successfully");
@@ -685,11 +675,12 @@ $today = date("Y-m-d");
   }
 
   function BookCodeFrom($BookCode, $BookTitle, $GroupCode, $OpeningBal, $ClosingBal) {
+
     document.getElementById("BCode").value = $BookCode;
     document.getElementById("BTitle").value = $BookTitle;
     document.getElementById("GroupCode1").value = $GroupCode;
     //document.getElementById("Amount").value = $OpeningBal;
-    //document.getElementById("Balance").value = $ClosingBal;
+    document.getElementById("Balance").value = $ClosingBal;
     ShowHide();
     ClosingBal();
   }
@@ -711,6 +702,14 @@ $today = date("Y-m-d");
     document.getElementById("CommonNarrationForm").style.display = "none";
   }
 
+  function closePForm() {
+    document.getElementById("PForm").style.display = "none";
+  }
+
+  function closeSForm() {
+    document.getElementById("SForm").style.display = "none";
+  }
+
   function openNarrationForm() {
     document.getElementById("NarrationForm").style.display = "block";
 
@@ -730,6 +729,7 @@ $today = date("Y-m-d");
     document.getElementById("BankForm").style.display = "none";
   }
 
+
   function focusnext(e) {
     $groupcode = document.getElementById("GroupCode1").value;
     if ($groupcode == "J") {
@@ -739,6 +739,7 @@ $today = date("Y-m-d");
       var idarray = ["RojDate", "BCode", "Amount", "Nature", "ACCode", "DRCR", "Amount1", "Cheque_No", "Bank_but", "Narr_but", "PS_but", "ADD"];
 
     }
+
     try {
       for (var i = 0; i < idarray.length; i++) {
         if (e.keyCode === 13 && e.target.id === idarray[i]) {
@@ -751,6 +752,7 @@ $today = date("Y-m-d");
     }
   }
 </script>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 
@@ -779,7 +781,7 @@ $today = date("Y-m-d");
     </div>
 
 
-    <div class="card-body" id="abc" style="font-size: 14px; align: left">
+    <div class="card-body" id="abc" style="font-size: 14px; text-align: left">
       <div class="col-md-12">
         <div class="row">
           <div class="col-md-12">
@@ -789,7 +791,7 @@ $today = date("Y-m-d");
                 <label class="control-label col-md-4" for="IDNumber">ID Number</label>
                 <div class="col-md-4">
 
-                  <input type="text" class="form-control" id="IDNumber" tabindex="1" onkeydown="focusnext(event)" name="IDNumber" value="<?php echo $Rojdata[0]->DocNo; ?>" placeholder="Id" readonly>
+                  <input type="text" class="form-control" id="IDNumber" tabindex="1" onkeydown="focusnext(event)" name="IDNumber" value="<?php echo $maxid ?>" placeholder="Id">
                   <span class="text-danger"><?php echo form_error('IDNumber'); ?>
                   </span>
 
@@ -803,7 +805,7 @@ $today = date("Y-m-d");
               <div class="form-group row">
                 <label class="control-label col-md-4" for="RojDate">Date</label>
                 <div class="col-md-4">
-                  <input style="width: 100%;" type="date" class="form-control" id="RojDate" tabindex="2" onkeydown="focusnext(event)" name="RojDate" value="<?php echo set_value('RojDate', $today); ?>" placeholder="Id" autofocus>
+                  <input style="width: 100%;" type="date" class="form-control" id="RojDate" tabindex="2" onkeydown="focusnext(event)" name="RojDate" value="<?php echo set_value('RojDate', $today); ?>" placeholder="RojDate" autofocus>
                   <span class="text-danger"><?php echo form_error('RojDate'); ?>
                   </span>
                 </div>
@@ -818,20 +820,20 @@ $today = date("Y-m-d");
                 </a>
 
                 <div class="col-md-2">
-                  <input style="width: 100%;" type="text" class="form-control" id="BCode" name="BCode" tabindex="5" onkeydown="focusnext(event)" value="<?php echo $Rojdata[0]->BookCode; ?>" placeholder="">
+                  <input style="width: 100%;" type="text" class="form-control" id="BCode" name="BCode" tabindex="5" placeholder="">
                   <span class="text-danger"><?php echo form_error('BCode'); ?>
                   </span>
                 </div>
 
 
                 <div class="col-md-3">
-                  <input style="margin-left:-25px; width: 100%;" type="text" class="form-control" id="BTitle" name="BTitle" tabindex="5" onkeydown="focusnext(event)" value="<?php echo $Rojdata[0]->ACTitle; ?>" placeholder="" readonly>
+                  <input style="margin-left:-25px; width: 100%;" type="text" class="form-control" id="BTitle" name="BTitle" tabindex="5" onkeydown="focusnext(event)" placeholder="" readonly>
                   <span class="text-danger"><?php echo form_error('BTitle'); ?>
                   </span>
                 </div>
 
                 <div class="col-md-2">
-                  <input style="margin-left:-50px;width: 100%;" type="text" class="form-control" id="GroupCode1" name="GroupCode1" tabindex="6" onkeydown="focusnext(event)" value="<?php echo $Rojdata[0]->GroupCode; ?>" placeholder="" readonly>
+                  <input style="margin-left:-50px;width: 100%;" type="text" class="form-control" id="GroupCode1" name="GroupCode1" tabindex="6" onkeydown="focusnext(event)" placeholder="" readonly>
                   <span class="text-danger"><?php echo form_error('GroupCode'); ?>
                   </span>
                 </div>
@@ -840,16 +842,20 @@ $today = date("Y-m-d");
 
 
             </div>
+            <!-- New Change -->
+            <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> -->
+
             <script>
               function moveCursorTo(e) {
                 var Amount = $('#Amount').val();
                 if (e.keyCode == 13) {
-                  $('#ACCode').focus();
+                  $('#Nature').focus();
                   $('#Amount1').val(Amount);
                 }
               }
 
               function getval(select) {
+                $('#PS_but').removeAttr('Disabled');
                 if (select.value == 'Withdraw') {
                   $('#DRCR option[value=CR]').removeAttr('selected');
                   $('#DRCR option[value=DR]').attr('selected', 'selected');
@@ -866,22 +872,23 @@ $today = date("Y-m-d");
             <div class="col-md-4">
 
               <div class="form-group row" style="margin-right: -50%; align-content: right">
-                <label class="control-label col-md-3 blue" id=LAmount for="Amount">Amount</label>
+                <label class="control-label col-md-3 blue" id="LAmount" for="Amount">Amount</label>
 
 
                 <div class="col-md-3">
-                  <input type="text" class="form-control" id="Amount" tabindex="7" name="Amount" onkeydown="moveCursorTo(event)" value="<?php echo $bal[0]->AMT; ?>" placeholder="Amount">
+                  <input type="text" class="form-control" id="Amount" tabindex="7" name="Amount" onkeydown="moveCursorTo(event)" value="" placeholder="Amount">
                   <span class="text-danger"><?php echo form_error('Amount'); ?>
                   </span>
                 </div>
               </div>
+              <!-- New Change end -->
 
               <div class="form-group row" style="margin-right: -50%; align-content: right">
                 <label class="control-label col-md-3 blue" id="LNature" for="Nature">Nature</label>
 
 
                 <div class="col-md-3">
-                  <select name="Nature" id="Nature" onkeydown="focusnext(event)" onchange="getval(this);" value="<?php echo $Rojdata[0]->AMTNature; ?>" tabindex="8" placeholder="Nature">
+                  <select name="Nature" id="Nature" onkeydown="focusnext(event)" onchange="getval(this);" value="<?php echo set_value('DRCR'); ?>" tabindex="8" placeholder="Nature">
                     <option value="1">Receipt</option>
                     <option value="2">Payment</option>
                   </select>
@@ -889,52 +896,36 @@ $today = date("Y-m-d");
               </div>
               <? //third part
               ?>
+
               <div class="form-group row" style="margin-right: -50%; align-content: right">
                 <label class="control-label col-md-3 blue" id="LBalance" for="Balance">Balance</label>
                 <div class="col-md-3">
-                  <input type="text" class="form-control" id="Balance" onkeydown="focusnext(event)" name="Balance" tabindex="9" onblur="moveCursorBroker()" value="<?php echo $bal[0]->clbal; ?>" placeholder="Balance" readonly>
+                  <input type="text" class="form-control" id="Balance" onkeydown="focusnext(event)" name="Balance" tabindex="9" onblur="moveCursorBroker()" value="" placeholder="Balance" readonly>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
       </div>
 
       <div class="form-group row">
-        <div class="col-md-12">
-
-          <label class="control-label col-md-2 blue" for="Total_DR">Transaction DR</label>
-          <div class="col-md-1">
-            <input type="text" class="form-control" id="Total_DR" onkeydown="focusnext(event)" tabindex="10" name="Total_DR">
-          </div>
-
-          <label class="control-label col-md-2 blue" for="Total_CR">Transaction CR</label>
-          <div class="col-md-1">
-            <input type="text" class="form-control" id="Total_CR" onkeydown="focusnext(event)" tabindex="12" name="Total_CR" value="">
-          </div>
-
-          <div class="col-md-4">
-            <input type="button" id="Show_Narr" onkeydown="focusnext(event)" onclick="openCommonNarrationForm()" tabindex="14" name="Show_Narr" onblur="moveCursorSupplier()" value="Show Narration[F2]">
-          </div>
-
+        <label class="control-label col-md-1 blue" for="Total_DR">Transaction DR</label>
+        <div class="col-md-1">
+          <input type="text" class="form-control" id="Total_DR" tabindex="10" name="Total_DR" readonly>
         </div>
+
+        <label class="control-label col-md-1 blue" for="Total_CR">Transaction CR</label>
+        <div class="col-md-1">
+          <input type="text" class="form-control" id="Total_CR" tabindex="12" name="Total_CR" value="" readonly>
+        </div>
+
+
+        <div class="col-md-2">
+          <input type="button" id="Show_Narr" onclick="openCommonNarrationForm()" tabindex="14" name="Show_Narr" onblur="moveCursorSupplier()" value="Show Narration[F2]">
+        </div>
+
       </div>
-
-      <!-- 
-        <label style="margin-left:-6%" class="control-label col-md-2 blue" for="Current_Balance">Current Balance</label>
-        <div class="col-md-1">
-          <input type="text" class="form-control" id="Current_Balance" onkeydown="focusnext(event)" tabindex="11" name="Current_Balance" readonly>
-        </div>
- -->
-
-      <!--         
-        <label style="margin-left:-6%" class="control-label col-md-2 blue" for="Lot_Balance">Lot Balance</label>
-        <div class="col-md-1">
-          <input type="text" class="form-control" id="Lot_Balance" onkeydown="focusnext(event)" tabindex="13" name="Lot_Balance" onblur="moveCursorSupplier()" value="" readonly>
-        </div>
- -->
-
-
 
       <!-- Area1 List Modal -->
       <div class="modal fade" id="BookModalFrom" role="dialog">
@@ -1059,7 +1050,7 @@ $today = date("Y-m-d");
         </div>
         </td>
         <td style="border: none;">
-          <select name="DRCR" id="DRCR" value="<?php echo set_value('DRCR'); ?>" onchange="apmcChange();">
+          <select name="DRCR" id="DRCR" value="<?php echo set_value('DRCR'); ?>" onkeydown="focusnext(event)" onchange="apmcChange();">
             <option value="DR">DR</option>
             <option value="CR">CR</option>
         </td>
@@ -1073,21 +1064,19 @@ $today = date("Y-m-d");
                 $("#Amount1").focus();
               } else {
                 $("#Cheque_No").focus();
-
               }
             }
           }
         </script>
-        <td style="border: none;"><input type="text" class="form-control" id="Amount1" name="Amount1" onkeydown="CheckAmt(event)" value="<?php echo set_value('Amount1'); ?>">
+        <td style="border: none;"><input type="text" class="form-control" id="Amount1" name="Amount1" onkeydown="CheckAmt(event)" value="<?php echo set_value('Amount'); ?>">
           <span class="text-danger"><?php echo form_error('Amount'); ?></span>
         </td>
         <td style="border: none;"><input type="text" class="form-control" id="Cheque_No" name="Cheque_No" onblur="focusnext(event)" onkeydown="focusnext(event)" value="<?php echo set_value('Cheque_No'); ?>">
           <span class="text-danger"><?php echo form_error('Cheque_No'); ?></span>
         </td>
 
-        <td style="border: none;"><input type="hidden" class="form-control" id="Lot_No" name="Lot_No" onkeydown="focusnext(event)" value="<?php echo set_value('Lot_No'); ?>">
-          <span class="text-danger"><?php echo form_error('Lot_No'); ?></span>
-        </td>
+        <input type="hidden" class="form-control" id="Lot_No" name="Lot_No" onkeydown="focusnext(event)" value="<?php echo set_value('Lot_No'); ?>">
+        <span class="text-danger"><?php echo form_error('Lot_No'); ?></span>
 
         <td style="border: none;">
           <div class="column" style="float: left;">
@@ -1100,7 +1089,7 @@ $today = date("Y-m-d");
             <input type="button" id="Narr_but" name="Narr_but" onclick="openNarrationForm()" onkeydown="focusnext(event)" value="N">
           </div>
         </td>
-
+        <!-- 05-10-21 -->
         <script>
           function openPSForm(PS) {
             if (PS.value == "P") {
@@ -1115,17 +1104,15 @@ $today = date("Y-m-d");
 
         <td style="border: none;">
           <div class="column" style="float: left;">
-            <input type="button" id="PS_but" name="PS_but" onclick="openPSForm(this)" onkeydown="focusnext(event)" value="P/S">
+            <input disabled type="button" id="PS_but" name="PS_but" onclick="openPSForm(this)" onkeydown="focusnext(event)" value="P/S">
           </div>
         </td>
 
 
         <td style="border: none;">
           <div class="column" style="float: left;">
-            <input type="button" id="ADD" accesskey="a" name="ADD" onkeydown="focusnext(event)" onclick="insert_rojmel()" value="Add(Alt+A)">
-            <!-- <a  id="ADD" class="btn btn-default" accesskey="a" href="<?php echo base_url() ?>index.php/RojmelController/AddRojmel/">Add(Alt+A)</a>
-                         -->
-            <a id="DEL" class="btn btn-default" accesskey="c" style="font-size:11px;" href="">Clear(Alt+C)</a>
+            <input type="button" id="ADD" accesskey="a" name="ADD" onkeydown="focusnext(event)" onclick="insert_rojmel()" value="ADD(ALT+A)">
+            <a id="DEL" class="btn btn-default" accesskey="d" href="">DEL(Alt+D)</a>
 
           </div>
         </td>
@@ -1135,7 +1122,7 @@ $today = date("Y-m-d");
         </tbody>
         </table>
 
-        <table id="Rojmel" class="cell-border" style="width:100%">
+        <table id="Rojmel1" class="cell-border" style="width:100%">
           <thead>
             <tr class="fsize yellow">
               <th>Action</th>
@@ -1147,7 +1134,10 @@ $today = date("Y-m-d");
               <th>DR/CR</th>
               <th>Cheque No</th>
               <th>Lot No.</th>
-
+              <!-- <th>Bank</th>
+                  <th>Narr</th>
+                  <th>P/S</th>
+                  <th>D/C</th> -->
 
             </tr>
           </thead>
@@ -1214,14 +1204,13 @@ $today = date("Y-m-d");
 
 
   <div class="form-popup2" id="CommonNarrationForm">
-    <form action="" class="form-container">
-      <h4>[ Commmon Narration ]</h4>
-      <textarea id="CNarration" rows="5" cols="50" name="CommonNarration" form="CommonNarrationForm" placeholder="Enter Common Narration here"></textarea>
+    <h4>[ Common Narration ]</h4>
+    <textarea id="CNarration" rows="5" cols="50" name="CommonNarration" form="CommonNarrationForm" placeholder="Enter Common Narration here"></textarea>
 
-      <div>
-        <button type="button" class="btn" onclick="closeCommonNarrationForm()">ADD</button>
-        <button type="button" class="btn cancel" onclick="closeCommonNarrationForm()">Close</button>
-      </div>
+    <div>
+      <button type="button" class="btn" onclick="closeCommonNarrationForm()">ADD</button>
+      <button type="button" class="btn cancel" onclick="closeCommonNarrationForm()">Close</button>
+    </div>
 
     </form>
   </div>
@@ -1278,17 +1267,13 @@ $today = date("Y-m-d");
     $('#RefIDNum').click(function() {
       $('#SupplyHelp').click();
     });
-    // $.fn.dataTable.ext.errMode = 'none';
     $(document).ready(function() {
-      var table = $('#supply').DataTable({});
       $('#SupplyHelp').on('click', function() {
-        table.destroy();
         var Party = $('#ACCode').val();
         table = $('#supply').DataTable({
           "ajax": {
             "type": "post",
             "url": "<?= base_url() ?>index.php/RojmelController/GetFilteredDataParty/" + Party,
-            "data": {},
             "dataSrc": "Users"
           },
           "columns": [
@@ -1322,54 +1307,67 @@ $today = date("Y-m-d");
             }
           ],
           columnDefs: [{
-            'defaultContent': '',
             'orderable': false,
             'className': 'select-checkbox',
-            'targets': 0,
+            'targets': 0
           }],
           select: {
-            'style': 'os',
-            'selector': 'td:first-child',
+            'style': 'multi',
+            'selector': 'td:first-child'
           },
           order: [
             [1, 'asc']
-          ],
+          ]
 
         });
 
-        $('#supply tbody').on('click', 'tr', function() {
 
-          if ($(this).hasClass('selected')) {
-            $(this).removeClass('selected');
-          } else {
-            table.$('tr.selected').removeClass('selected');
-            $(this).addClass('selected');
-            var oData = table.rows('.selected').data();
-            var rData = oData[0];
-            var id = document.getElementById("RefIDNum").value = rData['RefIDNumber'];
-            var date = rData.InvoiceDate;
-            var PartyCode = document.getElementById("PartyCode").value = rData['PartyCode'];
-            var PartyName = document.getElementById("PartyName").value = rData['PartyName'];
-            var Billno = document.getElementById("BillNo").value = rData['InvoiceNo'];
-            var Billdate = document.getElementById("BillDate").value = rData['InvoiceDate'];
-            var Transdate = document.getElementById("GdnDate").value = rData['GoodsRcptDate'];
-            var BillAmount = document.getElementById("BillAmt").value = rData['NetPayable'];
-            var AmountSettled = document.getElementById("Settled").value = rData['TotalPaid'];
-            var BalanceDue = document.getElementById("BillDue").value = rData['BalanceDue'];
+        let SelectedTotal = 0;
+        table.on('select', function(e, dt, type, indexes) {
+          var rowData = table.rows(indexes).data().toArray();
 
-            var SelectedTotal = document.getElementById("SelectedTotal").value = "";
-
-            table.clear().draw();
-
-            console.log(rData['RefIDNumber']);
-            setTimeout(function() {
-              // $('#buttonsdsd').click();
-              $('#SupplyModal .close').click();
-            }, 500);
+          for (var i = 0; i < rowData.length; i++) {
+            var x = parseFloat(rowData[i].BalanceDue);
+            SelectedTotal = SelectedTotal + x;
+            var y = document.getElementById("SelectedTotal").value = SelectedTotal.toFixed(2);
           }
-        });
+
+          setTimeout(function() {
+            $('#buttonsdsd').click();
+            $('#SupplyModal .close').click();
+          }, 500);
+        }).on('deselect', function(e, dt, type, indexes) {
+          var rowData = table.rows(indexes).data().toArray();
+          for (var i = 0; i < rowData.length; i++) {
+            var x = parseFloat(rowData[i].BalanceDue);
+            SelectedTotal = SelectedTotal - x;
+            var y = document.getElementById("SelectedTotal").value = SelectedTotal.toFixed(2);
+          }
+
+        })
+      });
 
 
+      $('#buttonsdsd').click(function() {
+        var oData = table.rows('.selected').data();
+        for (var i = 0; i < oData.length; i++) {
+          var id = document.getElementById("Refid").value = oData[i].RefIDNumber;
+          var date = oData[i].InvoiceDate;
+          var PartyCode = document.getElementById("PartyCode1").value = oData[i].PartyCode;
+          var PartyName = document.getElementById("PartyName").value = oData[i].PartyName;
+          var Billno = document.getElementById("BillNo").value = oData[i].InvoiceNo;
+          var Billdate = document.getElementById("BillDate").value = oData[i].InvoiceDate;
+          var Transdate = document.getElementById("BillGdnDateDate").value = oData[i].GoodsRcptDate;
+
+          var BillAmount = document.getElementById("BillAmt").value = oData[i].NetPayable;
+
+          var AmountSettled = document.getElementById("Settled").value = oData[i].TotalPaid;
+          var BalanceDue = document.getElementById("BillDue").value = oData[i].BalanceDue;
+
+          var SelectedTotal = document.getElementById("SelectedTotal").value = "";
+
+          table.clear().draw();
+        }
       });
 
     });
@@ -1382,7 +1380,6 @@ $today = date("Y-m-d");
       <div>
         <label for="SaleBillNO" class="col-md-3">BillNo</label>
         <input style="width: 70px;" type="text" id="SBillNO" name="SBillNO">
-        <input id="BillHelp" type="hidden" class="btn btn-info" data-toggle="modal" data-target="#BillModal" />
         &nbsp;
         <label for="SaleBillDate">Bill Date.</label>
         <input style="width: 70px;" size="4" type="text" id="SBillDate" name="SBillDate" readonly>
@@ -1417,150 +1414,6 @@ $today = date("Y-m-d");
     </div>
 
   </div>
-
-  <script>
-    $('#SBillNO').click(function() {
-      $('#BillHelp').click();
-    });
-    // Get Bill List based on Party Code/ Party Name
-    $('#BillHelp').click(function() {
-      $('#BillM').DataTable().destroy();
-      $('#BillM').empty();
-      var PartyCode = $('#ACCode').val();
-
-      table = $('#BillM').DataTable({
-        "destroy": true,
-        "ajax": {
-          "type": "POST",
-          "url": '<?php echo base_url("index.php/CollectionController/getPartyBillList"); ?>',
-          "data": {
-            'PartyCode': PartyCode
-          },
-          "dataSrc": "PartyBillList"
-        },
-        "fixedHeader": {
-          header: true,
-          footer: true
-        },
-        "columns": [
-          null,
-          {
-            "title": "Bill No",
-            "data": "BillNo"
-          },
-          {
-            "title": "Bill Date",
-            "data": "BillDate"
-          },
-          {
-            "title": "Bill Amount",
-            "data": "BillAmt"
-          },
-          {
-            "title": "Rcpt Amount",
-            "data": "AmtRecd"
-          },
-          {
-            "title": "Balance Amount",
-            "data": "BalAmt"
-          },
-          null,
-          {
-            "title": "Comp",
-            "data": "Comp"
-          },
-          {
-            "data": "ItemAmt"
-          }
-        ],
-        columnDefs: [{
-
-            'orderable': false,
-            'defaultContent': ' ',
-            'targets': 0,
-            'className': 'select-checkbox'
-          },
-          {
-            'title': 'CR',
-            'defaultContent': ' ',
-            'targets': 6
-          },
-          {
-            "targets": [8],
-            "visible": false,
-            "searchable": false
-          },
-
-        ],
-        select: {
-          'style': 'multi',
-          'selector': 'td:first-child'
-        },
-        order: [
-          [1, 'asc']
-        ],
-        "footerCallback": function(row, data, start, end, display) {
-          var api = this.api();
-          var pageTotal = api
-            .column(5)
-            .data()
-            .reduce(function(a, b) {
-              return Number(a) + Number(b);
-            }, 0);
-          // Update footer
-          // $( api.column( 5 ).footer() ).html(pageTotal);
-          // document.getElementById("GrandTotal").value = pageTotal;
-        }
-      });
-      // document.getElementById("GrandTotal").value =  table.column( 4 ).data().sum();
-
-      table.on('select', function(e, dt, type, indexes) {
-
-          var rowData = table.rows(indexes).data();
-          for (var i = 0; i < rowData.length; i++) {
-
-
-            var BillNo = rowData[i].BillNo;
-            var BillDate = rowData[i].BillDate;
-            var BillAmt = rowData[i].BillAmt;
-            var ItemAmt = rowData[i].ItemAmt;
-            var BalAmt = rowData[i].BalAmt;
-            var AmtRecd = rowData[i].AmtRecd;
-
-            document.getElementById("SBillNO").value = BillNo;
-            document.getElementById("SBillDate").value = BillDate;
-            document.getElementById("SBillAmt").value = BillAmt;
-            document.getElementById("SSettled").value = AmtRecd;
-            // document.getElementById("RcptAmt").value = AmtRecd;
-            document.getElementById("SBillDue").value = BalAmt;
-            // Modal data
-            document.getElementById("SPartyCode").value = rowData[i].DebtorID;
-            document.getElementById("SPartyName").value = rowData[i].DebtorName;
-            document.getElementById("SBrokerCode").value = rowData[i].BrokerCode;
-            document.getElementById("SBrokerName").value = rowData[i].BrokerTitle;
-
-            calculateDays();
-          }
-        })
-        .on('deselect', function(e, dt, type, indexes) {
-          //var SelectedTotal = document.getElementById("SelectedTotal").value = "";
-
-          document.getElementById("SBillNo").value = "";
-          document.getElementById("SBillDate").value = "";
-          document.getElementById("SBillAmt").value = "";
-          document.getElementById("SSettled").value = "";
-          // document.getElementById("RcptAmt").value = AmtRecd;
-          document.getElementById("SBillDue").value = "";
-          // Modal data
-          document.getElementById("SPartyCode").value = "";
-          document.getElementById("SPartyName").value = "";
-          document.getElementById("SBrokerCode").value = "";
-          document.getElementById("SBrokerName").value = "";
-        })
-    });
-  </script>
-
-
   <script type="text/javascript" src=" https://code.jquery.com/jquery-3.5.1.js"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/1.10.23/js/dataTables.bootstrap.min.js"></script>
@@ -1633,6 +1486,7 @@ $today = date("Y-m-d");
   <!-- Area1 List Modal End -->
 
 
+
   <!-- Dropdown Code for Book  Code-->
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
   <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> -->
@@ -1682,12 +1536,21 @@ $today = date("Y-m-d");
             var data = selectedData.item.data;
             console.log("Selected ", data);
             $('#BTitle').val(data.ACTitle);
-            $('#GroupCode1').val(data.GroupCode); //Book Title
+            $('#GroupCode1').val(data.GroupCode); //AC Title
+
             ShowHide();
             ClosingBal();
-
-
           }
+        }
+      });
+      $("#BCode").keydown(function(event) {
+        if (event.keyCode == 13)
+          var BCodevalue = $("#GroupCode1").val();
+        if (BCodevalue == "J") {
+          $("#ACCode").focus();
+
+        } else {
+          $("#Amount").focus();
 
         }
       });
@@ -1747,20 +1610,20 @@ $today = date("Y-m-d");
             $('#ACTitle').val(data.ACTitle);
             $('#Group').val(data.GroupCode); //AC Title
 
-
           }
 
         }
       });
-
       $("#ACCode").keydown(function(event) {
         if (event.keyCode == 13)
           $("#Amount1").focus();
       });
+
+
     });
   </script>
   <!-- DropDown Code end for ACCOUNT  Code-->
-  <!-- SUpplyer Modal -->
+
   <div class="modal fade" id="SupplyModal" role="dialog">
     <div id="modal-size" class="modal-dialog modal-lg">
       <!-- Modal content-->
@@ -1795,7 +1658,7 @@ $today = date("Y-m-d");
           <div class="col-sm-12">
             <div class="form-group row">
               <div class="col-sm-3">
-                <button type="button" style="margin-left:15px;" id="buttonsdsd" class="btn btn-default" data-dismiss="modal">Submit</button>
+                <button style="margin-left:15px;" id="buttonsdsd" class="btn btn-default" data-dismiss="modal">Submit</button>
               </div>
 
               <div class="col-sm-4"></div>
@@ -1823,93 +1686,6 @@ $today = date("Y-m-d");
       </div>
     </div>
   </div>
-  <!-- Supplier Modal ends here -->
-
-
-  <!-- Bill List Modal -->
-  <div class="modal fade" id="BillModal" role="dialog">
-    <div class="modal-dialog modal-lg">
-
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title" style="float: right;">Bill List</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-
-        <div class="modal-body">
-          <table id="BillM" class="display" border="1">
-            <thead>
-              <tr>
-                <th></th>
-                <th width="100">Bill No</th>
-                <th width="100">Bill Date</th>
-                <th width="100">Bill Amount</th>
-                <th width="100">Rcpt Amount</th>
-                <th width="100">Balance Amount</th>
-                <th width="100">CR</th>
-                <th width="100">Comp</th>
-              </tr>
-            </thead>
-
-            <tbody class="pink">
-              <?php
-              $i = 0;
-              if (!empty($DataList)) {
-                foreach ($DataList as $List) {
-
-              ?>
-                  <tr>
-                    <td></td>
-                    <!-- <td style="background-color : #FFB6C1;"><input type="checkbox" id="check" name="checkAmt" onclick="Bill('<?php echo $List->BillNo; ?>','<?php echo $List->BillDate; ?>','<?php echo $List->BillAmt; ?>','<?php echo $List->BillAmt; ?>','<?php echo $List->ItemAmt; ?>'); "></td> -->
-                    <td style="background-color : #FFB6C1;"><?php echo $List->BillNo; ?></td>
-                    <td style="background-color : #FFB6C1;"><?php echo date_format(date_create($List->BillDate), 'd-m-Y'); ?></td>
-                    <td style="background-color : #FFB6C1;"><?php echo $List->BillAmt; ?></td>
-                    <td style="background-color : #FFB6C1;"><?php echo $List->AmtRecd; ?></td>
-                    <td style="background-color : #FFB6C1;"><?php echo $List->BillAmt; ?></td>
-                    <td style="background-color : #FFB6C1;"></td>
-                    <td style="background-color : #FFB6C1;"><?php echo $List->Comp; ?></td>
-                    <td style="background-color : #FFB6C1;"><?php echo $List->ItemAmt; ?></td>
-                    <td style="background-color : #FFB6C1;"><?php echo $List->BalAmt; ?></td>
-                    <!-- <td align="center">
-                  <a data-dismiss="modal" href="javascript:void(0);" onclick="Bill('<?php echo $List->BillNo; ?>','<?php echo $List->BillDate; ?>','<?php echo $List->BillAmt; ?>','<?php echo $List->BillAmt; ?>'); "><i class="glyphicon glyphicon-check"></i></a>
-                </td> -->
-                  </tr>
-
-              <?php
-                  $i++;
-                }
-              }
-              // else
-              //   {
-              //     echo "No Data found";
-              //   }
-              ?>
-            </tbody>
-            <tfoot>
-              <tr>
-                <th></th>
-                <th width="100"></th>
-                <th width="100"></th>
-                <th width="100"></th>
-                <th width="100"></th>
-                <th width="100"></th>
-                <th width="100"></th>
-                <th width="100"></th>
-              </tr>
-            </tfoot>
-          </table>
-
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-  <!-- Bill Modal End -->
-
 </body>
 
 </html>

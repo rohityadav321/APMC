@@ -252,7 +252,7 @@ class NewGaruPurModel extends CI_Model
                 GST_P,
                 TaxCode, TaxTitle, TaxRate, 
                 APMCChg as APMCTax,
-                APMCSChg as APMCSChrg
+                APMCSChg as APMCSChrg,APMCInd
             from ItemMaster 
             WHERE WorkYear = '$WorkYear'
             AND CoID = '$CoID'
@@ -1315,5 +1315,3 @@ class NewGaruPurModel extends CI_Model
 
 
 }
-
-?>

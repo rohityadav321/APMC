@@ -1,22 +1,23 @@
-<?php 
 
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class RojmelModel extends CI_Model
 {
-     function __construct()
-     {
-          // Call the Model constructor
-          parent::__construct();
-     }
+  function __construct()
+  {
+    // Call the Model constructor
+    parent::__construct();
+  }
 
 
-    function Get_Book_List()
-        {
-          
-            $CoID = $this->session->userdata('CoID');
-            $WorkYear = $this->session->userdata('WorkYear');
-            $sql ="
+  function Get_Book_List()
+  {
+
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "
                   SELECT 
                         ACCode,
                         ACTitle,
@@ -26,16 +27,16 @@ class RojmelModel extends CI_Model
                     and CoID = '$CoID'
                     and WorkYear='$WorkYear'
                 ";
-            $query = $this->db->query($sql);
-            $result = $query->result();
-            return $result;
-        }
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
+  }
 
-        function Get_Account_List()
-        {
-            $CoID = $this->session->userdata('CoID');
-            $WorkYear = $this->session->userdata('WorkYear');
-            $sql ="
+  function Get_Account_List()
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "
                         SELECT 
                         ACCode,
                         ACTitle,
@@ -46,34 +47,34 @@ class RojmelModel extends CI_Model
                     
                   ";
 
-            $query = $this->db->query($sql);
-            $result = $query->result();
-            return $result;
-        }
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
+  }
 
-      // Get Rojmel Data for RojmelGrid
-      function get_details(){
-        $CoID = $this->session->userdata('CoID');
-        $WorkYear = $this->session->userdata('WorkYear');
+  // Get Rojmel Data for RojmelGrid
+  function get_details()
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
 
-        $fromYear="";$toYear="";
-        $current_month = date("m");
-        $current_year = date("Y");
-        $yearArray = explode("-",$WorkYear);
-        $year = explode("-",$yearArray[0]);
-        $WY = substr($year[0], 0, 2).$yearArray[1];
+    $fromYear = "";
+    $toYear = "";
+    $current_month = date("m");
+    $current_year = date("Y");
+    $yearArray = explode("-", $WorkYear);
+    $year = explode("-", $yearArray[0]);
+    $WY = substr($year[0], 0, 2) . $yearArray[1];
 
-        if((int)$WY > (int)$current_year)
-        {
-          $fromYear = date("$current_year-$current_month-01");
-          $toYear = date("$current_year-$current_month-t");
-        }
-        else{
-          $fromYear = date("$WY-03-01");
-          $toYear = date("$WY-03-t");
-        }
-        
-        $sql ="
+    if ((int)$WY > (int)$current_year) {
+      $fromYear = date("$current_year-$current_month-01");
+      $toYear = date("$current_year-$current_month-t");
+    } else {
+      $fromYear = date("$WY-03-01");
+      $toYear = date("$WY-03-t");
+    }
+
+    $sql = "
                 SELECT ACCDetails.IDNumber,ACCDetails.CoID, ACCDetails.WorkYear, ACCDetails.BookCode,
                      ACMaster.ACTitle, DocNo, DATE_FORMAT(ACCDate,'%d/%m/%Y') AS ACCDateGrid ,ACCDetails.ACCode,ACCDetails.ACCAmount,
                      ACCDetails.IndNarration as Narration,
@@ -98,28 +99,29 @@ class RojmelModel extends CI_Model
                 GROUP BY DocNo
                 Order by ACCDate DESC , DocNo 
         ";
-            
-        // $query = $this->db->query($sql);
-        // $result = $query->result();
-        // return $result;
 
-        $result = $this->db->query($sql)->result_array();
+    // $query = $this->db->query($sql);
+    // $result = $query->result();
+    // return $result;
 
-        if(empty($result)){
-          $emptyArray=array("empty");   
-          return array($emptyArray,$fromYear,$toYear);
-        }
+    $result = $this->db->query($sql)->result_array();
 
-        return array($result,$fromYear,$toYear);
-      }
+    if (empty($result)) {
+      $emptyArray = array("empty");
+      return array($emptyArray, $fromYear, $toYear);
+    }
+
+    return array($result, $fromYear, $toYear);
+  }
 
 
-      // Get Rojmel Data Datewise for RojmelGrid
-      function get_detailsFilter($fromYear,$toYear){
-        $CoID = $this->session->userdata('CoID') ;
-        $WorkYear = $this->session->userdata('WorkYear') ; 
+  // Get Rojmel Data Datewise for RojmelGrid
+  function get_detailsFilter($fromYear, $toYear)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
 
-        $sql ="
+    $sql = "
                 SELECT ACCDetails.IDNumber, 
                         ACCDetails.CoID, 
                         ACCDetails.WorkYear, 
@@ -150,24 +152,24 @@ class RojmelModel extends CI_Model
                 GROUP BY DocNo
                 Order by ACCDate DESC , DocNo 
         ";
-        
-        $result = $this->db->query($sql)->result_array();
 
-        if(empty($result)){
-              $emptyArray=array("empty");   
-              return array($emptyArray,$fromYear,$toYear);
-        }
+    $result = $this->db->query($sql)->result_array();
 
-        return  array($result,$fromYear,$toYear); 
-      }
+    if (empty($result)) {
+      $emptyArray = array("empty");
+      return array($emptyArray, $fromYear, $toYear);
+    }
+
+    return  array($result, $fromYear, $toYear);
+  }
 
 
-      function get_edit_details($id)
-      {
-        $CoID = $this->session->userdata('CoID');
-        $WorkYear = $this->session->userdata('WorkYear');
-        
-        $sql ="
+  function get_edit_details($id)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+
+    $sql = "
         
             SELECT IDNumber, Date(ACCDate) as ACCDate, BookCode,Book.ACTitle,ACCDetails.ACCode, Accounts.ACTitle,
                     ACCAmount,Accounts.OpeningBal,Accounts.ClosingBal,DocNo,Accounts.GroupCode,
@@ -186,47 +188,45 @@ class RojmelModel extends CI_Model
               and ACCDetails.BookCode = Accounts.ACCode
 
             Order By ACCDetails.ACCDate DESC ;";
-            
-            $query = $this->db->query($sql);
-            $result = $query->result();
-            return $result;
 
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
+  }
 
-      }
-
-      function getid($id)
-      {
-        $sql="
+  function getid($id)
+  {
+    $sql = "
                 SELECT DocNo 
                   from ACCDetails 
                 WHERE DocNo ='$id'
             ";
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        return $result;
-      }
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
+  }
 
-      function delete_record_edit($Idnumber)
-      {
-        $CoID = $this->session->userdata('CoID');
-        $WorkYear = $this->session->userdata('WorkYear');
-        $sql="delete from ACCDetails
+  function delete_record_edit($Idnumber)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "delete from ACCDetails
         where 
            ACCDetails.CoID = '$CoID'
           and ACCDetails.WorkYear='$WorkYear'          
           and ACCDetails.IDNumber = '$Idnumber'";
 
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        return $result;
-      }
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
+  }
 
 
-      function get_add_entries($Idnumber)
-      {
-        $CoID = $this->session->userdata('CoID');
-        $WorkYear = $this->session->userdata('WorkYear');
-        $sql="
+  function get_add_entries($Idnumber)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "
                 SELECT 
                     IDNumber,
                     ACCDetails.ACCode,
@@ -247,17 +247,16 @@ class RojmelModel extends CI_Model
 
         ";
 
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        return $result;
-
-      }
-      //update in below datatable part
-      function editfromgrid($Idnumber)
-      {
-        $CoID = $this->session->userdata('CoID');
-        $WorkYear = $this->session->userdata('WorkYear');
-        $sql="
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
+  }
+  //update in below datatable part
+  function editfromgrid($Idnumber)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "
         SELECT 
         IDNumber,
         ACCDetails.ACCode,
@@ -279,18 +278,17 @@ class RojmelModel extends CI_Model
 
         ";
 
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        return $result;
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
+  }
 
-      }
+  function max_id()
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
 
-      function max_id()
-      {
-        $CoID = $this->session->userdata('CoID');
-        $WorkYear = $this->session->userdata('WorkYear');
-
-        $sql="
+    $sql = "
         
             SELECT max(DocNo) as id
                 FROM ACCDetails
@@ -299,17 +297,17 @@ class RojmelModel extends CI_Model
                     
             ";
 
-        $query=$this->db->query($sql);
-        $result=$query->result();
-        return $result;
-      }
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
+  }
 
 
-      function Get_AccountSetting_List()
-      {
-        $CoID = $this->session->userdata('CoID');
-        $WorkYear = $this->session->userdata('WorkYear');
-            $sql ="
+  function Get_AccountSetting_List()
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "
                       SELECT 
                               ACCode,
                               ACTitle,
@@ -320,18 +318,18 @@ class RojmelModel extends CI_Model
                         and WorkYear='$WorkYear'
                   ";
 
-            $query = $this->db->query($sql);
-            $result = $query->result();
-            return $result;
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
+  }
 
-      }
 
-
-      function getDocno(){
-        // $sql="SELECT IDNumber,PartyCode from PurHeader WHERE RefIDNumber ='$id'";
-        $CoID = $this->session->userdata('CoID') ;
-        $WorkYear = $this->session->userdata('WorkYear') ;
-        $sql="
+  function getDocno()
+  {
+    // $sql="SELECT IDNumber,PartyCode from PurHeader WHERE RefIDNumber ='$id'";
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "
         
                 SELECT LastRojmelDocNo 
                   from CompData 
@@ -339,41 +337,42 @@ class RojmelModel extends CI_Model
                   AND WorkYear = '$WorkYear'
         
         ";
-        $query = $this->db->query($sql);
-        $result = $query->result();
+    $query = $this->db->query($sql);
+    $result = $query->result();
 
-        $NewValue = IntVal($result[0]->LastRojmelDocNo)+1;
+    $NewValue = IntVal($result[0]->LastRojmelDocNo) + 1;
 
-        $multi_where = array('CoID' => $CoID, 'WorkYear' => $WorkYear );
-        $data2 = array('LastRojmelDocNo' => $NewValue);              
-        $this->db->where($multi_where);
-        $this->db->update('CompData', $data2);
+    $multi_where = array('CoID' => $CoID, 'WorkYear' => $WorkYear);
+    $data2 = array('LastRojmelDocNo' => $NewValue);
+    $this->db->where($multi_where);
+    $this->db->update('CompData', $data2);
 
-        return strval($NewValue);
-    }
+    return strval($NewValue);
+  }
+  // Updated on 8/10/21
+  function update_insert($Idnumber, $UPid, $BookCode, $ACCAmount, $DRCR, $ACCODE, $ChqNo, $LotNo, $EntryNo, $EntryType, $date, $CNarration, $RefIDNo, $SBillNO)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
 
-      function update_insert($Idnumber,$UPid,$BookCode,$ACCAmount,$DRCR,$ACCODE,$ChqNo,$LotNo,$EntryNo,$EntryType,$date,$CNarration) 
-      {
-        $CoID = $this->session->userdata('CoID');
-        $WorkYear = $this->session->userdata('WorkYear');
-
-            $sql =" INSERT INTO ACCDetails (ACCode,DocNo,ACCDate,IDNumber,BookCode, ACCAmount,ChqNo,LotNo,EntryNo,EntryType,DRCR,WorkYear,CoID,IndNarration) 
-            VALUES('$ACCODE','$Idnumber','$date','$UPid','$BookCode','$ACCAmount','$ChqNo','$LotNo','$EntryNo','$EntryType','$DRCR','$WorkYear','$CoID','$CNarration')
+    $sql = " INSERT INTO ACCDetails (ACCode,DocNo,ACCDate,IDNumber,BookCode, ACCAmount,ChqNo,LotNo,EntryNo,EntryType,DRCR,WorkYear,CoID,IndNarration,BillNo,RefIDNo) 
+            VALUES('$ACCODE','$Idnumber','$date','$UPid','$BookCode','$ACCAmount','$ChqNo','$LotNo','$EntryNo','$EntryType','$DRCR','$WorkYear','$CoID','$CNarration','$SBillNO','$RefIDNo')
             ON DUPLICATE KEY UPDATE
-            BookCode = '$BookCode', DRCR = '$DRCR',ACCAmount='$ACCAmount', ChqNo = '$ChqNo', LotNo = '$LotNo',WorkYear='$WorkYear',CoID='$CoID',ACCode='$ACCODE',DocNo='$Idnumber',ACCDate='$date',IndNarration='$CNarration';                    
+            BookCode = '$BookCode', DRCR = '$DRCR',ACCAmount='$ACCAmount', ChqNo = '$ChqNo', LotNo = '$LotNo',WorkYear='$WorkYear',CoID='$CoID',ACCode='$ACCODE',DocNo='$Idnumber',ACCDate='$date',IndNarration='$CNarration',BillNo='$SBillNO',RefIDNo='$RefIDNo';                    
                   ";
 
-            $query = $this->db->query($sql);
-            $result = "";
-            return $result;
-      }   
-      
-      function get_Balance($Idnumber){
-        // $sql="SELECT IDNumber,PartyCode from PurHeader WHERE RefIDNumber ='$id'";
-        $CoID = $this->session->userdata('CoID') ;
-        $WorkYear = $this->session->userdata('WorkYear') ;
-        $sql="SELECT distinct mast.ClosingBal as clbal, 
-        (if(((sum(IF(ACCAmount<0,ACCAmount*-1,0))) - (sum(IF(ACCAmount>0,ACCAmount,0))))<0,((sum(IF(ACCAmount<0,ACCAmount*-1,0))) - (sum(IF(ACCAmount>0,ACCAmount,0))) )*-1,((sum(IF(ACCAmount<0,ACCAmount*-1,0))) - (sum(IF(ACCAmount>0,ACCAmount,0))) ))) as AMT
+    $query = $this->db->query($sql);
+    $result = "";
+    return $result;
+  }
+
+  function get_Balance($Idnumber)
+  {
+    // $sql="SELECT IDNumber,PartyCode from PurHeader WHERE RefIDNumber ='$id'";
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "SELECT distinct mast.ClosingBal as clbal, 
+                    (if(((sum(IF(ACCAmount<0,ACCAmount*-1,0))) - (sum(IF(ACCAmount>0,ACCAmount,0))))<0,((sum(IF(ACCAmount<0,ACCAmount*-1,0))) - (sum(IF(ACCAmount>0,ACCAmount,0))) )*-1,((sum(IF(ACCAmount<0,ACCAmount*-1,0))) - (sum(IF(ACCAmount>0,ACCAmount,0))) ))) as AMT
         FROM ACCDetails as ac,ACMaster as mast
         where
         ac.DocNo='$Idnumber'
@@ -383,34 +382,35 @@ class RojmelModel extends CI_Model
         and ac.WorkYear=mast.WorkYear
         and ac.CoID=mast.CoID";
 
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        return $result;
-    }
-    
-    function get_Balance_via_Code($Code){
-      // $sql="SELECT IDNumber,PartyCode from PurHeader WHERE RefIDNumber ='$id'";
-      $CoID = $this->session->userdata('CoID') ;
-      $WorkYear = $this->session->userdata('WorkYear') ;
-      $sql="SELECT  ClosingBal as clbal
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
+  }
+
+  function get_Balance_via_Code($Code)
+  {
+    // $sql="SELECT IDNumber,PartyCode from PurHeader WHERE RefIDNumber ='$id'";
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "SELECT  ClosingBal as clbal
       FROM ACMaster
       where
       ACCode='$Code'
       and WorkYear = '$WorkYear'
       and CoID = '$CoID'";
-      
 
-     $query = $this->db->query($sql);
-        $result = $query->result();
-        return $result;
+
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
   }
-  
 
-    function getRojmelList($BCode)
-    {
-      $CoID = $this->session->userdata('CoID');
-      $WorkYear = $this->session->userdata('WorkYear');
-      $sql ="
+
+  function getRojmelList($BCode)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "
             SELECT 
                   ACCode,
                   ACTitle,
@@ -422,16 +422,15 @@ class RojmelModel extends CI_Model
               and WorkYear='$WorkYear'
               and ACCode like '$BCode%'
           ";
-      $query = $this->db->query($sql);
-      $result = $query->result();
-      return $result;
-
-    }
-    function getRojmelAccountList($ACCode)
-    {
-      $CoID = $this->session->userdata('CoID');
-      $WorkYear = $this->session->userdata('WorkYear');
-      $sql ="
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
+  }
+  function getRojmelAccountList($ACCode)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "
                   SELECT 
                   ACCode,
                   ACTitle,
@@ -442,17 +441,16 @@ class RojmelModel extends CI_Model
                 and ACCode like '$ACCode%'
             ";
 
-      $query = $this->db->query($sql);
-      $result = $query->result();
-      return $result;
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
+  }
 
-    }
-
-    function party_det($id)
-    {
-      $CoID = $this->session->userdata('CoID');
-      $WorkYear = $this->session->userdata('WorkYear');
-      $sql = "
+  function party_det($id)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "
               Select
                       ACCDetails.ACCDate,
                       ACMastDets.ACTitle as PartyName,
@@ -474,34 +472,34 @@ class RojmelModel extends CI_Model
                       and ACCDetails.WorkYear='$WorkYear'
                       and ACCDetails.DocNo='$id'
                   ";
-      $query = $this->db->query($sql);
-      $result = $query->result();
-      return $result;
-    }
-    // ACCDetails.ChequeNo,
-    //                 ACCDetails.TotalChequeAmt,
-  
-    function get_company()
-    {
-      $CoID = $this->session->userdata('CoID');
-      // $WorkYear = $this->session->userdata('WorkYear');
-      $sql = "
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
+  }
+  // ACCDetails.ChequeNo,
+  //                 ACCDetails.TotalChequeAmt,
+
+  function get_company()
+  {
+    $CoID = $this->session->userdata('CoID');
+    // $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "
                   select CoName,
                           concat(Address1,'',Address2,'',Address3)as Address,
                           BankName,BankAccount
                     from Company
                     WHERE CoID= '$CoID'
                   ";
-      $query = $this->db->query($sql);
-      $result = $query->result();
-      return $result;
-    }
-  
-    function getBank($id)
-    {
-      $CoID = $this->session->userdata('CoID');
-      $WorkYear = $this->session->userdata('WorkYear');
-      $sql = "
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
+  }
+
+  function getBank($id)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "
               select
                       ACMaster.ACTitle as BankName,
                       ACMaster.AccountNo as BankACNo
@@ -513,12 +511,73 @@ class RojmelModel extends CI_Model
                   and ACCDetails.WorkYear='$WorkYear'
                   and ACCDetails.DocNo='$id'
               ";
-      $query = $this->db->query($sql);
-      $result = $query->result();
-      return $result;
-    }
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    return $result;
+  }
 
+  // Updated on 8/10/21
 
+  function GetModaldataParty($party)
+  {
+    $CoID = $this->session->userdata('CoID');
+    $WorkYear = $this->session->userdata('WorkYear');
+    $sql = "SELECT 
+          `RefIDNumber`, 
+          TotalAmount,
+          DATE_FORMAT(GoodsRcptDate,'%d-%m-%Y') AS GoodsRcptDate, 
+          `PartyCode`, 
+          PartyName,
+          PurHeader.BrokerCode, 
+          `InvoiceNo`, 
+          DATE_FORMAT(InvoiceDate,'%d-%m-%Y') AS InvoiceDate,
+          `NetPayable`,
+          `TotalPaid`,
+       	  (
+                  ifnull(
+              (SELECT sum(ACCAmount)
+                  from ACCDetails
+                  where ACCDetails.CoID=PurHeader.CoID
+                  and ACCDetails.WorkYear=PurHeader.WorkYear
+                  and ACCDetails.RefIDNo=PurHeader.RefIDNumber
+              ),
+            0)
+                +
+                ifnull(( SELECT sum(TotalPay)
+            FROM PurPayments
+            where PurPayments.CoID = PurHeader.CoID
+                    and PurPayments.WorkYear = PurHeader.WorkYear
+            and PurPayments.PartyCode = PurHeader.PartyCode 
+            and PurPayments.RefIDNumber = PurHeader.RefIDNumber ),0) 
+                )TP,    
+          DATEDIFF(current_date(),GoodsRcptDate) AS Days,
+               (`BalanceDue`
+          -
+          ifnull(
+					(SELECT sum(ACCAmount)
+							from ACCDetails
+							where ACCDetails.CoID=PurHeader.CoID
+							and ACCDetails.WorkYear=PurHeader.WorkYear
+							and ACCDetails.RefIDNo=PurHeader.RefIDNumber
+					),
+				0) 
+                ) BalanceDue,
+          `IntRate`
+      from PurHeader ,ACMaster
+      where  PurHeader.PartyCode='$party'
+      and BalanceDue > 0
+      AND PurHeader.CoID ='$CoID'
+      AND PurHeader.WorkYear = '$WorkYear' 
+      AND PurHeader.PartyCode = ACMaster.ACCode
+      AND PurHeader.CoID = ACMaster.CoID
+      AND PurHeader.WorkYear = ACMaster.WorkYear
+    ";
+
+    $query = $this->db->query($sql);
+    $result = $query->result();
+
+    return $result;
+  }
 }
 
 ?>

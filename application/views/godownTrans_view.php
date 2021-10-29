@@ -625,7 +625,7 @@ include "header-form.php";
             <div class="modal-dialog" id="modal-size">
 
                 <!-- Modal content-->
-                <div class="modal-content">
+                <div class="modal-content" style="width:120%;">
                     <div class="modal-header">
                         <h4 class="modal-title" style="float: right;">Item List</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
